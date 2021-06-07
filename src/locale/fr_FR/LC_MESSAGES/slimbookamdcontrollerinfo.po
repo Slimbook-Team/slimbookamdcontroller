@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2021-04-16 09:53+CEST\n"
+"PO-Revision-Date: 2021-04-16 09:55+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"X-Generator: Poedit 2.4.2\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fr\n"
+
+#: slimbookamdcontrollerinfo.py:84
+msgid ""
+"Slimbook AMD Controller is an application that modifies the performance of "
+"AMD Ryzen processors, and through \n"
+"which you can extend the life of the BATTERY of your laptop thanks to a "
+"lower consumption, or increase the TDP \n"
+"of the CPU to increase its power ( although you will get higher consumption "
+"and calories) Be careful!\n"
+"Third-party software is used, such as RyzenAdj from FlyGoat."
+msgstr ""
+"Slimbook AMD Controller est une application qui modifie les performances "
+"des processeurs AMD Ryzen,  \n"
+"et par lequel vous pouvez prolonger la durée de vie de la BATTERIE de votre "
+"ordinateur portable grâce à  \n"
+"une consommation moindre, ou augmenter le TDPdu CPU pour augmenter sa "
+"puissance (bien que vous \n"
+"obtiendrez une consommation et des calories plus élevées)  Fais attention! "
+"Un logiciel tiers est utilisé, tel \n"
+"que RyzenAdj de FlyGoat."
+
+#: slimbookamdcontrollerinfo.py:93
+msgid "This software is provided * as is * without warranty of any kind.."
+msgstr "Ce logiciel est fourni * tel quel * sans garantie d'aucune sorte."
+
+#: slimbookamdcontrollerinfo.py:97
+msgid "You are free from:"
+msgstr "Vous êtes libre de:"
+
+#: slimbookamdcontrollerinfo.py:101
+msgid "Share: "
+msgstr "Partager : "
+
+#: slimbookamdcontrollerinfo.py:101
+#, fuzzy
+msgid ""
+"copy and redistribute the material in any medium or format\n"
+"Slimbook Copyright - License Creative Commons BY-NC-ND"
+msgstr ""
+"copier et redistribuer le matériel dans n’importe quel support ou format\n"
+"Slimbook Copyright - Licence Creative Commons BY-NC-ND"
+
+#: slimbookamdcontrollerinfo.py:173
+msgid "@Visit Slimbook web"
+msgstr "@Visit Slimbook web "
+
+#: slimbookamdcontrollerinfo.py:182
+msgid "@SlimbookAMDController Tutorial"
+msgstr "Tutoriel @SlimbookAMDController"
+
+#: slimbookamdcontrollerinfo.py:190
+msgid "Send an e-mail a: "
+msgstr "Envoyez un e-mail a:"
+
+#: slimbookamdcontrollerinfo.py:200
+msgid "Copy mail"
+msgstr "Copier le courrier"
+
+#: slimbookamdcontrollerinfo.py:231
+msgid "'The email has been copied to the clipboard'"
+msgstr "'Le-mail a été copié dans le presse-papiers'"

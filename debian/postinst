@@ -1,0 +1,22 @@
+#!/bin/sh
+# postinst script for slimbookamdcontrolleralpha
+#
+# see: dh_installdeb(1)
+
+set -e
+
+#clono
+cd /usr/share/slimbookamdcontroller/
+git clone https://github.com/FlyGoat/RyzenAdj.git
+cd RyzenAdj/
+#compilo
+mkdir build
+cd build
+cmake ..
+make
+cp ryzenadj ../../
+chmod +x /usr/share/slimbookamdcontroller/ryzenadj
+chmod +x /usr/lib/systemd/system-sleep/slimbookamdcontroller
+
+
+exit 0

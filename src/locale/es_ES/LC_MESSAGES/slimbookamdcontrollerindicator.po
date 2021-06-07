@@ -1,0 +1,48 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2021-04-14 16:07+0200\n"
+"PO-Revision-Date: 2021-04-14 16:15+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+"X-Generator: Poedit 2.4.2\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: es\n"
+
+#: slimbookamdcontrollerindicator.py:81
+msgid "Low performance"
+msgstr "Bajo rendimiento"
+
+#: slimbookamdcontrollerindicator.py:86
+msgid "Medium performance"
+msgstr "Medio Rendimiento"
+
+#: slimbookamdcontrollerindicator.py:91
+msgid "High performance"
+msgstr "Alto rendimiento"
+
+#: slimbookamdcontrollerindicator.py:96
+msgid "Preferences"
+msgstr "Preferencias"
+
+#: slimbookamdcontrollerindicator.py:101
+msgid "Exit"
+msgstr "Salir"
+
+#: slimbookamdcontrollerindicator.py:186 slimbookamdcontrollerindicator.py:202
+#: slimbookamdcontrollerindicator.py:218
+msgid "Your CPU has been set to "
+msgstr "Su CPU ha cambiado a  "
+
+#: slimbookamdcontrollerindicator.py:188 slimbookamdcontrollerindicator.py:204
+#: slimbookamdcontrollerindicator.py:220
+msgid "Your CPU is not avalible, this software might not work."
+msgstr "Su CPU no es válida, es posible que este software no funcione."

@@ -1,0 +1,99 @@
+/* @font-face {
+    font-family: Oswald;
+    src: url(Oswal-Regular.ttf);
+}
+ */
+
+/*radio:checked {
+    -gtk-icon-source: url("../img/pngwing.com.png");
+}*/
+
+/* CLASSES */
+
+
+/* *{
+    border-width: 1px;
+    border-color: red;
+    border-style: solid;
+} */
+
+
+
+radiobutton {
+    color: white;
+    padding-top: 15px;
+    padding-bottom: 25px;
+    
+}
+
+#buttons {
+    margin-bottom: 15px;
+}
+
+#info {
+    margin-right: 60px;
+    margin-left: 60px;
+
+}
+
+#top {
+    padding-top: 20px;
+}
+
+#invisible {
+    opacity: 0;
+}
+
+#label, dialog label, label:visited, link {
+    color: rgb(255, 255, 255);   
+}
+
+/* dialog>box{
+    margin: 20px;
+    
+} */
+
+/* Classes */
+
+.help{
+
+    padding-left: 10px;
+    padding-right: 20px;
+    padding-bottom: 10px;
+}
+
+.close{
+    padding-top: 20px;
+    padding-left: 50px;
+    padding-right: 20px;
+    padding-bottom: 20px;
+}
+
+
+.cambModos {
+ 
+    margin: 20px 0;
+}
+.cambModos2{
+    color: rgb(224,28,52);
+    font-family: monospace;
+    font-size: xx-large;
+    font-weight: bolder;
+    margin: 20px 0;
+}
+
+.bg-color {
+    background-repeat: no-repeat;
+    background-color: #111111;
+}
+
+.bg-image {
+    background-image: url('../images/bg4.png');
+    background-repeat: no-repeat;
+    background-size: auto;
+    background-color: #111111;
+}
+
+.button-none{
+    opacity: 0;
+}

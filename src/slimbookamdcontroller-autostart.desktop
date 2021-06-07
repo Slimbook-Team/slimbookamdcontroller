@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Exec=python3 /usr/share/slimbookamdcontroller/src/slimbookamdcontrollerindicator.py
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name[es_ES]=slimbookamdcontroller-autostart.desktop
+Name=Slimbook Amd Controller Autostart
+Comment[es_ES]=Arranque de autoinicio de Slimbook AMD Controller
+Comment=Slimbook AMD Contoller's autostart executable
+X-GNOME-Autostart-Delay=0

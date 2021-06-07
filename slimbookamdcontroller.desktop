@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Slimbook AMD Controller
+Version=0.3beta
+Exec=slimbookamdcontroller
+Comment=Modify your CPU power!
+Icon=slimbookamdcontroller
+Type=Application
+Terminal=false
+StartupNotify=true
+Encoding=UTF-8
+Categories=Utility;
+Name[es_ES]=Slimbook AMD Controller

@@ -1,0 +1,63 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-04-19 11:51+0200\n"
+"PO-Revision-Date: 2021-04-19 12:07+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.2\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"Language: fr\n"
+
+#: slimbookamdcontroller.py:67
+msgid "Low"
+msgstr "Basse"
+
+#: slimbookamdcontroller.py:68
+msgid "Medium"
+msgstr "Moyen"
+
+#: slimbookamdcontroller.py:69
+msgid "High"
+msgstr "Élevé"
+
+#: slimbookamdcontroller.py:103
+msgid "Enable app at startup"
+msgstr "Activer l’application au démarrage"
+
+#: slimbookamdcontroller.py:106
+msgid "Show indicator icon"
+msgstr "Afficher l’icône de l’indicateur"
+
+#: slimbookamdcontroller.py:123
+msgid "Current consumption: "
+msgstr "Consommation actuelle : "
+
+#: slimbookamdcontroller.py:211
+msgid "ACCEPT"
+msgstr "ACCEPTER"
+
+#: slimbookamdcontroller.py:216
+msgid "CANCEL"
+msgstr "ANNULER"
+
+#: slimbookamdcontroller.py:317
+msgid "Changes have been executed correctly."
+msgstr "Les modifications ont été exécutées correctement."
+
+#: slimbookamdcontroller.py:319
+msgid "Your CPU is not avalible, this software might not work."
+msgstr "Votre CPU n'est pas disponible, ce logiciel peut ne pas fonctionner."
+
+#: slimbookamdcontroller.py:517
+msgid "Your CPU isn't avalible"
+msgstr "Votre Processeur n’est pas avalible"

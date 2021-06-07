@@ -1,0 +1,28 @@
+Source: slimbookamdcontroller
+Section: utils
+Priority: extra
+Maintainer: slimbook <sat@slimbook.es>
+Build-Depends: debhelper (>= 9)
+Standards-Version: 3.9.6
+Homepage: http://slimbook.es
+ 
+Package: slimbookamdcontroller
+Architecture: all
+Depends: ${misc:Depends}, ${python:Depends},
+     python3,
+     python3-gi,
+     python3-pil,
+     python3-dbus,
+     git,
+     build-essential,
+     libnotify-bin,
+     cmake,
+     cmake-data,
+     gir1.2-appindicator3-0.1,
+     libcurl4,
+     libpci-dev,
+     librhash0,
+     libudev-dev,
+     zlib1g-dev
+Description: Aplicacion para la gestion de rendimiento de procesadores amd
+ Aplicacion para la gestion de rendimiento de procesadores amd

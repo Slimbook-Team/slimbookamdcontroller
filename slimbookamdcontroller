@@ -1,0 +1,39 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
+import os
+import sys
+import subprocess
+
+from pathlib import Path
+
+
+os.environ['NO_AT_BRIDGE'] = '1'
+if str(Path(__file__).absolute()).startswith('/usr'):
+    print("A")
+    srcpath = '/usr/share/slimbookamdcontroller/src'
+    print(srcpath)
+else:
+    print("B")
+    srcpath = str(Path(__file__).absolute().parents[1] / 'src')
+    print(srcpath)
+
+sys.path.insert(1, srcpath)
+
+
+
+if __name__ == "__main__":
+    pgrep = subprocess.getoutput("pgrep slimbookamdcontroller")
+
+    numProcRunning = pgrep.split('\n')
+
+    if len(numProcRunning) > 1:
+        print('Slimbook AMD it is in execution')
+    else:
+        
+        try:
+            from slimbookamdcontroller import SlimbookAMD
+        except KeyboardInterrupt as exception:
+            print(exception)
+        #os.system('python3 /usr/share/slimbookamdcontroller/src/slimbookamdcontroller.py')
+exit(0)

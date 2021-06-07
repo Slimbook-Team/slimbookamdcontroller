@@ -1,0 +1,74 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2021-06-02 13:03+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: pygettext.py 1.5\n"
+
+
+#: slimbookamdcontrollerinfo.py:84
+msgid ""
+"The Slimbook AMD Controller app is capable of setting several TDP power levels for your AMD Ryzen mobile processor. Switching between the different performance presets will give you the ability to control both performance and battery life with a single click. Bear in mind that the higher you set your performance level, your processor will also run hotter and drain your battery faster, so keep that in mind! \n"
+"\n"
+"Slimbook AMD Controller uses the third party software RyzenAdj from FlyGoat."
+msgstr ""
+
+#: slimbookamdcontrollerinfo.py:91
+msgid "Many laptops limit the power of the CPU, when working without the charger connected. Therefore, if you want to take advantage of the high-performance mode of this application, you may need to connect the charger."
+msgstr ""
+
+#: slimbookamdcontrollerinfo.py:91
+msgid "Note: "
+msgstr ""
+
+#: slimbookamdcontrollerinfo.py:97
+msgid " or buying a brand new Slimbook."
+msgstr ""
+
+#: slimbookamdcontrollerinfo.py:97
+msgid "If you want to support the Slimbook team with the development of this app and several more to come, you can do so by joining our "
+msgstr ""
+
+#: slimbookamdcontrollerinfo.py:104
+msgid "This software is provided * as is * without warranty of any kind.."
+msgstr ""
+
+#: slimbookamdcontrollerinfo.py:108
+msgid "You are free from:"
+msgstr ""
+
+#: slimbookamdcontrollerinfo.py:112
+msgid "Share: "
+msgstr ""
+
+#: slimbookamdcontrollerinfo.py:112
+msgid ""
+"copy and redistribute the material in any medium or format\n"
+"Slimbook Copyright - License Creative Commons BY-NC-ND"
+msgstr ""
+
+#: slimbookamdcontrollerinfo.py:193
+msgid "@Visit Slimbook web"
+msgstr ""
+
+#: slimbookamdcontrollerinfo.py:204
+msgid "@SlimbookAMDController Tutorial"
+msgstr ""
+
+#: slimbookamdcontrollerinfo.py:209
+msgid "Send an e-mail a: "
+msgstr ""
+
+#: slimbookamdcontrollerinfo.py:252
+msgid "'The email has been copied to the clipboard'"
+msgstr ""
+

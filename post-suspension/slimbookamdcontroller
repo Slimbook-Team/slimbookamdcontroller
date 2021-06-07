@@ -1,0 +1,33 @@
+#!/bin/bash
+exec 2>> /tmp/slimbookamdcontroller_err.txt
+exec >> /tmp/slimbookamdcontroller_err.txt
+date >&2
+printf "$0 argument: %s\n" "$@" >&2
+
+cmd="python3 /usr/share/slimbookamdcontroller/src/applyconfig.py"
+
+cmd1="pgrep -f slimbookamdcontroller.py"
+cmd2="pgrep -f slimbookamdcontrollerindicator"
+
+
+
+case $1 in
+    pre)   ;;
+    post)  
+      
+      if $cmd1 || $cmd2; 
+      then
+	
+	echo "The program program exists"
+	sleep 15
+	echo "Apliying changes"
+	if $cmd ; then
+		echo "Done!"
+	fi
+      elif ls /home; then
+
+	echo "The program doesn’t exist"
+
+      fi
+      ;;
+esac
