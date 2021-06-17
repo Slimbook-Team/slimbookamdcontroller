@@ -22,8 +22,8 @@ from os.path import expanduser
 srcpath = '/usr/share/slimbookamdcontroller/src'
 sys.path.insert(1, srcpath)
 
-
-user = expanduser("~")
+user_name = subprocess.getoutput("logname")
+user = subprocess.getoutput("echo ~"+user_name)
 currpath = os.path.dirname(os.path.realpath(__file__))
 config_object = ConfigParser()
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -36,15 +36,15 @@ AUTOSTART_DESKTOP = os.path.expanduser("~/.config/autostart/slimbookamdcontrolle
 
 # CMD(Genera .pot):  pygettext -d slimbookamdcontrollercopy slimbookamdcontrollercopy.py
 # CMD(Genera .mo a partir de .po):  msgfmt -o slimbookamdcontrollercopy.po slimbookamdcontrollercopy.mo
-
-entorno_usu = locale.getlocale()[0]
-if entorno_usu.find("en") >= 0 or entorno_usu.find("es") >= 0 or entorno_usu.find("fr") >= 0:
-	idiomas = [entorno_usu]
-else: 
+try:
+    entorno_usu = locale.getlocale()[0]
+    if entorno_usu.find("en") >= 0 or entorno_usu.find("es") >= 0 or entorno_usu.find("fr") >= 0:
+        idiomas = [entorno_usu]
+    else: 
+        idiomas = ['en_EN'] 
+except:
     idiomas = ['en_EN'] 
 
-""" entorno_usu="en_EN"
-idiomas = ['en_EN']  """
 
 print('Language: ', entorno_usu)
 t = gettext.translation('slimbookamdcontroller',
@@ -55,7 +55,7 @@ _ = t.gettext
 
 iconpath = currpath+'/amd.png'
 
-#Guardamos ela salida del comando en una variable
+#Guardamos la salida del comando en una variable
 cpu = subprocess.getoutput('cat /proc/cpuinfo | grep '+'name'+'| uniq')
 
 #Que encuentre cuatro digitos juntos seguidos de 1 o 2 letras mayusculas
@@ -75,8 +75,6 @@ rbutton3 = Gtk.RadioButton.new_with_mnemonic_from_widget(rbutton1, (_("High")))
 
 class SlimbookAMD(Gtk.ApplicationWindow):
 
-    #ESTAS VARIABLES SE QUEDAN AQUI PORQUE SI SE DEFINEN ARRIBA NO PARECEN PODERSE MODIFICAR
-    
     modo_actual = ""
     indicador_actual = ""
     autostart_actual = ""

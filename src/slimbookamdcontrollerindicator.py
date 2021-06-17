@@ -28,7 +28,8 @@ sys.path.insert(1, srcpath)
 currpath = os.path.dirname(os.path.realpath(__file__))
 
 #Variables
-user = expanduser('~')
+user_name = subprocess.getoutput("logname")
+user = subprocess.getoutput("echo ~"+user_name)
 directorio = '~/.config/slimbookamdcontroller'
 fichero = user + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
 iconapp = currpath+'/amd.png'
@@ -182,7 +183,7 @@ class Indicator():
 		print('Updating '+self.modo_actual+' to : '+self.parameters[0]+' '+self.parameters[1]+' '+self.parameters[2]+'.\n')
             
 		self.update_config_file("mode", self.modo_actual)
-		call=os.system('python3 '+currpath+'/applyconfig.py')
+		os.system('python3 '+currpath+'/applyconfig.py')
 
 	#Funcion para configuracion de medio rendimiento
 	def mediorendimiento(self, widget):
@@ -192,7 +193,7 @@ class Indicator():
 		print('Updating '+self.modo_actual+' to : '+self.parameters[3]+' '+self.parameters[4]+' '+self.parameters[5]+'.\n')
 		
 		self.update_config_file("mode", self.modo_actual)
-		call=os.system('python3 '+currpath+'/applyconfig.py')
+		os.system('python3 '+currpath+'/applyconfig.py')
 
 	#Funcion para configuracion de alto rendimiento
 	def altorendimiento(self, widget):
@@ -202,9 +203,10 @@ class Indicator():
 		print('Updating '+self.modo_actual+' to : '+self.parameters[6]+' '+self.parameters[7]+' '+self.parameters[8]+'.\n')
 
 		self.update_config_file("mode", self.modo_actual)
-		call=os.system('python3 '+currpath+'/applyconfig.py')
+		os.system('python3 '+currpath+'/applyconfig.py')
 
 	
+
 Indicator()
 
 signal.signal(signal.SIGINT, signal.SIG_DFL)

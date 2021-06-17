@@ -11,7 +11,8 @@ from os.path import expanduser
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 
-user = "/home/"+subprocess.getoutput("who").split(' ')[0]
+user_name = subprocess.getoutput("logname")
+user = subprocess.getoutput("echo ~"+user_name)
 config_file = user+'/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
 print("Reading "+config_file)
 config = configparser.ConfigParser()

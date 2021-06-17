@@ -3,6 +3,7 @@
 
 import os
 import gi
+import subprocess
 import gettext, locale
 
 gi.require_version('Gtk', '3.0')
@@ -30,6 +31,7 @@ except:
     idiomas = ['en_EN'] 
 
 
+
 print('Language: ', idiomas)
 t = gettext.translation('slimbookamdcontrollerinfo',
 						currpath+'/locale',
@@ -38,7 +40,8 @@ t = gettext.translation('slimbookamdcontrollerinfo',
 _ = t.gettext
 
 
-user = expanduser("~")
+user_name = subprocess.getoutput("logname")
+user = subprocess.getoutput("echo ~"+user_name)
 
 
 style_provider = Gtk.CssProvider()
@@ -62,16 +65,7 @@ class PreferencesDialog(Gtk.Dialog):
         #self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
         #self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT)
 
-        if str(Path(__file__).parent.absolute()).startswith('/usr'):
-            #print("yes")
-            SHAREDIR = os.path.join('/usr', 'share')
-            ICONDIR = os.path.join(SHAREDIR, 'icons', 'hicolor', 'scalable', 'apps')
-        else:
-            ROOTDIR = os.path.dirname(__file__)
-            #print(ROOTDIR)
-            ICONDIR = os.path.normpath(
-                os.path.join(ROOTDIR, 'images'))
-        #print(ICONDIR)
+
         ICON = os.path.join('/usr/share/slimbookamdcontroller/src/images/slimbookamdcontroller.svg')
         #print('Ruta icono: '+ICON)
         
