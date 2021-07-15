@@ -13,7 +13,7 @@ Slimbook AMD Controller is designed with mobile AMD Ryzen pocessors in mind.
 # Install
 ```bat
    sudo add-apt-repository ppa:slimbook/slimbook
-   sudo apt install slimbookintelcontroller
+   sudo apt install slimbookamdcontroller
 ```
 
 ![Captura de pantalla de 2021-06-07 16-43-24](https://user-images.githubusercontent.com/18195266/125772023-1f3d45ff-5834-481e-92d8-2779d20df870.png)
