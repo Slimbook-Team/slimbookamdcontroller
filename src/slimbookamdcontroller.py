@@ -9,6 +9,7 @@ import gettext, locale, time
 import shutil
 import configparser
 import re #Busca patrones expresiones regulares
+import pyamdgpuinfo
 from pathlib import Path
 
 gi.require_version('Gtk', '3.0')
@@ -134,19 +135,6 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         button2.set_halign(Gtk.Align.START)
         button2.get_style_context().add_class("button-none")
 
-        # Consumo Procesador
-        hbox_consumo = Gtk.HBox()
-
-        cpu_name = Gtk.Label(label=cpu[12:]) 
-        cpu_name.set_halign(Gtk.Align.CENTER)
-
-        """ consumo = Gtk.Label(label=_('Current consumption: ')+ self.cpu_value('slow-limit')+" - "+self.cpu_value('stapm-limit')+" - "+self.cpu_value('fast-limit')+" mW.")
-        consumo.set_halign(Gtk.Align.END) """
-
-        hbox_consumo.pack_start(cpu_name, True, True, 0)
-        #hbox_consumo.pack_start(consumo, True, True, 0)
-
-
         separador = Gtk.Image.new_from_file(currpath+'/images/separador.png')
         separador.set_halign(Gtk.Align.CENTER)
         separador2 = Gtk.Image.new_from_file(currpath+'/images/separador.png')
@@ -171,7 +159,23 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         evnt_close.connect("button_press_event", self.on_btnCerrar_clicked)
 
 
-    # RADIOS ---------------------------------------------------------------------------------
+    # CPU ---------------------------------------------------------------------------------
+        cpuGrid = Gtk.Grid(column_homogeneous=False,
+                         column_spacing=0,
+                         row_spacing=10)
+        cpuGrid.set_name('cpuGrid')
+
+        # Consumo Procesador
+        hbox_consumo = Gtk.HBox()
+
+        cpu_name = Gtk.Label(label=cpu[12:]) 
+        cpu_name.set_halign(Gtk.Align.CENTER)
+
+        """ consumo = Gtk.Label(label=_('Current consumption: ')+ self.cpu_value('slow-limit')+" - "+self.cpu_value('stapm-limit')+" - "+self.cpu_value('fast-limit')+" mW.")
+        consumo.set_halign(Gtk.Align.END) """
+
+        hbox_consumo.pack_start(cpu_name, True, True, 0)
+        #hbox_consumo.pack_start(consumo, True, True, 0)
 
         img = ''
 
@@ -219,6 +223,43 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         
         vbox3.pack_start(rbutton3_img, False, False, 0)
         vbox3.pack_start(rbutton3, False, False, 0)
+
+        cpuGrid.attach(hbox_consumo, 4, 8, 5, 1)
+        
+        cpuGrid.attach(modos, 5, 10, 3, 1)
+
+        cpuGrid.attach(vbox1, 5, 11, 1, 2)
+        cpuGrid.attach(vbox2, 6, 11, 1, 2)
+        cpuGrid.attach(vbox3, 7, 11, 1, 2)
+
+
+    # GPU --------------------------------------------------------------------------------
+        # exists_gpus = pyamdgpuinfo.detect_gpus()
+        gpu = pyamdgpuinfo.get_gpu(0)
+
+        vbox_gpu = Gtk.VBox()
+        gpu_name = Gtk.Label(gpu.name) 
+        # gpu_slot = Gtk.Label(gpu.pci_slot)
+
+        vbox_gpu.pack_start(gpu_name, True, True, 0)
+
+    # STACK ----------------------------------------------------------------------------------
+        vboxStack = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        vboxStack.set_halign(Gtk.Align.CENTER)
+        self.add(vboxStack)
+
+        stack = Gtk.Stack()
+        stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
+        stack.set_transition_duration(1000)
+
+        stack.add_titled(cpuGrid, "check", "CPU")
+
+        stack.add_titled(vbox_gpu, "label", "GPU")
+
+        stack_switcher = Gtk.StackSwitcher()
+        stack_switcher.set_stack(stack)
+        vboxStack.pack_start(stack_switcher, True, True, 0)
+        vboxStack.pack_start(stack, True, True, 0)
 
 
     # BUTTONS --------------------------------------------------------------------------------
@@ -288,16 +329,11 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         grid.attach(label2, 5, 6, 3, 1)
         grid.attach(switch2, 7, 6, 2, 1)
         grid.attach(separador2, 2, 7, 8, 1)
-        grid.attach(hbox_consumo, 4, 8, 5, 1)
+
+        grid.attach(vboxStack, 2, 10, 10, 1)
         
-        grid.attach(modos, 5, 10, 3, 1)
-
-        grid.attach(vbox1, 5, 11, 1, 2)
-        grid.attach(vbox2, 6, 11, 1, 2)
-        grid.attach(vbox3, 7, 11, 1, 2)
-
-        grid.attach(botonesBox, 6, 13, 1, 1)
-        grid.attach(evnt_box, 9, 13, 2, 1)
+        grid.attach(botonesBox, 6, 20, 1, 1)
+        grid.attach(evnt_box, 9, 20, 2, 1)
         grid.attach(evnt_close, 9, 0, 2, 1)
 
   
