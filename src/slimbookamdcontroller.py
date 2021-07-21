@@ -236,12 +236,52 @@ class SlimbookAMD(Gtk.ApplicationWindow):
     # GPU --------------------------------------------------------------------------------
         # exists_gpus = pyamdgpuinfo.detect_gpus()
         gpu = pyamdgpuinfo.get_gpu(0)
+        gpu_name = Gtk.Label(label=gpu.name)
+        gpu_memory_size = Gtk.Label(label='{} GB'.format(self._convert_bytes_to_gbytes(gpu.memory_info['vram_size'])))
+        gpu_slot = Gtk.Label(label=gpu.pci_slot)
+        gpu_temp = Gtk.Label(label='{}º C'.format(self.get_gpu_temp(gpu.gpu_id)))
 
-        vbox_gpu = Gtk.VBox()
-        gpu_name = Gtk.Label(gpu.name) 
-        # gpu_slot = Gtk.Label(gpu.pci_slot)
+        box_outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        self.add(box_outer)
 
-        vbox_gpu.pack_start(gpu_name, True, True, 0)
+        listbox = Gtk.ListBox()
+        listbox.set_selection_mode(Gtk.SelectionMode.NONE)
+        box_outer.pack_start(listbox, True, True, 0)
+
+        row = Gtk.ListBoxRow()
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
+        row.add(hbox)
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        hbox.pack_start(vbox, True, True, 0)
+
+        label_gpu_model = Gtk.Label(label="Model", xalign=0)
+        vbox.pack_start(label_gpu_model, True, True, 0)
+        hbox.pack_start(gpu_name, False, True, 0)
+        listbox.add(row)
+
+        row = Gtk.ListBoxRow()
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
+        row.add(hbox)
+        label_memory_size = Gtk.Label(label="VRAM", xalign=0)
+        hbox.pack_start(label_memory_size, True, True, 0)
+        hbox.pack_start(gpu_memory_size, False, True, 0)
+        listbox.add(row)
+
+        row = Gtk.ListBoxRow()
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
+        row.add(hbox)
+        label_temp = Gtk.Label(label="Temp", xalign=0)
+        hbox.pack_start(label_temp, True, True, 0)
+        hbox.pack_start(gpu_temp, False, True, 0)
+        listbox.add(row)
+
+        row = Gtk.ListBoxRow()
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
+        row.add(hbox)
+        label_pci_slot = Gtk.Label(label="PCI Slot", xalign=0)
+        hbox.pack_start(label_pci_slot, True, True, 0)
+        hbox.pack_start(gpu_slot, False, True, 0)
+        listbox.add(row)
 
     # STACK ----------------------------------------------------------------------------------
         vboxStack = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
@@ -252,9 +292,9 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         stack.set_transition_type(Gtk.StackTransitionType.SLIDE_LEFT_RIGHT)
         stack.set_transition_duration(1000)
 
-        stack.add_titled(cpuGrid, "check", "CPU")
+        stack.add_titled(cpuGrid, "cpu", "CPU")
 
-        stack.add_titled(vbox_gpu, "label", "GPU")
+        stack.add_titled(box_outer, "gpu", "GPU")
 
         stack_switcher = Gtk.StackSwitcher()
         stack_switcher.set_stack(stack)
@@ -599,6 +639,12 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             config.write(configfile)
 
         print("\n- Variable |"+variable+"| updated in .conf, actual value: "+value)
+
+    def _convert_bytes_to_gbytes(self, vram_size):
+        return round(float(vram_size)/1024.0**3)
+
+    def get_gpu_temp(self, gpuIndex):
+        return pyamdgpuinfo.get_gpu(gpuIndex).query_temperature()
 
 win = SlimbookAMD()
 
