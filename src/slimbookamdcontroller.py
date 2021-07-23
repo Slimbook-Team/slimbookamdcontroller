@@ -237,19 +237,19 @@ class SlimbookAMD(Gtk.ApplicationWindow):
     # GPU --------------------------------------------------------------------------------
         def add_gpus_pages(notebook: Gtk.Notebook):
             number_of_gpus = GpuService.get_number_of_gpus()
-            for gpu_Index in range(number_of_gpus):
+            for gpu_index in range(number_of_gpus):
                 page = Gtk.Box()
                 page.set_border_width(10)
                 page.set_halign(Gtk.Align.CENTER)
-                page.add(build_gpu_listbox(gpu_Index))
-                notebook.append_page(page, Gtk.Label(label="GPU {}".format(gpu_Index)))
+                page.add(build_gpu_listbox(gpu_index))
+                notebook.append_page(page, Gtk.Label(label="GPU {}".format(gpu_index)))
             return
         
-        def build_gpu_listbox(gpu_Index: int) -> Gtk.Box:
-            gpu_model = GpuService.get_model(gpu_Index)
-            gpu_memory_size = GpuService.get_vram(gpu_Index, 'GB')
-            gpu_slot = GpuService.get_slot(gpu_Index)
-            gpu_temp = GpuService.get_temp(gpu_Index)
+        def build_gpu_listbox(gpu_index: int) -> Gtk.Box:
+            gpu_model = GpuService.get_model(gpu_index)
+            gpu_memory_size = GpuService.get_vram(gpu_index)
+            gpu_slot = GpuService.get_slot(gpu_index)
+            gpu_temp = GpuService.get_temp(gpu_index)
 
             box_outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 

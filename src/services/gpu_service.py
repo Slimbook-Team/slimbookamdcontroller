@@ -15,9 +15,16 @@ class GpuService:
         return pyamdgpuinfo.get_gpu(gpu_index).name
 
     @staticmethod
-    def get_vram(gpu_index: int, unit: str = 'MB') -> str:
-        vram_size = GpuService._get_vram_size(gpu_index, unit)
-        return '{} {}'.format(vram_size, unit)
+    def get_vram(gpu_index: int) -> str:
+        vram_size = GpuService._get_vram_size(gpu_index)
+        temp_size = GpuService._convert_bytes_to_gbytes(vram_size)
+        unit = 'GB'
+
+        if temp_size == 0:
+            temp_size = GpuService._convert_bytes_to_mbytes(vram_size)
+            unit = 'MB'
+
+        return '{} {}'.format(temp_size, unit)
 
     @staticmethod
     def get_temp(gpu_index: int, unit: str = 'C') -> str:
@@ -28,15 +35,8 @@ class GpuService:
         return pyamdgpuinfo.get_gpu(gpu_index).pci_slot
     
     @staticmethod
-    def _get_vram_size(gpu_index: int, unit: str) -> str:
-        vram_size = pyamdgpuinfo.get_gpu(gpu_index).memory_info['vram_size']
-
-        if unit == 'GB':
-            return GpuService._convert_bytes_to_gbytes(vram_size)
-        elif unit == 'MB':
-            return GpuService._convert_bytes_to_mbytes(vram_size)
-        else:
-            return vram_size
+    def _get_vram_size(gpu_index: int) -> str:
+        return pyamdgpuinfo.get_gpu(gpu_index).memory_info['vram_size']
 
     @staticmethod
     def _convert_bytes_to_gbytes(vram_size):
