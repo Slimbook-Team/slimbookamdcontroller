@@ -240,6 +240,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             for gpu_Index in range(number_of_gpus):
                 page = Gtk.Box()
                 page.set_border_width(10)
+                page.set_halign(Gtk.Align.CENTER)
                 page.add(build_gpu_listbox(gpu_Index))
                 notebook.append_page(page, Gtk.Label(label="GPU {}".format(gpu_Index)))
             return
@@ -299,6 +300,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         page1 = Gtk.Box()
         page1.set_orientation(Gtk.Orientation.HORIZONTAL)
         page1.set_border_width(10)
+        page1.set_halign(Gtk.Align.CENTER)
         page1.add(cpuGrid)
         notebook.append_page(page1, Gtk.Label(label="CPU"))
 
