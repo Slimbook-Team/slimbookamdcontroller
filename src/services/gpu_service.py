@@ -27,7 +27,7 @@ class GpuService:
         return '{} {}'.format(temp_size, unit)
 
     @staticmethod
-    def get_temp(gpu_index: int, unit: str = 'C') -> str:
+    def get_temp(gpu_index: int) -> str:
         return '{} ºC'.format(pyamdgpuinfo.get_gpu(gpu_index).query_temperature())
 
     @staticmethod

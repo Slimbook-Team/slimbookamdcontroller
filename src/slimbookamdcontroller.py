@@ -244,6 +244,10 @@ class SlimbookAMD(Gtk.ApplicationWindow):
                 page.add(build_gpu_listbox(gpu_index))
                 notebook.append_page(page, Gtk.Label(label="GPU {}".format(gpu_index)))
             return
+
+        def _update_label_gpu_temp(label: Gtk.Label, gpu_index: int):
+            label.set_label(GpuService.get_temp(gpu_index))
+            return True
         
         def build_gpu_listbox(gpu_index: int) -> Gtk.Box:
             gpu_model = GpuService.get_model(gpu_index)
@@ -263,32 +267,30 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
             hbox.pack_start(vbox, True, True, 0)
 
-            label_gpu_model = Gtk.Label(label="Model", xalign=0)
-            vbox.pack_start(label_gpu_model, True, True, 0)
+            vbox.pack_start(Gtk.Label(label="Model", xalign=0), True, True, 0)
             hbox.pack_start(Gtk.Label(label=gpu_model), False, True, 0)
             listbox.add(row)
 
             row = Gtk.ListBoxRow()
             hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
             row.add(hbox)
-            label_memory_size = Gtk.Label(label="VRAM", xalign=0)
-            hbox.pack_start(label_memory_size, True, True, 0)
+            hbox.pack_start(Gtk.Label(label="VRAM", xalign=0), True, True, 0)
             hbox.pack_start(Gtk.Label(label=gpu_memory_size), False, True, 0)
             listbox.add(row)
 
             row = Gtk.ListBoxRow()
             hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
             row.add(hbox)
-            label_temp = Gtk.Label(label="Temp", xalign=0)
-            hbox.pack_start(label_temp, True, True, 0)
-            hbox.pack_start(Gtk.Label(label=gpu_temp), False, True, 0)
+            hbox.pack_start(Gtk.Label(label="Temp", xalign=0), True, True, 0)
+            label_gpu_temp = Gtk.Label(label=gpu_temp)
+            GLib.timeout_add_seconds(2, _update_label_gpu_temp, label_gpu_temp, gpu_index)
+            hbox.pack_start(label_gpu_temp, False, True, 0)
             listbox.add(row)
 
             row = Gtk.ListBoxRow()
             hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
             row.add(hbox)
-            label_pci_slot = Gtk.Label(label="PCI Slot", xalign=0)
-            hbox.pack_start(label_pci_slot, True, True, 0)
+            hbox.pack_start(Gtk.Label(label="PCI Slot", xalign=0), True, True, 0)
             hbox.pack_start(Gtk.Label(label=gpu_slot), False, True, 0)
             listbox.add(row)
             return box_outer
