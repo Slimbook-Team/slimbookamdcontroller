@@ -105,7 +105,8 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             self.set_icon_from_file(ICON)
         except:
             print("Icon not found")
-        self.set_decorated(False)
+        self.set_decorated(True)
+        self.set_resizable(False)
         self.set_size_request(0,560) #anchoxalto
         self.set_position(Gtk.WindowPosition.CENTER)
         self.get_style_context().add_class("bg-image")
@@ -648,6 +649,8 @@ Gtk.StyleContext.add_provider_for_screen (
     Gdk.Screen.get_default(), style_provider,
     Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
 )
+
+win.set_deletable(False)
 
 win.connect("destroy", Gtk.main_quit)
 win.show_all()
