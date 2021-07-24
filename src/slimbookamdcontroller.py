@@ -254,6 +254,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             GPU_INFO = {
                 'Model': GpuService.get_model(gpu_index),
                 'VRAM': GpuService.get_vram(gpu_index),
+                'VRAM Usage': GpuService.get_vram_usage(gpu_index),
                 'Temp': GpuService.get_temp(gpu_index),
                 'GPU Freq': GpuService.get_slck(gpu_index),
                 'Mem Freq': GpuService.get_mlck(gpu_index),
@@ -272,14 +273,16 @@ class SlimbookAMD(Gtk.ApplicationWindow):
                 row.add(hbox)
                 hbox.pack_start(Gtk.Label(label=key, xalign=0), True, True, 0)
                 label = Gtk.Label(label=GPU_INFO[key])
-                if key in ['Temp', 'GPU Freq', 'Mem Freq']:
+                if key in ['Temp', 'GPU Freq', 'Mem Freq', 'VRAM Usage']:
                     serviceFunction = None
                     if key == 'Temp':
                         serviceFunction = GpuService.get_temp
                     elif key == 'GPU Freq':
                         serviceFunction = GpuService.get_slck
-                    else:
+                    elif key == 'Mem Freq':
                         serviceFunction = GpuService.get_mlck
+                    else:
+                        serviceFunction = GpuService.get_vram_usage
                     GLib.timeout_add_seconds(2, _update_label, label, serviceFunction, gpu_index)
                 hbox.pack_start(label, False, True, 0)
                 listbox.add(row)

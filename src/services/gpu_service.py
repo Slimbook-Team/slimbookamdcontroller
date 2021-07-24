@@ -17,14 +17,12 @@ class GpuService:
     @staticmethod
     def get_vram(gpu_index: int) -> str:
         vram_size = GpuService._get_vram_size(gpu_index)
-        temp_size = GpuService._convert_bytes_to_gbytes(vram_size)
-        unit = 'GB'
+        return '{} {}'.format(GpuService._convert_bytes_to_mbytes(vram_size), 'MB')
 
-        if temp_size == 0:
-            temp_size = GpuService._convert_bytes_to_mbytes(vram_size)
-            unit = 'MB'
-
-        return '{} {}'.format(temp_size, unit)
+    @staticmethod
+    def get_vram_usage(gpu_index: int) -> str:
+        vram_usage = pyamdgpuinfo.get_gpu(gpu_index).query_vram_usage()
+        return '{} {}'.format(GpuService._convert_bytes_to_mbytes(vram_usage), 'MB')
 
     @staticmethod
     def get_temp(gpu_index: int) -> str:
@@ -47,6 +45,10 @@ class GpuService:
     @staticmethod
     def _get_vram_size(gpu_index: int) -> str:
         return pyamdgpuinfo.get_gpu(gpu_index).memory_info['vram_size']
+
+    @staticmethod
+    def _get_mem_usage_size(gpu_index: int) -> str:
+        return pyamdgpuinfo.get_gpu(gpu_index).query_vram_usage()
 
     @staticmethod
     def _get_freq(gpu_index: int, freq_type: str):
