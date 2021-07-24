@@ -33,10 +33,30 @@ class GpuService:
     @staticmethod
     def get_slot(gpu_index: int) -> str:
         return pyamdgpuinfo.get_gpu(gpu_index).pci_slot
+
+    @staticmethod
+    def get_slck(gpu_index: int) -> str:
+        sclk = GpuService._get_freq(gpu_index, 'S')
+        return '{} MHz'.format(sclk)
+
+    @staticmethod
+    def get_mlck(gpu_index: int) -> str:
+        mclk = GpuService._get_freq(gpu_index, 'M')
+        return '{} MHz'.format(mclk)
     
     @staticmethod
     def _get_vram_size(gpu_index: int) -> str:
         return pyamdgpuinfo.get_gpu(gpu_index).memory_info['vram_size']
+
+    @staticmethod
+    def _get_freq(gpu_index: int, freq_type: str):
+        freq = 0;
+        if freq_type == 'S':
+            freq = pyamdgpuinfo.get_gpu(gpu_index).query_sclk()
+        elif freq_type == 'M':
+            freq = pyamdgpuinfo.get_gpu(gpu_index).query_mclk()
+
+        return round(float(freq)/1000.0**2)
 
     @staticmethod
     def _convert_bytes_to_gbytes(vram_size):
