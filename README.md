@@ -30,7 +30,7 @@ Here you have link to the app tutorial!
 --
 **https://slimbook.es/en/tutoriales/aplicaciones-slimbook/494-slimbook-amd-controller-en**
 
---
+<br>
 This software is protected with the GPLv3 license, which allows you to modify it with the same license and authorship. 
 
 Thank you.
