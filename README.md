@@ -21,14 +21,14 @@ Slimbook AMD Controller is designed with mobile AMD Ryzen pocessors in mind.
 <br>
 
 # To do
-#https://github.com/slimbook/slimbookamdcontroller/projects/1
+# https://github.com/slimbook/slimbookamdcontroller/projects/1
 
 <br>
 
 
 Here you have link to the app tutorial!
 --
-#https://slimbook.es/en/tutoriales/aplicaciones-slimbook/494-slimbook-amd-controller-en
+# https://slimbook.es/en/tutoriales/aplicaciones-slimbook/494-slimbook-amd-controller-en
 
 
 This software is protected with the GPLv3 license, which allows you to modify it with the same license and authorship. 
