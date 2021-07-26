@@ -18,12 +18,12 @@ Slimbook AMD Controller is designed with mobile AMD Ryzen pocessors in mind.
 
 ![Captura de pantalla de 2021-06-07 16-43-24](https://user-images.githubusercontent.com/18195266/125772023-1f3d45ff-5834-481e-92d8-2779d20df870.png)
 
-
+<br><br>
 
 # To do
 https://github.com/slimbook/slimbookamdcontroller/projects/1
 
-
+<br><br>
 
 
 Here you have link to the app tutorial!
