@@ -30,11 +30,6 @@ radiobutton {
     margin-bottom: 15px;
 }
 
-#buttons label {
-    color: black;
-}
-
-
 #info {
     margin-right: 60px;
     margin-left: 60px;
@@ -42,14 +37,14 @@ radiobutton {
 }
 
 #top {
-    padding-top: 10px;
+    padding-top: 20px;
 }
 
 #invisible {
     opacity: 0;
 }
 
-#label, label, dialog label, label:visited, link {
+#label, dialog label, label:visited, link {
     color: rgb(255, 255, 255);   
 }
 
@@ -60,26 +55,12 @@ radiobutton {
 
 /* Classes */
 
-notebook header, notebook, stack, list{
-    border-width: 0px;
-    background-color: transparent;
-}
-
-
-stack {
-    margin-top: 15px;
-}
-
 .help{
 
     padding-left: 10px;
     padding-right: 20px;
     padding-bottom: 10px;
 }
-
-/* list {
-    color: black;
-} */
 
 .close{
     padding-top: 20px;
@@ -88,14 +69,6 @@ stack {
     padding-bottom: 20px;
 }
 
-header > tabs > tab{
-    background-color: rgb(148, 24, 24);
-}
-
-header > tabs > tab:hover, header > tabs > tab:checked{
-    background-color: rgb(100, 21, 21);
-
-}
 
 .cambModos {
  
@@ -115,9 +88,12 @@ header > tabs > tab:hover, header > tabs > tab:checked{
 }
 
 .bg-image {
-    /* background-image: url('../images/bg4.png');
-    background-repeat: no-repeat; */
+    background-image: url('../images/bg4.png');
+    background-repeat: no-repeat;
     background-size: auto;
     background-color: #111111;
 }
 
+.button-none{
+    opacity: 0;
+}
