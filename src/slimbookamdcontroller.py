@@ -107,21 +107,37 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             print("Icon not found")
         self.set_decorated(True)
         self.set_resizable(False)
-        self.set_size_request(0,560) #anchoxalto
+        self.set_size_request(900,560) #anchoxalto
         self.set_position(Gtk.WindowPosition.CENTER)
         self.get_style_context().add_class("bg-image")
 
         self.inicio()
 
-        grid = Gtk.Grid(column_homogeneous=False,
+        win_grid = Gtk.Grid(column_homogeneous=True,
                          column_spacing=0,
-                         row_spacing=12)
-        grid.set_name('label')
-        self.add(grid) 
+                         row_spacing=10)
 
+
+        grid = Gtk.Grid(column_homogeneous=True,
+                         #row_homogeneous=True,
+                         column_spacing=0,
+                         row_spacing=10)
+
+        self.add(win_grid)
         
 
     # CONTENT --------------------------------------------------------------------------------
+
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+            filename = currpath+'/images/bg4.png',
+			width = 700,
+			height = 200,
+			preserve_aspect_ratio=True)
+
+
+        header_img = Gtk.Image.new_from_pixbuf(pixbuf)
+        header_img.set_halign(Gtk.Align.START)
+        header_img.set_valign(Gtk.Align.START)
 
         label1 = Gtk.Label(label=_("Enable app at startup"))
         label1.set_halign(Gtk.Align.START)
@@ -137,9 +153,15 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         button2.set_halign(Gtk.Align.START)
         button2.get_style_context().add_class("button-none")
 
-        separador = Gtk.Image.new_from_file(currpath+'/images/separador.png')
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+            filename = currpath+'/images/separador.png',
+			width = 700,
+			height = 50,
+			preserve_aspect_ratio=True)
+
+        separador = Gtk.Image.new_from_pixbuf(pixbuf)
         separador.set_halign(Gtk.Align.CENTER)
-        separador2 = Gtk.Image.new_from_file(currpath+'/images/separador.png')
+        separador2 = Gtk.Image.new_from_pixbuf(pixbuf)
         separador2.set_halign(Gtk.Align.CENTER)
         separador3 = Gtk.Image.new_from_file(currpath+'/images/separador.png')
         separador3.set_halign(Gtk.Align.CENTER)
@@ -162,7 +184,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
 
     # CPU ---------------------------------------------------------------------------------
-        cpuGrid = Gtk.Grid(column_homogeneous=False,
+        cpuGrid = Gtk.Grid(column_homogeneous=True,
                          column_spacing=0,
                          row_spacing=12)
         cpuGrid.set_name('cpuGrid')
@@ -230,9 +252,9 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         
         cpuGrid.attach(modos, 5, 10, 3, 1)
 
-        cpuGrid.attach(vbox1, 5, 11, 1, 2)
+        cpuGrid.attach(vbox1, 4, 11, 1, 2)
         cpuGrid.attach(vbox2, 6, 11, 1, 2)
-        cpuGrid.attach(vbox3, 7, 11, 1, 2)
+        cpuGrid.attach(vbox3, 8, 11, 1, 2)
 
 
     # GPU --------------------------------------------------------------------------------
@@ -241,7 +263,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             for gpu_index in range(number_of_gpus):
                 page = Gtk.Box()
                 page.set_border_width(10)
-                page.set_halign(Gtk.Align.CENTER)
+                page.set_halign(Gtk.Align.START)
                 page.add(build_gpu_listbox(gpu_index))
                 notebook.append_page(page, Gtk.Label(label="GPU {}".format(gpu_index)))
             return
@@ -269,10 +291,11 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
             for key in GPU_INFO:
                 row = Gtk.ListBoxRow()
-                hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=50)
+                hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=100)
                 row.add(hbox)
                 hbox.pack_start(Gtk.Label(label=key, xalign=0), True, True, 0)
                 label = Gtk.Label(label=GPU_INFO[key])
+
                 if key in ['Temp', 'GPU Freq', 'Mem Freq', 'VRAM Usage']:
                     serviceFunction = None
                     if key == 'Temp':
@@ -291,8 +314,8 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
     # NOTEBOOK ----------------------------------------------------------------------------------
         notebook = Gtk.Notebook()
-        self.add(notebook)
-        notebook.set_halign(Gtk.Align.CENTER)
+        #self.add(notebook)
+        #notebook.set_halign(Gtk.Align.CENTER)
 
         page1 = Gtk.Box()
         page1.set_orientation(Gtk.Orientation.HORIZONTAL)
@@ -363,23 +386,26 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
     # GRID ATTACH ----------------------------------------------------------------------------
 
-        grid.attach(button1, 1, 1, 2, 1)
-        grid.attach(button2, 9, 1, 2, 1)
-
-        grid.attach(label1, 5, 4, 3, 1)
-        grid.attach(switch1, 7, 4, 2, 1)
-        grid.attach(separador, 2, 5, 8, 1)
-        grid.attach(label2, 5, 6, 3, 1)
-        grid.attach(switch2, 7, 6, 2, 1)
-        grid.attach(separador2, 2, 7, 8, 1)
-
-        grid.attach(notebook, 0, 10, 12, 1)
+        grid.attach(label1, 1, 3, 3, 1)
+        grid.attach(label2, 1, 5, 3, 1)
         
-        grid.attach(botonesBox, 6, 20, 1, 1)
-        grid.attach(evnt_box, 9, 20, 2, 1)
-        grid.attach(evnt_close, 9, 0, 2, 1)
+        grid.attach(switch1, 4, 3, 3, 1)
+        grid.attach(switch2, 4, 5, 3, 1)
 
+        grid.attach(separador, 1, 4, 6, 1)
+        grid.attach(separador2, 1, 6, 6, 1)
+
+        grid.attach(notebook, 1, 7, 6, 1)
   
+    # WIN GRID ATTACH ----------------------------------------------------------------------------
+        
+        grid.attach(header_img, 0, 0, 8, 8)       
+        grid.attach(evnt_close, 7, 0, 1, 1)
+
+        grid.attach(evnt_box, 7, 8, 1, 1)
+        grid.attach(botonesBox, 1, 8, 6, 1)
+
+        win_grid.attach(grid, 1, 1, 8, 10)
     
     #Saves selection in a variable
     def on_button_toggled(self, button, name):

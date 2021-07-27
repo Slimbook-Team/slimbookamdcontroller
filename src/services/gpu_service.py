@@ -1,4 +1,5 @@
 import pyamdgpuinfo
+import subprocess
 
 class GpuService:
 
@@ -12,7 +13,12 @@ class GpuService:
 
     @staticmethod
     def get_model(gpu_index: int) -> str:
-        return pyamdgpuinfo.get_gpu(gpu_index).name
+        model=pyamdgpuinfo.get_gpu(gpu_index).name
+        if model is not None:
+            return model
+        else:
+            model= subprocess.getstatusoutput("lspci | grep VGA | cut -d ':' -f3")[1]
+            return model
 
     @staticmethod
     def get_vram(gpu_index: int) -> str:
