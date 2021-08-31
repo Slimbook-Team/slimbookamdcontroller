@@ -5,30 +5,39 @@ import os
 import sys
 import gi
 import subprocess
-import gettext, locale, time
+import gettext, locale
 import shutil
 import configparser
+import math
 import re #Busca patrones expresiones regulares
 from pathlib import Path
+import slimbookamdcontrollerinfo as info
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 
 from configparser import ConfigParser
-from gi.repository import Gdk, Gtk, GLib, GdkPixbuf, AppIndicator3
-from os.path import expanduser
+from gi.repository import Gdk, Gtk, GdkPixbuf
 
 srcpath = '/usr/share/slimbookamdcontroller/src'
 sys.path.insert(1, srcpath)
 
-user_name = subprocess.getoutput("logname")
-user = subprocess.getoutput("echo ~"+user_name)
+USERNAME = subprocess.getstatusoutput("logname")
+
+# 1. Try getting logged username  2. This user is not root  3. Check user exists (no 'reboot' user exists) 
+if USERNAME[0] == 0 and USERNAME[1] != 'root' and subprocess.getstatusoutput('getent passwd '+USERNAME[1]) == 0:
+    USER_NAME = USERNAME[1]
+else:
+    USER_NAME = subprocess.getoutput('last -wn1 | head -n 1 | cut -f 1 -d " "')
+
+HOMEDIR = subprocess.getoutput("echo ~"+USER_NAME)
+
 currpath = os.path.dirname(os.path.realpath(__file__))
 config_object = ConfigParser()
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-config_file = user+'/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
+config_file = HOMEDIR+'/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
 LAUNCHER_DESKTOP = os.path.join(BASE_DIR, "slimbookamdcontroller-autostart.desktop")
 AUTOSTART_DESKTOP = os.path.expanduser("~/.config/autostart/slimbookamdcontroller-autostart.desktop")
 
@@ -56,12 +65,16 @@ _ = t.gettext
 iconpath = currpath+'/amd.png'
 
 #Guardamos la salida del comando en una variable
-cpu = subprocess.getoutput('cat /proc/cpuinfo | grep '+'name'+'| uniq')
+cpu = subprocess.getoutput('cat /proc/cpuinfo | grep '+'name'+'| uniq')[13:]
 
 #Que encuentre cuatro digitos juntos seguidos de 1 o 2 letras mayusculas
-patron = re.compile('([0-9]{4,})([A-Z{1,2}])')
-numeros = patron.search(cpu).group(1)
-letras = patron.search(cpu).group(2)
+print(cpu)
+
+patron = re.compile('[ ](.*)[ ]*([0-9]).*([0-9]{4,})(\w*)')
+type = patron.search(cpu).group(1).strip()
+gen = patron.search(cpu).group(2)
+number = patron.search(cpu).group(3)
+line_suffix = patron.search(cpu).group(4)
 
 switch1 = Gtk.Switch()
 switch1.set_halign(Gtk.Align.END)
@@ -72,14 +85,16 @@ rbutton1 = Gtk.RadioButton.new_with_label_from_widget(None, (_("Low")))
 rbutton2 = Gtk.RadioButton.new_with_mnemonic_from_widget(rbutton1, (_("Medium")))
 rbutton3 = Gtk.RadioButton.new_with_mnemonic_from_widget(rbutton1, (_("High")))
 
+config = configparser.ConfigParser()
+check = config.read(config_file)
 
 class SlimbookAMD(Gtk.ApplicationWindow):
 
     modo_actual = ""
     indicador_actual = ""
     autostart_actual = ""
-    parameters=('','','')
-    
+    parameters=''
+    cpu_ok = False
     
     def __init__(self):
         
@@ -104,19 +119,31 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         except:
             print("Icon not found")
         self.set_decorated(False)
-        self.set_size_request(0,560) #anchoxalto
+        #self.set_size_request(0,560) #anchoxalto
         self.set_position(Gtk.WindowPosition.CENTER)
         self.get_style_context().add_class("bg-image")
 
+        ### Movement
+        self.active = True
+        self.is_in_drag = False
+        self.x_in_drag = 0
+        self.y_in_drag = 0
+        self.connect('button-press-event', self.on_mouse_button_pressed)
+        self.connect('button-release-event', self.on_mouse_button_released)
+        self.connect('motion-notify-event', self.on_mouse_moved)
+
+
         self.inicio()
 
-        grid = Gtk.Grid(column_homogeneous=False,
+        self.win_grid = Gtk.Grid(column_homogeneous=True,
                          column_spacing=0,
                          row_spacing=10)
-        grid.set_name('label')
-        self.add(grid) 
+
+        self.add(self.win_grid)      
 
         
+  
+
 
     # CONTENT --------------------------------------------------------------------------------
 
@@ -137,7 +164,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         # Consumo Procesador
         hbox_consumo = Gtk.HBox()
 
-        cpu_name = Gtk.Label(label=cpu[12:]) 
+        cpu_name = Gtk.Label(label=cpu) 
         cpu_name.set_halign(Gtk.Align.CENTER)
 
         """ consumo = Gtk.Label(label=_('Current consumption: ')+ self.cpu_value('slow-limit')+" - "+self.cpu_value('stapm-limit')+" - "+self.cpu_value('fast-limit')+" mW.")
@@ -164,12 +191,12 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         
         close = Gtk.Image.new_from_pixbuf(pixbuf1)
         close.get_style_context().add_class("close")
-        close.set_halign(Gtk.Align.END)
+        
 
         evnt_close = Gtk.EventBox()
         evnt_close.add(close)
+        evnt_close.set_halign(Gtk.Align.END)
         evnt_close.connect("button_press_event", self.on_btnCerrar_clicked)
-
 
     # RADIOS ---------------------------------------------------------------------------------
 
@@ -220,6 +247,10 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         vbox3.pack_start(rbutton3_img, False, False, 0)
         vbox3.pack_start(rbutton3, False, False, 0)
 
+        hbox_radios = Gtk.HBox()
+        hbox_radios.add(vbox1)
+        hbox_radios.add(vbox2)
+        hbox_radios.add(vbox3)
 
     # BUTTONS --------------------------------------------------------------------------------
 
@@ -240,7 +271,6 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         btnCancelar.connect("toggled", self.on_btnCerrar_clicked, 'x')
         botonesBox.pack_start(btnCancelar, True, True, 0)
 
-
     # BTNABOUT_US ----------------------------------------------------------------------------
 
         pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
@@ -251,58 +281,90 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         iconApp = Gtk.Image.new_from_pixbuf(pixbuf)
         iconApp.get_style_context().add_class("help")
-        iconApp.set_halign(Gtk.Align.END)
-
-
+        
         evnt_box = Gtk.EventBox()
+        evnt_box.set_halign(Gtk.Align.END)
         evnt_box.add(iconApp)
 
         evnt_box.connect("button_press_event", self.about_us)
 
-        #CURSOR
-
-        """ cursor = Gdk.Cursor(Gdk.CursorType.HAND1) #esto crea un cursor que mostrara un lápiz
-        evnt_box.get_root_window().set_cursor(cursor) #se lo asignamos a nuestro dibujable """
-            
-
-        """ dot_widget = self.dot_widget
-        item = dot_widget.get_url(x, y)
-        if item is None:
-            item = dot_widget.get_jump(x, y)
-        if item is not None:
-            dot_widget.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND2))
-            dot_widget.set_highlight(item.highlight)
-        else:
-            dot_widget.get_window().set_cursor(None)
-            dot_widget.set_highlight(None)  """
-
+        version_tag = Gtk.Label(label='')
+        version_tag.set_halign(Gtk.Align.START)
+        version_tag.set_valign(Gtk.Align.END)
+        version_tag.set_name('version')
+        version_line = subprocess.getstatusoutput("cat "+currpath+"/changelog |head -n1| egrep -o '\(.*\)'")
+        if version_line[0] == 0:
+            version = version_line[1]
+            version_tag.set_markup('<span font="10">Version '+version[1:len(version)-1]+'</span>')
+        version_tag.set_justify(Gtk.Justification.CENTER)
 
     # GRID ATTACH ----------------------------------------------------------------------------
+        grid = Gtk.Grid(column_homogeneous=False,
+                         column_spacing=0,
+                         row_spacing=10)
+
+        grid.set_name('label')
 
         grid.attach(button1, 1, 1, 2, 1)
         grid.attach(button2, 9, 1, 2, 1)
 
-        grid.attach(label1, 5, 4, 3, 1)
+        grid.attach(label1, 3, 4, 3, 1)
         grid.attach(switch1, 7, 4, 2, 1)
         grid.attach(separador, 2, 5, 8, 1)
-        grid.attach(label2, 5, 6, 3, 1)
+        grid.attach(label2, 3, 6, 3, 1)
         grid.attach(switch2, 7, 6, 2, 1)
         grid.attach(separador2, 2, 7, 8, 1)
-        grid.attach(hbox_consumo, 4, 8, 5, 1)
+        grid.attach(hbox_consumo, 2, 8, 8, 1)
         
-        grid.attach(modos, 5, 10, 3, 1)
+        grid.attach(modos, 2, 10, 8, 1)
 
-        grid.attach(vbox1, 5, 11, 1, 2)
-        grid.attach(vbox2, 6, 11, 1, 2)
-        grid.attach(vbox3, 7, 11, 1, 2)
+        grid.attach(hbox_radios, 3, 11, 6, 2)
 
-        grid.attach(botonesBox, 6, 13, 1, 1)
-        grid.attach(evnt_box, 9, 13, 2, 1)
-        grid.attach(evnt_close, 9, 0, 2, 1)
+        self.win_grid.attach(grid, 1, 1, 5, 5)
+        self.win_grid.attach(botonesBox, 1, 7, 5, 1) 
+        self.win_grid.attach(version_tag, 1, 7, 5, 1)     
+        self.win_grid.attach(evnt_box, 5, 7, 1, 1)
+        self.win_grid.attach(evnt_close, 5, 0, 1, 1)
 
-  
-    
-    #Saves selection in a variable
+
+    def on_realize(self, widget):
+        monitor = Gdk.Display.get_primary_monitor(Gdk.Display.get_default())
+        scale = monitor.get_scale_factor()
+        monitor_width = monitor.get_geometry().width / scale
+        monitor_height = monitor.get_geometry().height / scale
+        width = self.get_preferred_width()[0]
+        height = self.get_preferred_height()[0]
+        self.move((monitor_width - width)/2, (monitor_height - height)/2)
+
+    def on_mouse_moved(self, widget, event):
+        if self.is_in_drag:
+            xi, yi = self.get_position()
+            xf = int(xi + event.x_root - self.x_in_drag)
+            yf = int(yi + event.y_root - self.y_in_drag)
+            if math.sqrt(math.pow(xf-xi, 2) + math.pow(yf-yi, 2)) > 10:
+                self.x_in_drag = event.x_root
+                self.y_in_drag = event.y_root
+                self.move(xf, yf)
+
+    def on_mouse_button_released(self, widget, event):
+        if event.button == 1:
+            self.is_in_drag = False
+            self.x_in_drag = event.x_root
+            self.y_in_drag = event.y_root
+
+    def on_mouse_button_pressed(self, widget, event):
+       
+        #print(str(self.active))
+
+        if event.button == 1 and self.active == True:
+            self.is_in_drag = True
+            self.x_in_drag, self.y_in_drag = self.get_position()
+            self.x_in_drag = event.x_root
+            self.y_in_drag = event.y_root
+            return True
+        return False
+
+
     def on_button_toggled(self, button, name):
         self.modo_actual = name
 
@@ -312,30 +374,27 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         call=''
 
         if self.modo_actual == "low":
-
-            print('Updating '+self.modo_actual+' to : '+self.parameters[0]+' '+self.parameters[1]+' '+self.parameters[2]+'.\n')
-
-            call=os.system('python3 '+currpath+'/applyconfig.py')
+            mode = 0
 
         if self.modo_actual == "medium":
-
-            print('Updating '+self.modo_actual+' to : '+self.parameters[3]+' '+self.parameters[4]+' '+self.parameters[5]+'.\n')
-
-            call=os.system('python3 '+currpath+'/applyconfig.py')
+            mode = 1
 
         if self.modo_actual == "high":
-  
-            print('Updating '+self.modo_actual+' to : '+self.parameters[6]+' '+self.parameters[7]+' '+self.parameters[8]+'.\n')
+            mode = 2
 
-            call=os.system('python3 '+currpath+'/applyconfig.py')
+        print(str(self.parameters[mode].split('-')))
+        set_parameters = self.parameters[mode].split('-')
 
+        print('Updating '+self.modo_actual+' to : '+set_parameters[0]+' '+set_parameters[1]+' '+set_parameters[2]+'.\n')
         
+        call=subprocess.getstatusoutput('python3 '+currpath+'/applyconfig.py')[0]    
+
         if (call == 0):
             os.system("notify-send 'Slimbook AMD Controller' '"+ _("Changes have been executed correctly.") +"' -i '" + currpath+'/images/icono.png' + "'")
         else:
             os.system("notify-send 'Slimbook AMD Controller' '"+ _("Your CPU is not avalible, this software might not work.") +"' -i '" + currpath+'/images/icono.png' + "'")
            
-
+       
         #Comprobamos los switch
         self._inicio_automatico(switch1, switch1.get_state())
 
@@ -350,21 +409,23 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         self.reboot_indicator()
         
-        print(user + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf')
+        print(HOMEDIR + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf')
         
         #CERRAMOS PROGRAMA
         Gtk.main_quit()
 
 
     def inicio(self):
-    
-        self.creafichero() #--> COMPRUEBA SI EL FICHERO ESTA CREADO Y SI NO, LO CREA.
-        config = configparser.ConfigParser()
-        config.read(config_file)
-        
         print('Loading data from .conf:\n')
 
         #Inicio automatico :):
+        try:
+            config['CONFIGURATION']['autostart'] # Testing conf
+        except:
+            print('Importando check_config')
+            from configuration import check_config
+            config.read(config_file)
+
         if config.get('CONFIGURATION', 'autostart') == 'on':
             self.autostart_actual = 'on'
             switch1.set_active(True)           
@@ -403,9 +464,18 @@ class SlimbookAMD(Gtk.ApplicationWindow):
                 rbutton3.set_active(True)
         
         #CPU Parameters
-        params = config.get('CONFIGURATION', 'cpu-parameters').split('-')
+        
+        params = config.get('USER-CPU', 'cpu-parameters').split('/')
+
+        if len(params)<=1:
+            print('Setting cpu')
+            self.set_cpu()   
+            params = config.get('USER-CPU', 'cpu-parameters').split('/')   
+            #print(str(params))
+
+        config.read(config_file)
         self.parameters = params
-        print('- CPU Parameters: '+ str(self.parameters))       
+        print('- CPU Parameters: '+ str(self.parameters)) 
 
         print("\n.conf data loaded succesfully!\n")
 
@@ -448,7 +518,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
     #Copies autostart file in directory
     def _inicio_automatico(self, switch, state):
 
-        if not os.path.exists (user+'/.config/autostart'):
+        if not os.path.exists (HOMEDIR+'/.config/autostart'):
             os.system('mkdir ~/.config/autostart')    
             print('Dir autostart created.')
 
@@ -465,11 +535,25 @@ class SlimbookAMD(Gtk.ApplicationWindow):
                 print("File .conf has been deleted.")
             self.autostart_actual = 'off'
 
-        """ print('Mode now: '+ self.modo_actual) """
         print('Autostart now: '+ self.autostart_actual+'')
-        """ print('Indicator now: '+ self.indicador_actual)
-        print() """
-    
+
+    def set_cpu(self):
+
+        print(type, gen, number, line_suffix)
+        if type.find('Ryzen') !=-1:
+            
+            cpu_parse = type+'-'+gen+'-'+number+line_suffix
+            print('Searching '+cpu_parse+'...')
+            try:
+                params = config['PROCESSORS'][cpu_parse]
+                self.update_config_file('cpu-parameters', params, 'USER-CPU')
+                self.cpu_ok = True
+            except Exception as e:
+                print(str(e))
+                print('Could not find your proc in .conf')
+                self.cpu_ok = False
+        else:
+            print('Not an AMD Ryzen')
 
     def _show_indicator(self, switch, state):
 
@@ -480,88 +564,45 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             print("\nIndicator Disabled")
             self.indicador_actual= 'off'
 
-        """
-        print('Mode now: '+ self.modo_actual)
-        print('Autostart now: '+ self.autostart_actual) """
         print('Indicador now: '+ self.indicador_actual)
         print()
 
 
     def about_us(self, widget, x):
+        self.active = False
         print('\nINFO:')
         os.system('sudo /usr/share/slimbookamdcontroller/ryzenadj --info')
         print('\n')
         #Abre la ventana de info
-        from slimbookamdcontrollerinfo import PreferencesDialog
+        
+        dialog = info.PreferencesDialog()
+        dialog.connect("destroy", self.close_dialog)
+        
+        dialog.show_all()
+        
         #os.system('python3 '+currpath+'/slimbookamdcontrollerinfo.py')
+
+    def close_dialog(self, dialog):
+        dialog.close()
+
+        self.active = True
+    
 
     def on_btnCerrar_clicked(self, widget, x):
         Gtk.main_quit()
-    
-    #Funcion crear directorio /slimbookamdcontroller y crear fichero de configuracion si no existe ya.    
-    def creafichero(self):
-        if os.path.isfile(user+'/.config/slimbookamdcontroller/slimbookamdcontroller.conf'):
-            print('File .conf already exists\n')           
-        else:
-            print ("File doesn't exist")
 
-            if os.path.exists (user+'/.config/slimbookamdcontroller'):
-                print('Directory already exists')
-                os.system('touch ~/.config/slimbookamdcontroller/slimbookamdcontroller.conf')
-                print('Creating file')
+    def update_config_file(self, variable, value, section='CONFIGURATION'):
 
-                with open( user + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf', 'w') as conf:
-                    self.fichero_conf().write(conf)
-                print('File created succesfully!')
-
-            else:
-                print("Directory doesen't exist")
-                os.system('mkdir ~/.config/slimbookamdcontroller')
-                os.system('touch ~/.config/slimbookamdcontroller/slimbookamdcontroller.conf')
-                print('Creating file')
-
-                with open( user + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf', 'w') as conf:
-                    self.fichero_conf().write(conf)
-                print('File created succesfully!')
-
-    #Genera config_object para el .conf
-    def fichero_conf(self):
-        
-        #CPU data comprobation 
-        if letras == "U":
-                self.parameters=('8000-8000-8000','11000-11000-15000','25000-30000-35000')
-        else:
-            if letras == "HS":
-                self.parameters=('10000-10000-10000','15000-15000-25000','60000-65000-70000')
-            else:
-                if letras == "HX" or letras == "H":
-                    self.parameters=('10000-10000-10000','15000-15000-25000','70000-80000-100000')
-                else:
-                    print("Procesador no concebido por este software")
-                    self.parameters=('xxx','xxx','xxx')       
-                    os.system("notify-send 'Slimbook AMD Controller' '"+ (_("Your CPU isn't avalible")) +"' -i '" + currpath+'/images/icono.png' + "'")
-                    
-        config_object["CONFIGURATION"] = {
-        "mode": "low",                
-        "autostart": "off",
-        "show-icon": "off",
-        "cpu-parameters":  self.parameters[0]+"-"+self.parameters[1]+"-"+self.parameters[2]
-        }
-        return config_object
-  
-    def update_config_file(self, variable, value):
-
-        fichero = user + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
-        config = configparser.ConfigParser()
+        fichero = HOMEDIR + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
         config.read(fichero)
         
         # We change our variable: config.set(section, variable, value)
-        config.set('CONFIGURATION', str(variable), str(value))
+        config.set(section, str(variable), str(value))
 
         # Writing our configuration file 
         with open(fichero, 'w') as configfile:
             config.write(configfile)
-
+        
         print("\n- Variable |"+variable+"| updated in .conf, actual value: "+value)
 
 win = SlimbookAMD()

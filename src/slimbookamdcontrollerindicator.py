@@ -28,10 +28,18 @@ sys.path.insert(1, srcpath)
 currpath = os.path.dirname(os.path.realpath(__file__))
 
 #Variables
-user_name = subprocess.getoutput("logname")
-user = subprocess.getoutput("echo ~"+user_name)
+USERNAME = subprocess.getstatusoutput("logname")
+
+# 1. Try getting logged username  2. This user is not root  3. Check user exists (no 'reboot' user exists) 
+if USERNAME[0] == 0 and USERNAME[1] != 'root' and subprocess.getstatusoutput('getent passwd '+USERNAME[1]) == 0:
+    USER_NAME = USERNAME[1]
+else:
+    USER_NAME = subprocess.getoutput('last -wn1 | head -n 1 | cut -f 1 -d " "')
+
+HOMEDIR = subprocess.getoutput("echo ~"+USER_NAME)
+
 directorio = '~/.config/slimbookamdcontroller'
-fichero = user + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
+fichero = HOMEDIR + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
 iconapp = currpath+'/amd.png'
 
 entorno_usu = locale.getlocale()[0]
@@ -74,13 +82,13 @@ class Indicator():
 		menu = Gtk.Menu()
 	
 		icon_bajo = Gtk.Image()
-		icon_bajo.set_from_file(currpath+'/amd-1.png')
+		icon_bajo.set_from_file(currpath+'/images/amd-1.png')
 
 		icon_medio = Gtk.Image()
-		icon_medio.set_from_file(currpath+'/amd-2.png')
+		icon_medio.set_from_file(currpath+'/images/amd-2.png')
 
 		icon_alto = Gtk.Image()
-		icon_alto.set_from_file(currpath+'/amd-3.png')
+		icon_alto.set_from_file(currpath+'/images/amd-3.png')
 
 
 		item_bajo = Gtk.ImageMenuItem(label=_('Low performance'), image = icon_bajo)
@@ -138,7 +146,7 @@ class Indicator():
 
 
 		#Cargamos los parametros de la CPU
-		params = config.get('CONFIGURATION', 'cpu-parameters').split('-')
+		params = config.get('USER-CPU', 'cpu-parameters').split('/')
 		self.parameters = params
 		
 		print('- CPU Parameters: '+ str(self.parameters))
@@ -160,7 +168,7 @@ class Indicator():
 
 	def update_config_file(self, variable, value):
 		
-		fichero = user + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
+		fichero = HOMEDIR + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
 
 		config = configparser.ConfigParser()
 		config.read(fichero)
@@ -178,9 +186,8 @@ class Indicator():
 	#Funcion para configuracion de bajo rendimiento
 	def bajorendimiento(self, widgets):
 		self.modo_actual="low"
-		self.icono_actual=currpath+'/amd-1.png'
-		self.testindicator.set_icon(currpath+'/amd-1.png')
-		print('Updating '+self.modo_actual+' to : '+self.parameters[0]+' '+self.parameters[1]+' '+self.parameters[2]+'.\n')
+		self.icono_actual=currpath+'/images/amd-1.png'
+		self.testindicator.set_icon(currpath+'/images/amd-1.png')
             
 		self.update_config_file("mode", self.modo_actual)
 		os.system('python3 '+currpath+'/applyconfig.py')
@@ -188,9 +195,8 @@ class Indicator():
 	#Funcion para configuracion de medio rendimiento
 	def mediorendimiento(self, widget):
 		self.modo_actual="medium"
-		self.icono_actual=currpath+'/amd-2.png'
-		self.testindicator.set_icon(currpath+'/amd-2.png')
-		print('Updating '+self.modo_actual+' to : '+self.parameters[3]+' '+self.parameters[4]+' '+self.parameters[5]+'.\n')
+		self.icono_actual=currpath+'/images/amd-2.png'
+		self.testindicator.set_icon(currpath+'/images/amd-2.png')
 		
 		self.update_config_file("mode", self.modo_actual)
 		os.system('python3 '+currpath+'/applyconfig.py')
@@ -198,9 +204,8 @@ class Indicator():
 	#Funcion para configuracion de alto rendimiento
 	def altorendimiento(self, widget):
 		self.modo_actual="high"
-		self.icono_actual=currpath+'/amd-3.png'
-		self.testindicator.set_icon(currpath+'/amd-3.png')
-		print('Updating '+self.modo_actual+' to : '+self.parameters[6]+' '+self.parameters[7]+' '+self.parameters[8]+'.\n')
+		self.icono_actual=currpath+'/images/amd-3.png'
+		self.testindicator.set_icon(currpath+'/images/amd-3.png')
 
 		self.update_config_file("mode", self.modo_actual)
 		os.system('python3 '+currpath+'/applyconfig.py')
