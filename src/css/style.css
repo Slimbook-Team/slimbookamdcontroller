@@ -11,13 +11,17 @@
 /* CLASSES */
 
 
-/* *{
+/* dialog box *{
     border-width: 1px;
     border-color: red;
     border-style: solid;
 } */
 
-
+window grid grid {
+    padding-top: 15px;
+    padding-left: 40px;
+    padding-right: 40px;
+}
 
 radiobutton {
     color: white;
@@ -26,8 +30,12 @@ radiobutton {
     
 }
 
+radiobutton:checked, radiobutton:active{
+    border: none;
+}
+
 #buttons {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 #info {
@@ -44,7 +52,7 @@ radiobutton {
     opacity: 0;
 }
 
-#label, dialog label, label:visited, link {
+#label, dialog label, label:visited, link, #version {
     color: rgb(255, 255, 255);   
 }
 
@@ -55,18 +63,10 @@ radiobutton {
 
 /* Classes */
 
-.help{
+.help, .close, #version {
 
-    padding-left: 10px;
-    padding-right: 20px;
-    padding-bottom: 10px;
-}
+    padding: 10px;
 
-.close{
-    padding-top: 20px;
-    padding-left: 50px;
-    padding-right: 20px;
-    padding-bottom: 20px;
 }
 
 
