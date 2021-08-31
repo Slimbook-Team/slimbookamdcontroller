@@ -1,0 +1,1 @@
+ACTION=="change", SUBSYSTEM=="power_supply", RUN+="/usr/share/slimbookamdcontroller/src/applyconfig.py"

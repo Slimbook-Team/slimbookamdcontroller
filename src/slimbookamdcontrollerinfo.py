@@ -65,8 +65,7 @@ class PreferencesDialog(Gtk.Dialog):
         #self.add_buttons(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT)
         #self.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT)
 
-
-        ICON = os.path.join('/usr/share/slimbookamdcontroller/src/images/slimbookamdcontroller.svg')
+        ICON = (currpath+'/images/slimbookamdcontroller.svg')
         #print('Ruta icono: '+ICON)
         
         try: 
@@ -101,7 +100,7 @@ class PreferencesDialog(Gtk.Dialog):
         info.set_name('info')
         
         info2 = Gtk.Label()
-        info2.set_markup('<span>'+_('If you want to support the Slimbook team with the development of this app and several more to come, you can do so by joining our ') + "<a href='https://www.patreon.com/slimbook'> patreon </a>" +_(' or buying a brand new Slimbook.')+'</span>')
+        info2.set_markup('<span>'+_("If you want to support the Slimbook team with the development of this app and several more to come, you can do so by joining our ") + "<a href='https://www.patreon.com/slimbook'> patreon </a>" +_(" or buying a brand new Slimbook.")+'</span>')
         info2.set_line_wrap(True)
         info2.set_name('label')
         info2.set_name('info')
@@ -113,8 +112,6 @@ class PreferencesDialog(Gtk.Dialog):
         info3.set_name('info')
 
         
-        
-
         enlaces_box = Gtk.Box(spacing=5)
         enlaces_box.set_halign(Gtk.Align.CENTER)
 
@@ -248,8 +245,6 @@ class PreferencesDialog(Gtk.Dialog):
 
         vbox.pack_start(info, True, True, 20)
         
-        
-        
         vbox.pack_start(enlaces_box, True, True, 5)
         vbox.pack_start(link_box2, True, True, 10)
         vbox.pack_start(email, True, True, 10)
@@ -275,10 +270,6 @@ class PreferencesDialog(Gtk.Dialog):
         self.destroy()
         Gtk.main_quit
 
-dialog = PreferencesDialog()
-dialog.connect("destroy", Gtk.main_quit)
-dialog.show_all()
-Gtk.main()
 
 
 

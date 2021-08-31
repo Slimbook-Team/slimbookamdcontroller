@@ -1,19 +1,27 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
 #This file just reads and applies ryzen configuaration info from .config
 import os
-import signal
 import sys
 import gi
 import subprocess
 import configparser
 
-from os.path import expanduser
-
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 
-user_name = subprocess.getoutput("logname")
-user = subprocess.getoutput("echo ~"+user_name)
-config_file = user+'/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
+USERNAME = subprocess.getstatusoutput("logname")
+
+# 1. Try getting logged username  2. This user is not root  3. Check user exists (no 'reboot' user exists) 
+if USERNAME[0] == 0 and USERNAME[1] != 'root' and subprocess.getstatusoutput('getent passwd '+USERNAME[1]) == 0:
+    USER_NAME = USERNAME[1]
+else:
+    USER_NAME = subprocess.getoutput('last -wn1 | head -n 1 | cut -f 1 -d " "')
+
+HOMEDIR = subprocess.getoutput("echo ~"+USER_NAME)
+
+config_file = HOMEDIR+'/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
 print("Reading "+config_file)
 config = configparser.ConfigParser()
 
@@ -28,31 +36,29 @@ call=''
 #READING VARIABLES
 modo_actual = config.get('CONFIGURATION', 'mode')
 print("Current mode: "+modo_actual)
-parameters = config.get('CONFIGURATION', 'cpu-parameters').split('-')
+parameters = config.get('USER-CPU', 'cpu-parameters').split('/')
 print("Parameters: "+str(parameters))
 
+mode = -1
+
 if modo_actual == "low":
-
-    print('Setting '+modo_actual+' to : '+parameters[0]+' '+parameters[1]+' '+parameters[2]+'.\n')
-
-    call = os.system('sudo /usr/share/slimbookamdcontroller/ryzenadj --tctl-temp=95'+' --slow-limit='+parameters[0]+' --stapm-limit='+parameters[1]+' --fast-limit='+parameters[2]+'')
+    mode = 0    
     
 if modo_actual == "medium":
-
-    print('Setting '+modo_actual+' to : '+parameters[3]+' '+parameters[4]+' '+parameters[5]+'.\n')
-
-    call = os.system('sudo /usr/share/slimbookamdcontroller/ryzenadj --tctl-temp=95'+' --slow-limit='+parameters[3]+' --stapm-limit='+parameters[4]+' --fast-limit='+parameters[5]+'')
+    mode = 1
 
 if modo_actual == "high":
+    mode = 2
 
-    print('Setting '+modo_actual+' to : '+parameters[6]+' '+parameters[7]+' '+parameters[8]+'.\n')
-
-    call = os.system('sudo /usr/share/slimbookamdcontroller/ryzenadj --tctl-temp=95'+' --slow-limit='+parameters[6]+' --stapm-limit='+parameters[7]+' --fast-limit='+parameters[8]+'')
+set_parameters = parameters[mode].split('-')
+print('Setting '+modo_actual+' to : '+set_parameters[0]+' '+set_parameters[1]+' '+set_parameters[2]+'.\n')
+call = os.system('sudo /usr/share/slimbookamdcontroller/ryzenadj --tctl-temp=95'+' --slow-limit='+set_parameters[0]+' --stapm-limit='+set_parameters[1]+' --fast-limit='+set_parameters[2]+'')
 
 print('--------------------------------------------')
 print('Exit: '+str(call))
 print('--------------------------------------------')
 
-
-
-        
+#print(str('sys.exit('+str(call)+')'))
+if call != 0:
+    (sys.exit(1))
+       
