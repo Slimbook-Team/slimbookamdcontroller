@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2021-06-02 13:03+0200\n"
+"POT-Creation-Date: 2021-09-02 16:37+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,60 +15,64 @@ msgstr ""
 "Generated-By: pygettext.py 1.5\n"
 
 
-#: slimbookamdcontrollerinfo.py:84
+#: slimbookamdcontrollerinfo.py:97
 msgid ""
 "The Slimbook AMD Controller app is capable of setting several TDP power levels for your AMD Ryzen mobile processor. Switching between the different performance presets will give you the ability to control both performance and battery life with a single click. Bear in mind that the higher you set your performance level, your processor will also run hotter and drain your battery faster, so keep that in mind! \n"
 "\n"
 "Slimbook AMD Controller uses the third party software RyzenAdj from FlyGoat."
 msgstr ""
 
-#: slimbookamdcontrollerinfo.py:91
-msgid "Many laptops limit the power of the CPU, when working without the charger connected. Therefore, if you want to take advantage of the high-performance mode of this application, you may need to connect the charger."
-msgstr ""
-
-#: slimbookamdcontrollerinfo.py:91
-msgid "Note: "
-msgstr ""
-
-#: slimbookamdcontrollerinfo.py:97
+#: slimbookamdcontrollerinfo.py:103
 msgid " or buying a brand new Slimbook."
 msgstr ""
 
-#: slimbookamdcontrollerinfo.py:97
+#: slimbookamdcontrollerinfo.py:103
 msgid "If you want to support the Slimbook team with the development of this app and several more to come, you can do so by joining our "
 msgstr ""
 
-#: slimbookamdcontrollerinfo.py:104
+#: slimbookamdcontrollerinfo.py:109
+msgid "Many laptops limit the power of the CPU, when working without the charger connected. Therefore, if you want to take advantage of the high-performance mode of this application, you may need to connect the charger."
+msgstr ""
+
+#: slimbookamdcontrollerinfo.py:109
+msgid "Note: "
+msgstr ""
+
+#: slimbookamdcontrollerinfo.py:118
 msgid "This software is provided * as is * without warranty of any kind.."
 msgstr ""
 
-#: slimbookamdcontrollerinfo.py:108
+#: slimbookamdcontrollerinfo.py:122
 msgid "You are free from:"
 msgstr ""
 
-#: slimbookamdcontrollerinfo.py:112
+#: slimbookamdcontrollerinfo.py:126
 msgid "Share: "
 msgstr ""
 
-#: slimbookamdcontrollerinfo.py:112
+#: slimbookamdcontrollerinfo.py:126
 msgid ""
 "copy and redistribute the material in any medium or format\n"
 "Slimbook Copyright - License Creative Commons BY-NC-ND"
 msgstr ""
 
-#: slimbookamdcontrollerinfo.py:193
+#: slimbookamdcontrollerinfo.py:207
 msgid "@Visit Slimbook web"
 msgstr ""
 
-#: slimbookamdcontrollerinfo.py:204
+#: slimbookamdcontrollerinfo.py:218
 msgid "@SlimbookAMDController Tutorial"
 msgstr ""
 
-#: slimbookamdcontrollerinfo.py:209
+#: slimbookamdcontrollerinfo.py:222
+msgid "Help us with translations!"
+msgstr ""
+
+#: slimbookamdcontrollerinfo.py:228
 msgid "Send an e-mail a: "
 msgstr ""
 
-#: slimbookamdcontrollerinfo.py:252
+#: slimbookamdcontrollerinfo.py:272
 msgid "'The email has been copied to the clipboard'"
 msgstr ""
 
