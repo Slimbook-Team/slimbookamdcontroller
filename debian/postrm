@@ -4,13 +4,15 @@
 # see: dh_installdeb(1)
 
 set -e
+set -x
 
-#borramos
+#Deleting
 cd /usr/share/slimbookamdcontroller/
 rm -rf RyzenAdj/
 rm -rf ryzenadj
-rm -rf /home/*/.config/slimbookamdcontroller
+#rm -rf /home/*/.config/slimbookamdcontroller
 
+pip uninstall pyamdgpuinfo -y
 
 exit 0
 

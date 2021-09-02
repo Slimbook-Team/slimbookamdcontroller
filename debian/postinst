@@ -1,6 +1,7 @@
 #!/bin/sh
 
 set -e
+set -x
 
 # Cloning ryzenadj
 cd /usr/share/slimbookamdcontroller/
@@ -13,6 +14,16 @@ cmake ..
 make
 cp ryzenadj ../../
 chmod +x /usr/share/slimbookamdcontroller/ryzenadj
+
+# Amdgpuinfo
+which pip
+if [ $? -eq 0 ]; then
+    pip install pyamdgpuinfo
+    if [ $? -eq 0 ]; then
+        echo 'GPU info installed!'
+    fi
+fi
+
 
 # App Permisions
 chmod +x /usr/lib/systemd/system-sleep/slimbookamdcontroller
