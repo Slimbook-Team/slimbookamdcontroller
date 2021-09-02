@@ -10,11 +10,11 @@ from pathlib import Path
 
 os.environ['NO_AT_BRIDGE'] = '1'
 if str(Path(__file__).absolute()).startswith('/usr'):
-    print("A")
+    #print("A")
     srcpath = '/usr/share/slimbookamdcontroller/src'
     print(srcpath)
 else:
-    print("B")
+    #print("B")
     srcpath = str(Path(__file__).absolute().parents[1] / 'src')
     print(srcpath)
 

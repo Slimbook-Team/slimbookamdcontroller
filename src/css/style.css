@@ -1,21 +1,15 @@
-/* @font-face {
-    font-family: Oswald;
-    src: url(Oswal-Regular.ttf);
+notebook header, notebook, stack{
+    border: none;
+    border: 1px solid #111111;
 }
- */
 
-/*radio:checked {
-    -gtk-icon-source: url("../img/pngwing.com.png");
-}*/
+notebook, notebook header, stack, list{
+    background-color: transparent;
+}
 
-/* CLASSES */
-
-
-/* dialog box *{
-    border-width: 1px;
-    border-color: red;
-    border-style: solid;
-} */
+stack label, tab label{
+    color:white;
+}
 
 window grid grid {
     padding-top: 15px;
@@ -23,16 +17,30 @@ window grid grid {
     padding-right: 40px;
 }
 
+/* TABS COLOR */
+
+header > tabs > tab{
+    background-color: rgb(148, 24, 24);
+}
+
+header > tabs > tab:hover, header > tabs > tab:checked{
+    background-color: rgb(100, 21, 21);
+    
+}
+
+/* RADIOS */
+
 radiobutton {
     color: white;
     padding-top: 15px;
     padding-bottom: 25px;
-    
 }
 
 radiobutton:checked, radiobutton:active{
     border: none;
 }
+
+/* NAMES */
 
 #buttons {
     margin-bottom: 10px;
@@ -41,7 +49,6 @@ radiobutton:checked, radiobutton:active{
 #info {
     margin-right: 60px;
     margin-left: 60px;
-
 }
 
 #top {
@@ -56,16 +63,16 @@ radiobutton:checked, radiobutton:active{
     color: rgb(255, 255, 255);   
 }
 
-/* dialog>box{
-    margin: 20px;
-    
-} */
-
-/* Classes */
+/* CLASSES */
 
 .help, .close, #version {
 
     padding: 10px;
+
+}
+
+#link:hover, #link:active {
+    background: transparent;
 
 }
 

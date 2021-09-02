@@ -12,13 +12,17 @@ import math
 import re #Busca patrones expresiones regulares
 from pathlib import Path
 import slimbookamdcontrollerinfo as info
+try:
+    from services.gpu_service import GpuService
+except:
+    print()
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 
 from configparser import ConfigParser
-from gi.repository import Gdk, Gtk, GdkPixbuf
+from gi.repository import Gdk, Gtk, GLib, GdkPixbuf
 
 srcpath = '/usr/share/slimbookamdcontroller/src'
 sys.path.insert(1, srcpath)
@@ -141,10 +145,6 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         self.add(self.win_grid)      
 
-        
-  
-
-
     # CONTENT --------------------------------------------------------------------------------
 
         label1 = Gtk.Label(label=_("Enable app at startup"))
@@ -160,19 +160,6 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         button2 = Gtk.Button(label ="Button 2")
         button2.set_halign(Gtk.Align.START)
         button2.get_style_context().add_class("button-none")
-
-        # Consumo Procesador
-        hbox_consumo = Gtk.HBox()
-
-        cpu_name = Gtk.Label(label=cpu) 
-        cpu_name.set_halign(Gtk.Align.CENTER)
-
-        """ consumo = Gtk.Label(label=_('Current consumption: ')+ self.cpu_value('slow-limit')+" - "+self.cpu_value('stapm-limit')+" - "+self.cpu_value('fast-limit')+" mW.")
-        consumo.set_halign(Gtk.Align.END) """
-
-        hbox_consumo.pack_start(cpu_name, True, True, 0)
-        #hbox_consumo.pack_start(consumo, True, True, 0)
-
 
         separador = Gtk.Image.new_from_file(currpath+'/images/separador.png')
         separador.set_halign(Gtk.Align.CENTER)
@@ -197,6 +184,51 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         evnt_close.add(close)
         evnt_close.set_halign(Gtk.Align.END)
         evnt_close.connect("button_press_event", self.on_btnCerrar_clicked)
+
+    # CPU ------------------------------------------------------------------------------------
+        
+        cpuGrid = Gtk.Grid(column_homogeneous=True,
+                            column_spacing=0,
+                            row_spacing=12)
+        cpuGrid.set_name('cpuGrid')
+    
+        # CPU Name
+        hbox_consumo = Gtk.HBox(spacing=15)
+
+        cpu_name = Gtk.Label(label=cpu) 
+        cpu_name.set_halign(Gtk.Align.CENTER)
+        hbox_consumo.pack_start(cpu_name, True, True, 0)
+
+        # CPU Temp
+        thermal_zones = subprocess.getstatusoutput('ls /sys/class/thermal/ | grep thermal_zone')[1].split('\n')
+        #print(str(thermal_zones))
+
+        cpu_thermal_zone = None
+        for thermal_zone in thermal_zones:
+            if subprocess.getstatusoutput("cat /sys/class/thermal/"+thermal_zone+"/type | grep acpitz")[0] == 0:
+                print('Found thermal zone!')
+                cpu_thermal_zone = thermal_zone
+                exit
+
+        if cpu_thermal_zone != None:
+            cpu_temp = subprocess.getstatusoutput("cat /sys/class/thermal/"+cpu_thermal_zone+"/temp | sed 's/\(.\)..$/ °C/'")
+            if cpu_temp[0] == 0:
+                label = Gtk.Label(label=cpu_temp[1])
+
+                def _update_label(label: Gtk.Label):
+                    label.set_label(subprocess.getoutput("cat /sys/class/thermal/"+cpu_thermal_zone+"/temp | sed 's/\(.\)..$/ °C/'"))
+                    return True
+
+                GLib.timeout_add_seconds(2, _update_label, label)
+                hbox_consumo.pack_start(label, True, True, 0)
+            else:
+                print('Cpu_temp 404')
+        else:
+            print('Thermal_zone 404')
+        
+        # consumo = Gtk.Label(label=_('Current consumption: ')+ self.cpu_value('slow-limit')+" - "+self.cpu_value('stapm-limit')+" - "+self.cpu_value('fast-limit')+" mW.")
+        # consumo.set_halign(Gtk.Align.END)
+        # hbox_consumo.pack_start(consumo, True, True, 0)
 
     # RADIOS ---------------------------------------------------------------------------------
 
@@ -247,10 +279,14 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         vbox3.pack_start(rbutton3_img, False, False, 0)
         vbox3.pack_start(rbutton3, False, False, 0)
 
-        hbox_radios = Gtk.HBox()
+        hbox_radios = Gtk.HBox(spacing = 70)
         hbox_radios.add(vbox1)
         hbox_radios.add(vbox2)
         hbox_radios.add(vbox3)
+
+        cpuGrid.attach(hbox_consumo, 4, 8, 5, 1)
+        cpuGrid.attach(modos, 5, 10, 3, 1)
+        cpuGrid.attach(hbox_radios, 4, 11, 5, 2)
 
     # BUTTONS --------------------------------------------------------------------------------
 
@@ -270,6 +306,78 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         btnCancelar.set_size_request(125, 30)
         btnCancelar.connect("toggled", self.on_btnCerrar_clicked, 'x')
         botonesBox.pack_start(btnCancelar, True, True, 0)
+
+    # GPU --------------------------------------------------------------------------------
+        def add_gpus_pages(notebook: Gtk.Notebook):
+            number_of_gpus = GpuService.get_number_of_gpus()
+            for gpu_index in range(number_of_gpus):
+                page = Gtk.Box()
+                page.set_border_width(10)
+                page.set_halign(Gtk.Align.START)
+                page.add(build_gpu_listbox(gpu_index))
+                notebook.append_page(page, Gtk.Label(label="GPU {}".format(gpu_index)))
+            return
+        def _update_label(label: Gtk.Label, serviceFunction, gpu_index: int):
+            label.set_label(serviceFunction(gpu_index))
+            return True
+        def build_gpu_listbox(gpu_index: int) -> Gtk.Box:
+            GPU_INFO = {
+                'Model': GpuService.get_model(gpu_index),
+                'VRAM': GpuService.get_vram(gpu_index),
+                'VRAM Usage': GpuService.get_vram_usage(gpu_index),
+                'Temp': GpuService.get_temp(gpu_index),
+                'GPU Freq': GpuService.get_slck(gpu_index),
+                'Mem Freq': GpuService.get_mlck(gpu_index),
+                'PCI Slot': GpuService.get_slot(gpu_index)
+            }
+
+            box_outer = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+
+            listbox = Gtk.ListBox()
+            listbox.set_selection_mode(Gtk.SelectionMode.NONE)
+            box_outer.pack_start(listbox, True, True, 0)
+
+            for key in GPU_INFO:
+                row = Gtk.ListBoxRow()
+                hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=100)
+                row.add(hbox)
+                
+                hbox.pack_start(Gtk.Label(label=key, xalign=0), True, True, 0)
+                
+                label = Gtk.Label(label=GPU_INFO[key], xalign=1)
+
+
+                if key in ['Temp', 'GPU Freq', 'Mem Freq', 'VRAM Usage']:
+                    serviceFunction = None
+                    if key == 'Temp':
+                        serviceFunction = GpuService.get_temp
+                    elif key == 'GPU Freq':
+                        serviceFunction = GpuService.get_slck
+                    elif key == 'Mem Freq':
+                        serviceFunction = GpuService.get_mlck
+                    else:
+                        serviceFunction = GpuService.get_vram_usage
+                    GLib.timeout_add_seconds(2, _update_label, label, serviceFunction, gpu_index)
+                
+                hbox.pack_start(label, True, True, 0)
+                listbox.add(row)
+
+            return box_outer
+
+    # NOTEBOOK ----------------------------------------------------------------------------------
+        notebook = Gtk.Notebook()
+
+        page1 = Gtk.Box()
+        page1.set_orientation(Gtk.Orientation.HORIZONTAL)
+        page1.set_border_width(10)
+        page1.set_halign(Gtk.Align.CENTER)
+        page1.add(cpuGrid)
+        notebook.append_page(page1, Gtk.Label(label="CPU"))
+        try:
+            if GpuService.exists_amd_gpus():
+                add_gpus_pages(notebook)
+        except:
+            print()
 
     # BTNABOUT_US ----------------------------------------------------------------------------
 
@@ -314,18 +422,18 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         grid.attach(label2, 3, 6, 3, 1)
         grid.attach(switch2, 7, 6, 2, 1)
         grid.attach(separador2, 2, 7, 8, 1)
-        grid.attach(hbox_consumo, 2, 8, 8, 1)
         
+        """ grid.attach(hbox_consumo, 2, 8, 8, 1)
         grid.attach(modos, 2, 10, 8, 1)
-
-        grid.attach(hbox_radios, 3, 11, 6, 2)
+        grid.attach(hbox_radios, 3, 11, 6, 2) """
+         
+        grid.attach(notebook, 3, 8, 6, 1)
 
         self.win_grid.attach(grid, 1, 1, 5, 5)
         self.win_grid.attach(botonesBox, 1, 7, 5, 1) 
         self.win_grid.attach(version_tag, 1, 7, 5, 1)     
         self.win_grid.attach(evnt_box, 5, 7, 1, 1)
         self.win_grid.attach(evnt_close, 5, 0, 1, 1)
-
 
     def on_realize(self, widget):
         monitor = Gdk.Display.get_primary_monitor(Gdk.Display.get_default())
@@ -364,10 +472,8 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             return True
         return False
 
-
     def on_button_toggled(self, button, name):
         self.modo_actual = name
-
     
     def on_btnAceptar_clicked(self, widget):
         
@@ -390,9 +496,9 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         call=subprocess.getstatusoutput('python3 '+currpath+'/applyconfig.py')[0]    
 
         if (call == 0):
-            os.system("notify-send 'Slimbook AMD Controller' '"+ _("Changes have been executed correctly.") +"' -i '" + currpath+'/images/icono.png' + "'")
+            os.system("notify-send 'Slimbook AMD Controller' '"+ _("Changes have been executed correctly.") +"' -i '" + currpath+'/images/slimbookamdcontroller.svg' + "'")
         else:
-            os.system("notify-send 'Slimbook AMD Controller' '"+ _("Your CPU is not avalible, this software might not work.") +"' -i '" + currpath+'/images/icono.png' + "'")
+            os.system("notify-send 'Slimbook AMD Controller' '"+ _("Your CPU is not avalible, this software might not work.") +"' -i '" + currpath+'/images/slimbookamdcontroller.png' + "'")
            
        
         #Comprobamos los switch
@@ -413,7 +519,6 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         
         #CERRAMOS PROGRAMA
         Gtk.main_quit()
-
 
     def inicio(self):
         print('Loading data from .conf:\n')
@@ -481,10 +586,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         print('\nINFO:')
         os.system('sudo /usr/share/slimbookamdcontroller/ryzenadj --info')
-        print('\n')
-        
-
-
+        print('\n')      
     #RECOGEMOS PARAMETROS DEL RYZEN ADJ
     def cpu_value(self, parameter):
         call = subprocess.getoutput('sudo /usr/share/slimbookamdcontroller/ryzenadj --info')
@@ -503,7 +605,6 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         return value
     
-
     def reboot_indicator(self):
 
         print('\nProcess PID')
@@ -567,7 +668,6 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         print('Indicador now: '+ self.indicador_actual)
         print()
 
-
     def about_us(self, widget, x):
         self.active = False
         print('\nINFO:')
@@ -587,7 +687,6 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         self.active = True
     
-
     def on_btnCerrar_clicked(self, widget, x):
         Gtk.main_quit()
 

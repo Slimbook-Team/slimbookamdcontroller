@@ -203,10 +203,6 @@ class PreferencesDialog(Gtk.Dialog):
         else:
             web_link = 'https://slimbook.es/en/'
 
-        web = Gtk.Label()
-        web.set_markup("<span><b><a href='"+web_link+"'>"+_("@Visit Slimbook web")+"</a></b>    </span>")
-        link_box2.pack_start(web , True, True, 0)
-
         #TUTORIAL
         tutorial_link=''
         if entorno_usu.find('es') >= 0:
@@ -214,29 +210,40 @@ class PreferencesDialog(Gtk.Dialog):
         else:
             tutorial_link = 'https://slimbook.es/en/tutoriales/aplicaciones-slimbook/494-slimbook-amd-controller-en'
 
-        tutorial = Gtk.Label()
-        tutorial.set_markup("<span><b><a href='"+tutorial_link+"'>"+(_("@SlimbookAMDController Tutorial")+"</a></b>    </span>"))
-        tutorial.set_justify(Gtk.Justification.CENTER)
-        link_box2.pack_start(tutorial , True, True, 0)
+        label77 = Gtk.LinkButton(uri=web_link, label =_("Visit @Slimbook web"))
+        label77.set_name('link')
+        label77.set_halign(Gtk.Align.CENTER)
+        link_box2.add(label77)
+
+        label77 = Gtk.LinkButton(uri=tutorial_link, label = (_("@SlimbookAMDController Tutorial")))
+        label77.set_name('link')
+        label77.set_halign(Gtk.Align.CENTER)
+        link_box2.add(label77)
+
+        label77 = Gtk.LinkButton(uri="https://github.com/slimbook/slimbookamdcontroller/tree/main/src/locale", label = (_('Help us with translations!')))
+        label77.set_name('link')
+        label77.set_halign(Gtk.Align.CENTER)
+        link_box2.add(label77)
 
         email = Gtk.Label()
         email.set_markup("<span><b>"+_("Send an e-mail a: ")+"dev@slimbook.es</b></span>")
         email.set_justify(Gtk.Justification.CENTER)
         email.set_name('label')
 
-        """ mail_box= Gtk.Box(spacing =10)
-        mail_box.pack_start(email, False, False, 0)
-        mail_box.set_halign(Gtk.Align.CENTER)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+            filename= os.path.join(currpath+'/images/', 'GitHub_Logo_White.png'),
+            width=150,
+            height=30,
+            preserve_aspect_ratio=True)
 
-        icon = Gtk.Image()
-        icon_path = currpath+'/images/copy.png'
-        icon.set_from_file(icon_path)
-        icon.set_tooltip_text(_('Copy mail')) 
+        img = Gtk.Image()
+        img.set_from_pixbuf(pixbuf)
+        
+        github = Gtk.LinkButton(uri="https://github.com/slimbook/slimbookamdcontroller")
+        github.set_name('link')
+        github.set_halign(Gtk.Align.CENTER)
+        github.set_image(img)
 
-        buttonCopyEmail = Gtk.Button()
-        buttonCopyEmail.add(icon)
-        mail_box.pack_start(buttonCopyEmail, False, False, 0)
-        buttonCopyEmail.connect("clicked", self.on_buttonCopyEmail_clicked) """
     
     # PACKKING ----------------------------------------------------------------------
 
@@ -247,6 +254,7 @@ class PreferencesDialog(Gtk.Dialog):
         
         vbox.pack_start(enlaces_box, True, True, 5)
         vbox.pack_start(link_box2, True, True, 10)
+        vbox.pack_start(github, True, True, 0)
         vbox.pack_start(email, True, True, 10)
         vbox.pack_start(salvavidas, True, True, 0)
 

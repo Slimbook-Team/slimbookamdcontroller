@@ -2,6 +2,10 @@ slimbookamdcontroller (0.3.2beta) focal; urgency=low
 
   * Added window movement
   * Modified configuration files
+  * Added version label
+  * Fixed getting username
+  * Improved ac plug/unplug
+  * Better info page
 
  -- slimbook <dev@slimbook.es>  Thu, 26 Aug 2021 16:12:59 +0200
 
