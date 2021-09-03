@@ -3,7 +3,6 @@
 #
 # see: dh_installdeb(1)
 
-set -e
 set -x
 
 #Deleting

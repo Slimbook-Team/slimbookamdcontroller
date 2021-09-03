@@ -1,3 +1,6 @@
+slimbookamdcontroller (0.3.3beta) focal; urgency=low
+  * Fixes
+ -- slimbook <dev@slimbook.es>  Thu, 26 Aug 2021 16:12:59 +0200
 slimbookamdcontroller (0.3.2beta) focal; urgency=low
 
   * Added window movement
@@ -7,7 +10,7 @@ slimbookamdcontroller (0.3.2beta) focal; urgency=low
   * Improved ac plug/unplug
   * Better info page
 
- -- slimbook <dev@slimbook.es>  Thu, 26 Aug 2021 16:12:59 +0200
+
 
 slimbookamdcontroller (0.3.1) focal; urgency=low
 
