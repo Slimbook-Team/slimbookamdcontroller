@@ -383,8 +383,8 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
             filename = currpath+'/images/question.png',
-			width = 20,
-			height = 20,
+			width = 23,
+			height = 23,
 			preserve_aspect_ratio=True)
 
         iconApp = Gtk.Image.new_from_pixbuf(pixbuf)
