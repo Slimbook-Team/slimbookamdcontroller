@@ -2,7 +2,7 @@
 
 Slimbook AMD Controller works by setting your CPU TDP value. That is, the amount of power measured in watts that you CPU is allowed to draw to save battery or to improve the overall performance under heavy workloads like rendering jobs or serious number crunching on large spreadsheets. Increasing the TDP allows the CPU to use its boost frequency more often or even permanently on some scenarios.
 
-Use this software with caution as the heat output will increase dramatically on the higher performance settings, we can't guarantee that all INTEL CPU's will behave the same way, so your mileage may vary.
+Use this software with caution as the heat output will increase dramatically on the higher performance settings, we can't guarantee that all AMD CPU's will behave the same way, so your mileage may vary.
 
 Slimbook AMD Controller is designed with mobile AMD Ryzen processors in mind. 
 
