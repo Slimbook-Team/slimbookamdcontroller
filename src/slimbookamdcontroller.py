@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-from gi.repository import Gdk, Gtk, GLib, GdkPixbuf
 from configparser import ConfigParser
 import os
 import sys
@@ -23,6 +22,7 @@ except:
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
+from gi.repository import Gdk, Gtk, GLib, GdkPixbuf
 
 
 srcpath = '/usr/share/slimbookamdcontroller/src'
@@ -31,7 +31,7 @@ sys.path.insert(1, srcpath)
 USERNAME = subprocess.getstatusoutput("logname")
 
 # 1. Try getting logged username  2. This user is not root  3. Check user exists (no 'reboot' user exists)
-if USERNAME[0] == 0 and USERNAME[1] != 'root' and subprocess.getstatusoutput('getent passwd '+USERNAME[1]) == 0:
+if USERNAME[0] == 0 and USERNAME[1] != 'root' and subprocess.getstatusoutput('getent passwd '+USERNAME[1])[0] == 0:
     USER_NAME = USERNAME[1]
 else:
     USER_NAME = subprocess.getoutput('last -wn1 | head -n 1 | cut -f 1 -d " "')

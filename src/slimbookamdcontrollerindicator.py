@@ -12,7 +12,6 @@ import gettext, locale
 import sys
 
 gi.require_version('AppIndicator3', '0.1')
-
 from gi.repository import AppIndicator3
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
@@ -31,7 +30,7 @@ currpath = os.path.dirname(os.path.realpath(__file__))
 USERNAME = subprocess.getstatusoutput("logname")
 
 # 1. Try getting logged username  2. This user is not root  3. Check user exists (no 'reboot' user exists) 
-if USERNAME[0] == 0 and USERNAME[1] != 'root' and subprocess.getstatusoutput('getent passwd '+USERNAME[1]) == 0:
+if USERNAME[0] == 0 and USERNAME[1] != 'root' and subprocess.getstatusoutput('getent passwd '+USERNAME[1])[0] == 0:
     USER_NAME = USERNAME[1]
 else:
     USER_NAME = subprocess.getoutput('last -wn1 | head -n 1 | cut -f 1 -d " "')
