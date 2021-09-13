@@ -500,34 +500,39 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         if self.modo_actual == "high":
             mode = 2
 
-        print(str(self.parameters[mode].split('-')))
-        set_parameters = self.parameters[mode].split('-')
 
-        print('Updating '+self.modo_actual+' to : ' +
-              set_parameters[0]+' '+set_parameters[1]+' '+set_parameters[2]+'.\n')
+        try:
+            set_parameters = self.parameters[mode].split('-') # This throws an exception if cpu is not found
+            print(set_parameters)
 
-        call = subprocess.getstatusoutput(
-            'python3 '+currpath+'/applyconfig.py')[0]
+            print('Updating '+self.modo_actual+' to : ' +
+                set_parameters[0]+' '+set_parameters[1]+' '+set_parameters[2]+'.\n')
 
-        if (call == 0):
-            os.system("notify-send 'Slimbook AMD Controller' '" + _("Changes have been executed correctly.") +
-                      "' -i '" + currpath+'/images/slimbookamdcontroller.svg' + "'")
-        else:
-            os.system("notify-send 'Slimbook AMD Controller' '" + _("Your CPU is not avalible, this software might not work.") +
-                      "' -i '" + currpath+'/images/slimbookamdcontroller.png' + "'")
+            call = subprocess.getstatusoutput(
+                'python3 '+currpath+'/applyconfig.py')[0]
 
-        # Comprobamos los switch
-        self._inicio_automatico(switch1, switch1.get_state())
+            if (call == 0):
+                os.system("notify-send 'Slimbook AMD Controller' '" + _("Changes have been executed correctly.") +
+                        "' -i '" + currpath+'/images/slimbookamdcontroller.svg' + "'")
+                # Comprobamos los switch
+                self._inicio_automatico(switch1, switch1.get_state())
 
-        self._show_indicator(switch2, switch2.get_state())
+                self._show_indicator(switch2, switch2.get_state())
 
-        # ACTUALIZAMOS VARIABLES
-        self.update_config_file("mode", self.modo_actual)
-        self.update_config_file("autostart", self.autostart_actual)
-        self.update_config_file("show-icon", self.indicador_actual)
+                # ACTUALIZAMOS VARIABLES
+                self.update_config_file("mode", self.modo_actual)
+                self.update_config_file("autostart", self.autostart_actual)
+                self.update_config_file("show-icon", self.indicador_actual)
 
-        self.reboot_indicator()
+                self.reboot_indicator()
 
+            else:
+                os.system("notify-send 'Slimbook AMD Controller' '" + _("Your CPU is not avalible, this software might not work.") +
+                        "' -i '" + currpath+'/images/slimbookamdcontroller.png' + "'")
+        except Exception:
+                os.system("notify-send 'Slimbook AMD Controller' '" + _("Your CPU is not avalible, this software might not work.") +
+                        "' -i '" + currpath+'/images/slimbookamdcontroller.png' + "'")
+        
         print(HOMEDIR + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf')
 
         # CERRAMOS PROGRAMA
@@ -585,8 +590,10 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         params = config.get('USER-CPU', 'cpu-parameters').split('/')
 
         if len(params) <= 1:
-            print('Setting cpu')
+            print()
+            print('Setting cpu TDP values')
             self.set_cpu()
+            print()
             params = config.get('USER-CPU', 'cpu-parameters').split('/')
             # print(str(params))
 
@@ -667,7 +674,15 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             except Exception as e:
                 print(str(e))
                 print('Could not find your proc in .conf')
-                self.cpu_ok = False
+                print('Trying to set default TDP values')
+                try:
+                    params = config['PROCESSORS'][line_suffix]
+                    self.update_config_file('cpu-parameters', params, 'USER-CPU')
+                    self.cpu_ok = True
+                    print('TDP default values applied!')
+                except Exception:
+                    self.cpu_ok = False
+                    print('Failed setting TDP default values!')
         else:
             print('Not an AMD Ryzen')
 
