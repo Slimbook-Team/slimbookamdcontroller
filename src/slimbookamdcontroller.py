@@ -500,20 +500,20 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         if self.modo_actual == "high":
             mode = 2
 
-
         try:
-            set_parameters = self.parameters[mode].split('-') # This throws an exception if cpu is not found
+            # This throws an exception if cpu is not found
+            set_parameters = self.parameters[mode].split('-')
             print(set_parameters)
 
             print('Updating '+self.modo_actual+' to : ' +
-                set_parameters[0]+' '+set_parameters[1]+' '+set_parameters[2]+'.\n')
+                  set_parameters[0]+' '+set_parameters[1]+' '+set_parameters[2]+'.\n')
 
             call = subprocess.getstatusoutput(
                 'python3 '+currpath+'/applyconfig.py')[0]
 
             if (call == 0):
                 os.system("notify-send 'Slimbook AMD Controller' '" + _("Changes have been executed correctly.") +
-                        "' -i '" + currpath+'/images/slimbookamdcontroller.svg' + "'")
+                          "' -i '" + currpath+'/images/slimbookamdcontroller.svg' + "'")
                 # Comprobamos los switch
                 self._inicio_automatico(switch1, switch1.get_state())
 
@@ -528,11 +528,11 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
             else:
                 os.system("notify-send 'Slimbook AMD Controller' '" + _("Your CPU is not avalible, this software might not work.") +
-                        "' -i '" + currpath+'/images/slimbookamdcontroller.png' + "'")
+                          "' -i '" + currpath+'/images/slimbookamdcontroller.png' + "'")
         except Exception:
-                os.system("notify-send 'Slimbook AMD Controller' '" + _("Your CPU is not avalible, this software might not work.") +
-                        "' -i '" + currpath+'/images/slimbookamdcontroller.png' + "'")
-        
+            os.system("notify-send 'Slimbook AMD Controller' '" + _("Your CPU is not avalible, this software might not work.") +
+                      "' -i '" + currpath+'/images/slimbookamdcontroller.png' + "'")
+
         print(HOMEDIR + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf')
 
         # CERRAMOS PROGRAMA
@@ -606,8 +606,8 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         print('\nINFO:')
         os.system('sudo /usr/share/slimbookamdcontroller/ryzenadj --info')
         print('\n')
+    
     # RECOGEMOS PARAMETROS DEL RYZEN ADJ
-
     def cpu_value(self, parameter):
         call = subprocess.getoutput(
             'sudo /usr/share/slimbookamdcontroller/ryzenadj --info')
@@ -677,7 +677,8 @@ class SlimbookAMD(Gtk.ApplicationWindow):
                 print('Trying to set default TDP values')
                 try:
                     params = config['PROCESSORS'][line_suffix]
-                    self.update_config_file('cpu-parameters', params, 'USER-CPU')
+                    self.update_config_file(
+                        'cpu-parameters', params, 'USER-CPU')
                     self.cpu_ok = True
                     print('TDP default values applied!')
                 except Exception:
