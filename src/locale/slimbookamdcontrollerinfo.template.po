@@ -4,16 +4,18 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: slimbookamdcontrollerinfo.template.po\n"
 "POT-Creation-Date: 2021-09-02 16:37+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2021-09-13 21:30+0200\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: pygettext.py 1.5\n"
-
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Last-Translator: Albano Battistella <albano_battistella@hotmail.com>\n"
+"Language-Team: albano_battistella@hotmail.com\n"
+"Language: it_IT\n"
+"X-Generator: Poedit 3.0\n"
 
 #: slimbookamdcontrollerinfo.py:97
 msgid ""
@@ -21,58 +23,62 @@ msgid ""
 "\n"
 "Slimbook AMD Controller uses the third party software RyzenAdj from FlyGoat."
 msgstr ""
+"L'app Slimbook AMD Controller è in grado di impostare diversi livelli di potenza TDP per il tuo processore mobile AMD Ryzen. Il passaggio tra i diversi preset delle prestazioni ti darà la possibilità di controllare sia le prestazioni che la durata della batteria con un solo clic. Tieni presente che più alto è il tuo livello di prestazioni, anche il tuo processore si surriscalda e scarica la batteria più velocemente, quindi tienilo a mente!\n"
+"\n"
+"Il controller AMD Slimbook utilizza il software di terze parti RyzenAdj di FlyGoat."
 
 #: slimbookamdcontrollerinfo.py:103
 msgid " or buying a brand new Slimbook."
-msgstr ""
+msgstr " o acquistando un nuovissimo Slimbook."
 
 #: slimbookamdcontrollerinfo.py:103
 msgid "If you want to support the Slimbook team with the development of this app and several more to come, you can do so by joining our "
-msgstr ""
+msgstr "Se vuoi supportare il team di Slimbook con lo sviluppo di questa app e molte altre in arrivo, puoi farlo unendoti al nostro "
 
 #: slimbookamdcontrollerinfo.py:109
 msgid "Many laptops limit the power of the CPU, when working without the charger connected. Therefore, if you want to take advantage of the high-performance mode of this application, you may need to connect the charger."
-msgstr ""
+msgstr "Molti laptop limitano la potenza della CPU, quando si lavora senza il caricabatterie collegato. Pertanto, se si desidera sfruttare la modalità ad alte prestazioni di questa applicazione, potrebbe essere necessario collegare il caricabatterie."
 
 #: slimbookamdcontrollerinfo.py:109
 msgid "Note: "
-msgstr ""
+msgstr "Nota: "
 
 #: slimbookamdcontrollerinfo.py:118
 msgid "This software is provided * as is * without warranty of any kind.."
-msgstr ""
+msgstr "Questo software viene fornito *così com'è* senza garanzie di alcun tipo.."
 
 #: slimbookamdcontrollerinfo.py:122
 msgid "You are free from:"
-msgstr ""
+msgstr "Sei libero di:"
 
 #: slimbookamdcontrollerinfo.py:126
 msgid "Share: "
-msgstr ""
+msgstr "Condividere: "
 
 #: slimbookamdcontrollerinfo.py:126
 msgid ""
 "copy and redistribute the material in any medium or format\n"
 "Slimbook Copyright - License Creative Commons BY-NC-ND"
 msgstr ""
+"copiare e ridistribuire il materiale in qualsiasi supporto o formato\n"
+"Slimbook Copyright - Licenza Creative Commons BY-NC-ND"
 
 #: slimbookamdcontrollerinfo.py:207
 msgid "@Visit Slimbook web"
-msgstr ""
+msgstr "@Visita Slimbook web"
 
 #: slimbookamdcontrollerinfo.py:218
 msgid "@SlimbookAMDController Tutorial"
-msgstr ""
+msgstr "@SlimbookAMDController Tutorial"
 
 #: slimbookamdcontrollerinfo.py:222
 msgid "Help us with translations!"
-msgstr ""
+msgstr "Aiutaci con le traduzioni!"
 
 #: slimbookamdcontrollerinfo.py:228
 msgid "Send an e-mail a: "
-msgstr ""
+msgstr "Invia una e-mail a: "
 
 #: slimbookamdcontrollerinfo.py:272
 msgid "'The email has been copied to the clipboard'"
-msgstr ""
-
+msgstr "'L' email è stata copiata negli appunti'"
