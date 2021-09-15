@@ -13,6 +13,7 @@ import configparser
 import math
 import re  # Busca patrones expresiones regulares
 from pathlib import Path
+from constants.gpu_constants import DYNAMIC_GPU_PROPERTIES, GPU_FREQ, MEM_FREQ, MODEL, PCI_SLOT, TEMP, VRAM, VRAM_USAGE
 import slimbookamdcontrollerinfo as info
 try:
     from services.gpu_service import GpuService
@@ -329,13 +330,13 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         def build_gpu_listbox(gpu_index: int) -> Gtk.Box:
             GPU_INFO = {
-                'Model': GpuService.get_model(gpu_index),
-                'VRAM': GpuService.get_vram(gpu_index),
-                'VRAM Usage': GpuService.get_vram_usage(gpu_index),
-                'Temp': GpuService.get_temp(gpu_index),
-                'GPU Freq': GpuService.get_slck(gpu_index),
-                'Mem Freq': GpuService.get_mlck(gpu_index),
-                'PCI Slot': GpuService.get_slot(gpu_index)
+                MODEL: GpuService.get_model(gpu_index),
+                VRAM: GpuService.get_vram(gpu_index),
+                VRAM_USAGE: GpuService.get_vram_usage(gpu_index),
+                TEMP: GpuService.get_temp(gpu_index),
+                GPU_FREQ: GpuService.get_slck(gpu_index),
+                MEM_FREQ: GpuService.get_mlck(gpu_index),
+                PCI_SLOT: GpuService.get_slot(gpu_index)
             }
 
             box_outer = Gtk.Box(
@@ -351,17 +352,17 @@ class SlimbookAMD(Gtk.ApplicationWindow):
                     orientation=Gtk.Orientation.HORIZONTAL, spacing=100)
                 row.add(hbox)
 
-                hbox.pack_start(Gtk.Label(label=key, xalign=0), True, True, 0)
+                hbox.pack_start(Gtk.Label(label=_(key), xalign=0), True, True, 0)
 
                 label = Gtk.Label(label=GPU_INFO[key], xalign=1)
 
-                if key in ['Temp', 'GPU Freq', 'Mem Freq', 'VRAM Usage']:
+                if key in DYNAMIC_GPU_PROPERTIES:
                     serviceFunction = None
-                    if key == 'Temp':
+                    if key == TEMP:
                         serviceFunction = GpuService.get_temp
-                    elif key == 'GPU Freq':
+                    elif key == GPU_FREQ:
                         serviceFunction = GpuService.get_slck
-                    elif key == 'Mem Freq':
+                    elif key == MEM_FREQ:
                         serviceFunction = GpuService.get_mlck
                     else:
                         serviceFunction = GpuService.get_vram_usage
