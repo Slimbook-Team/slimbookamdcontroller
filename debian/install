@@ -8,5 +8,5 @@ slimbookamdcontroller.desktop /usr/share/applications
 src/images/icons/* /usr/share/icons/hicolor
 debian/changelog /usr/share/slimbookamdcontroller/src
 udev-rules/* /etc/udev/rules.d
-bin/* /bin/
+bin/* /usr/bin/
 policykit/* /usr/share/polkit-1/actions/
