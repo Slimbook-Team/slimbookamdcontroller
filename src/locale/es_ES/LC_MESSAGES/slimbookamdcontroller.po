@@ -50,6 +50,34 @@ msgstr " ACEPTAR "
 msgid "CANCEL"
 msgstr "CANCELAR"
 
+#: slimbookamdcontroller.py:345
+msgid "Model"
+msgstr "Modelo"
+
+#: slimbookamdcontroller.py:345
+msgid "VRAM"
+msgstr "VRAM"
+
+#: slimbookamdcontroller.py:345
+msgid "VRAM Usage"
+msgstr "Uso VRAM"
+
+#: slimbookamdcontroller.py:345
+msgid "Temp"
+msgstr "Temperatura"
+
+#: slimbookamdcontroller.py:345
+msgid "GPU Freq"
+msgstr "Frecuencia GPU"
+
+#: slimbookamdcontroller.py:345
+msgid "Mem Freq"
+msgstr "Frecuencia Memoria"
+
+#: slimbookamdcontroller.py:345
+msgid "PCI Slot"
+msgstr "Slot PCI"
+
 #: slimbookamdcontroller.py:317
 msgid "Changes have been executed correctly."
 msgstr "Los cambios se han ejecutado correctamente."

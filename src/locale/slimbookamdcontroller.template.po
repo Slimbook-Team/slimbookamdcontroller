@@ -43,6 +43,34 @@ msgstr ""
 msgid "CANCEL"
 msgstr ""
 
+#: slimbookamdcontroller.py:345
+msgid "Model"
+msgstr ""
+
+#: slimbookamdcontroller.py:345
+msgid "VRAM"
+msgstr ""
+
+#: slimbookamdcontroller.py:345
+msgid "VRAM Usage"
+msgstr ""
+
+#: slimbookamdcontroller.py:345
+msgid "Temp"
+msgstr ""
+
+#: slimbookamdcontroller.py:345
+msgid "GPU Freq"
+msgstr ""
+
+#: slimbookamdcontroller.py:345
+msgid "Mem Freq"
+msgstr ""
+
+#: slimbookamdcontroller.py:345
+msgid "PCI Slot"
+msgstr ""
+
 #: slimbookamdcontroller.py:514
 msgid "Changes have been executed correctly."
 msgstr ""
