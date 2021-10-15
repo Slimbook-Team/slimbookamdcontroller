@@ -50,15 +50,12 @@ else:
 
 #idiomas = ['fr_FR']
 
-
 # Configurar el acceso al catálogo de mensajes
 t = gettext.translation('slimbookamdcontrollerindicator', 
                         currpath+'/locale', 
                         languages=idiomas,
                         fallback=True,)
 _ = t.gettext
-
-
 
 #Menu
 class Indicator():
@@ -72,7 +69,7 @@ class Indicator():
 		# after you defined the initial indicator, you can alter the icon!
 		self.testindicator = AppIndicator3.Indicator.new(
 			self.app, iconpath, AppIndicator3.IndicatorCategory.OTHER)
-		self.testindicator.set_icon_theme_path(currpath+'/images/')
+		self.testindicator.set_icon_theme_path(os.path.join(currpath, 'images'))
 		self.testindicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)       
 		self.testindicator.set_menu(self.create_menu())
 		self.inicio()
@@ -122,7 +119,6 @@ class Indicator():
 
 		return menu
 
-	
 	def exit(self, source):
 		Gtk.main_quit()
 
@@ -148,7 +144,7 @@ class Indicator():
 		params = config.get('USER-CPU', 'cpu-parameters').split('/')
 		self.parameters = params
 		
-		print('- CPU Parameters: '+ str(self.parameters))
+		print('- CPU Parameters: {}'.format(str(self.parameters)))
 
 
 		if config.get('CONFIGURATION', 'mode') == "low":
@@ -163,7 +159,6 @@ class Indicator():
 				self.altorendimiento('x')
 		
 		print("\nData loaded from .conf\n")
-
 
 	def update_config_file(self, variable, value):
 		
@@ -181,7 +176,6 @@ class Indicator():
 
 		print("Variable |"+variable+"| updated, actual value: "+value+"\n")
 
-
 	#Funcion para configuracion de bajo rendimiento
 	def bajorendimiento(self, widgets):
 		self.modo_actual="low"
@@ -189,7 +183,7 @@ class Indicator():
 		self.testindicator.set_icon(currpath+'/images/amd-1.png')
             
 		self.update_config_file("mode", self.modo_actual)
-		os.system('python3 '+currpath+'/applyconfig.py')
+		subprocess.Popen('python3 {}/applyconfig.py'.format(currpath), shell = True)
 
 	#Funcion para configuracion de medio rendimiento
 	def mediorendimiento(self, widget):
@@ -198,7 +192,7 @@ class Indicator():
 		self.testindicator.set_icon(currpath+'/images/amd-2.png')
 		
 		self.update_config_file("mode", self.modo_actual)
-		os.system('python3 '+currpath+'/applyconfig.py')
+		subprocess.Popen('python3 {}/applyconfig.py'.format(currpath), shell = True)
 
 	#Funcion para configuracion de alto rendimiento
 	def altorendimiento(self, widget):
@@ -207,9 +201,7 @@ class Indicator():
 		self.testindicator.set_icon(currpath+'/images/amd-3.png')
 
 		self.update_config_file("mode", self.modo_actual)
-		os.system('python3 '+currpath+'/applyconfig.py')
-
-	
+		subprocess.Popen('python3 {}/applyconfig.py'.format(currpath), shell = True)
 
 Indicator()
 

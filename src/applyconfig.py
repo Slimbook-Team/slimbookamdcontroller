@@ -7,6 +7,7 @@ import sys
 import gi
 import subprocess
 import configparser
+from time import sleep
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
@@ -51,6 +52,7 @@ if modo_actual == "high":
     mode = 2
 
 set_parameters = parameters[mode].split('-')
+sleep(3)
 print('Setting '+modo_actual+' to : '+set_parameters[0]+' '+set_parameters[1]+' '+set_parameters[2]+'.\n')
 call = os.system('sudo /usr/share/slimbookamdcontroller/ryzenadj --tctl-temp=95'+' --slow-limit='+set_parameters[0]+' --stapm-limit='+set_parameters[1]+' --fast-limit='+set_parameters[2]+'')
 
