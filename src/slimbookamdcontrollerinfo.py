@@ -4,7 +4,7 @@
 import os
 import gi
 import subprocess
-import gettext, locale
+import utils
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
@@ -21,24 +21,10 @@ from os.path import expanduser
 # pygettext -d slimbookamdcontrollercopy slimbookamdcontrollercopy.py
 
 currpath = os.path.dirname(os.path.realpath(__file__))
-entorno_usu = locale.getlocale()[0]
-try: 
-    if entorno_usu.find("en") >= 0 or entorno_usu.find("es") >= 0:
-	    idiomas = [entorno_usu]
-    else: 
-        idiomas = ['en_EN'] 
-except:
-    idiomas = ['en_EN'] 
 
+_ = utils.load_translation('slimbookamdcontrollerinfo')
 
-
-print('Language: ', idiomas)
-t = gettext.translation('slimbookamdcontrollerinfo',
-						currpath+'/locale',
-						languages=idiomas,
-						fallback=True,) 
-_ = t.gettext
-
+idiomas = utils.get_languages()[0]
 
 user_name = subprocess.getoutput("logname")
 user = subprocess.getoutput("echo ~"+user_name)
@@ -198,14 +184,15 @@ class PreferencesDialog(Gtk.Dialog):
 
         #WEB
         web_link=''
-        if entorno_usu.find('es') >= 0:
+        print(idiomas)
+        if idiomas.find('es') >= 0:
             web_link = 'https://slimbook.es/es/'
         else:
             web_link = 'https://slimbook.es/en/'
 
         #TUTORIAL
         tutorial_link=''
-        if entorno_usu.find('es') >= 0:
+        if idiomas.find('es') >= 0:
             tutorial_link = 'https://slimbook.es/es/tutoriales/aplicaciones-slimbook/493-slimbook-amd-controller'
         else:
             tutorial_link = 'https://slimbook.es/en/tutoriales/aplicaciones-slimbook/494-slimbook-amd-controller-en'

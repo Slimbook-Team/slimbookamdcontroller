@@ -6,12 +6,10 @@ import os
 import sys
 import gi
 import subprocess
-import gettext
-import locale
 import shutil
-import configparser
 import math
 import re  # Busca patrones expresiones regulares
+import utils
 from pathlib import Path
 from constants.gpu_constants import DYNAMIC_GPU_PROPERTIES, GPU_FREQ, MEM_FREQ, MODEL, PCI_SLOT, TEMP, VRAM, VRAM_USAGE
 import slimbookamdcontrollerinfo as info
@@ -29,14 +27,7 @@ from gi.repository import Gdk, Gtk, GLib, GdkPixbuf
 srcpath = '/usr/share/slimbookamdcontroller/src'
 sys.path.insert(1, srcpath)
 
-USERNAME = subprocess.getstatusoutput("logname")
-
-# 1. Try getting logged username  2. This user is not root  3. Check user exists (no 'reboot' user exists)
-if USERNAME[0] == 0 and USERNAME[1] != 'root' and subprocess.getstatusoutput('getent passwd '+USERNAME[1])[0] == 0:
-    USER_NAME = USERNAME[1]
-else:
-    USER_NAME = subprocess.getoutput('last -wn1 | head -n 1 | cut -f 1 -d " "')
-
+USER_NAME = utils.get_user()
 HOMEDIR = subprocess.getoutput("echo ~"+USER_NAME)
 
 currpath = os.path.dirname(os.path.realpath(__file__))
@@ -53,21 +44,8 @@ AUTOSTART_DESKTOP = os.path.expanduser(
 
 # CMD(Genera .pot):  pygettext -d slimbookamdcontrollercopy slimbookamdcontrollercopy.py
 # CMD(Genera .mo a partir de .po):  msgfmt -o slimbookamdcontrollercopy.po slimbookamdcontrollercopy.mo
-try:
-    entorno_usu = locale.getlocale()[0]
-    if entorno_usu.find("en") >= 0 or entorno_usu.find("es") >= 0 or entorno_usu.find("fr") >= 0:
-        idiomas = [entorno_usu]
-    else:
-        idiomas = ['en_EN']
-except:
-    idiomas = ['en_EN']
 
-print('Language: ', entorno_usu)
-t = gettext.translation('slimbookamdcontroller',
-                        currpath+'/locale',
-                        languages=idiomas,
-                        fallback=True,)
-_ = t.gettext
+_ = utils.load_translation('slimbookamdcontroller')
 
 iconpath = currpath+'/amd.png'
 
@@ -93,7 +71,7 @@ rbutton2 = Gtk.RadioButton.new_with_mnemonic_from_widget(
     rbutton1, (_("Medium")))
 rbutton3 = Gtk.RadioButton.new_with_mnemonic_from_widget(rbutton1, (_("High")))
 
-config = configparser.ConfigParser()
+config = ConfigParser()
 check = config.read(config_file)
 
 
@@ -239,7 +217,10 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         img = ''
 
-        if entorno_usu.find("es") >= 0:  # Español
+        idiomas = utils.get_languages()[0]
+
+        print (idiomas)
+        if idiomas.find("es") >= 0:  # Español
             img = 'modos_es.png'
         else:
             img = 'modos_en.png'  # Inglés

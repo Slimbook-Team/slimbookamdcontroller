@@ -7,6 +7,7 @@ import sys
 import gi
 import subprocess
 import configparser
+import utils
 from time import sleep
 
 gi.require_version('Gtk', '3.0')
@@ -15,10 +16,7 @@ gi.require_version('Gdk', '3.0')
 USERNAME = subprocess.getstatusoutput("logname")
 
 # 1. Try getting logged username  2. This user is not root  3. Check user exists (no 'reboot' user exists) 
-if USERNAME[0] == 0 and USERNAME[1] != 'root' and subprocess.getstatusoutput('getent passwd '+USERNAME[1]) == 0:
-    USER_NAME = USERNAME[1]
-else:
-    USER_NAME = subprocess.getoutput('last -wn1 | head -n 1 | cut -f 1 -d " "')
+USER_NAME = utils.get_user()
 
 HOMEDIR = subprocess.getoutput("echo ~"+USER_NAME)
 
@@ -51,16 +49,21 @@ if modo_actual == "medium":
 if modo_actual == "high":
     mode = 2
 
-set_parameters = parameters[mode].split('-')
-sleep(3)
-print('Setting '+modo_actual+' to : '+set_parameters[0]+' '+set_parameters[1]+' '+set_parameters[2]+'.\n')
-call = os.system('sudo /usr/share/slimbookamdcontroller/ryzenadj --tctl-temp=95'+' --slow-limit='+set_parameters[0]+' --stapm-limit='+set_parameters[1]+' --fast-limit='+set_parameters[2]+'')
+try:
+    set_parameters = parameters[mode].split('-')
+    sleep(3)
+    print('Setting '+modo_actual+' to : '+set_parameters[0]+' '+set_parameters[1]+' '+set_parameters[2]+'.\n')
+    call = os.system('sudo /usr/share/slimbookamdcontroller/ryzenadj --tctl-temp=95'+' --slow-limit='+set_parameters[0]+' --stapm-limit='+set_parameters[1]+' --fast-limit='+set_parameters[2]+'')
 
-print('--------------------------------------------')
-print('Exit: '+str(call))
-print('--------------------------------------------')
+    print('--------------------------------------------')
+    print('Exit: '+str(call))
+    print('--------------------------------------------')
 
-#print(str('sys.exit('+str(call)+')'))
-if call != 0:
-    (sys.exit(1))
+    #print(str('sys.exit('+str(call)+')'))
+    if call != 0:
+        (sys.exit(1))
+
+except Exception as e:
+    print('ERROR: {}'.format(e))
+
        

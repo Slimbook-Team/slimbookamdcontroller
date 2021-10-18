@@ -2,13 +2,10 @@
 # -*- coding: utf-8 -*-
 #
 
-import gettext
 import signal
 import subprocess
 import os
 import gi
-import configparser
-import gettext, locale
 import sys
 
 gi.require_version('AppIndicator3', '0.1')
@@ -16,46 +13,29 @@ from gi.repository import AppIndicator3
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from configparser import ConfigParser
-from os.path import expanduser
 
+# We want load first current location
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__))
+if CURRENT_PATH not in sys.path:
+    sys.path = [CURRENT_PATH] + sys.path
+import utils
 
 srcpath = '/usr/share/slimbookamdcontroller/src'
 sys.path.insert(1, srcpath)
 
-#from Tkinter import*
-
-currpath = os.path.dirname(os.path.realpath(__file__))
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__))
 
 #Variables
-USERNAME = subprocess.getstatusoutput("logname")
 
-# 1. Try getting logged username  2. This user is not root  3. Check user exists (no 'reboot' user exists) 
-if USERNAME[0] == 0 and USERNAME[1] != 'root' and subprocess.getstatusoutput('getent passwd '+USERNAME[1])[0] == 0:
-    USER_NAME = USERNAME[1]
-else:
-    USER_NAME = subprocess.getoutput('last -wn1 | head -n 1 | cut -f 1 -d " "')
+USER_NAME = utils.get_user()
 
 HOMEDIR = subprocess.getoutput("echo ~"+USER_NAME)
 
+_ = utils.load_translation('slimbookamdcontrollerindicator')
+
 directorio = '~/.config/slimbookamdcontroller'
 fichero = HOMEDIR + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
-iconapp = currpath+'/amd.png'
-
-entorno_usu = locale.getlocale()[0]
-
-if entorno_usu.find("en") >= 0 or entorno_usu.find("es") >= 0 or entorno_usu.find("fr") >= 0:
-	idiomas = [entorno_usu]
-else: 
-    idiomas = ['en_EN'] 
-
-#idiomas = ['fr_FR']
-
-# Configurar el acceso al catálogo de mensajes
-t = gettext.translation('slimbookamdcontrollerindicator', 
-                        currpath+'/locale', 
-                        languages=idiomas,
-                        fallback=True,)
-_ = t.gettext
+iconapp = CURRENT_PATH+'/amd.png'
 
 #Menu
 class Indicator():
@@ -65,11 +45,11 @@ class Indicator():
 
 	def __init__(self):
 		self.app = 'show_proc'
-		iconpath = currpath+'/amd.png'
+		iconpath = CURRENT_PATH+'/amd.png'
 		# after you defined the initial indicator, you can alter the icon!
 		self.testindicator = AppIndicator3.Indicator.new(
 			self.app, iconpath, AppIndicator3.IndicatorCategory.OTHER)
-		self.testindicator.set_icon_theme_path(os.path.join(currpath, 'images'))
+		self.testindicator.set_icon_theme_path(os.path.join(CURRENT_PATH, 'images'))
 		self.testindicator.set_status(AppIndicator3.IndicatorStatus.ACTIVE)       
 		self.testindicator.set_menu(self.create_menu())
 		self.inicio()
@@ -78,13 +58,13 @@ class Indicator():
 		menu = Gtk.Menu()
 	
 		icon_bajo = Gtk.Image()
-		icon_bajo.set_from_file(currpath+'/images/amd-1.png')
+		icon_bajo.set_from_file(CURRENT_PATH+'/images/amd-1.png')
 
 		icon_medio = Gtk.Image()
-		icon_medio.set_from_file(currpath+'/images/amd-2.png')
+		icon_medio.set_from_file(CURRENT_PATH+'/images/amd-2.png')
 
 		icon_alto = Gtk.Image()
-		icon_alto.set_from_file(currpath+'/images/amd-3.png')
+		icon_alto.set_from_file(CURRENT_PATH+'/images/amd-3.png')
 
 
 		item_bajo = Gtk.ImageMenuItem(label=_('Low performance'), image = icon_bajo)
@@ -126,7 +106,7 @@ class Indicator():
 		os.system("slimbookamdcontroller")
 
 	def inicio(self):
-		config = configparser.ConfigParser()
+		config = ConfigParser()
 		config.read(fichero)
 
 		print('Loading data from .conf:\n')
@@ -164,7 +144,7 @@ class Indicator():
 		
 		fichero = HOMEDIR + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
 
-		config = configparser.ConfigParser()
+		config = ConfigParser()
 		config.read(fichero)
 
         # We change our variable: config.set(section, variable, value)
@@ -179,29 +159,29 @@ class Indicator():
 	#Funcion para configuracion de bajo rendimiento
 	def bajorendimiento(self, widgets):
 		self.modo_actual="low"
-		self.icono_actual=currpath+'/images/amd-1.png'
-		self.testindicator.set_icon(currpath+'/images/amd-1.png')
+		self.icono_actual=CURRENT_PATH+'/images/amd-1.png'
+		self.testindicator.set_icon(CURRENT_PATH+'/images/amd-1.png')
             
 		self.update_config_file("mode", self.modo_actual)
-		subprocess.Popen('python3 {}/applyconfig.py'.format(currpath), shell = True)
+		subprocess.Popen('python3 {}/applyconfig.py'.format(CURRENT_PATH), shell = True)
 
 	#Funcion para configuracion de medio rendimiento
 	def mediorendimiento(self, widget):
 		self.modo_actual="medium"
-		self.icono_actual=currpath+'/images/amd-2.png'
-		self.testindicator.set_icon(currpath+'/images/amd-2.png')
+		self.icono_actual=CURRENT_PATH+'/images/amd-2.png'
+		self.testindicator.set_icon(CURRENT_PATH+'/images/amd-2.png')
 		
 		self.update_config_file("mode", self.modo_actual)
-		subprocess.Popen('python3 {}/applyconfig.py'.format(currpath), shell = True)
+		subprocess.Popen('python3 {}/applyconfig.py'.format(CURRENT_PATH), shell = True)
 
 	#Funcion para configuracion de alto rendimiento
 	def altorendimiento(self, widget):
 		self.modo_actual="high"
-		self.icono_actual=currpath+'/images/amd-3.png'
-		self.testindicator.set_icon(currpath+'/images/amd-3.png')
+		self.icono_actual=CURRENT_PATH+'/images/amd-3.png'
+		self.testindicator.set_icon(CURRENT_PATH+'/images/amd-3.png')
 
 		self.update_config_file("mode", self.modo_actual)
-		subprocess.Popen('python3 {}/applyconfig.py'.format(currpath), shell = True)
+		subprocess.Popen('python3 {}/applyconfig.py'.format(CURRENT_PATH), shell = True)
 
 Indicator()
 
