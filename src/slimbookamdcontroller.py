@@ -470,7 +470,14 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
     def on_btnAceptar_clicked(self, widget):
 
-        call = ''
+        # Check secureboot        
+        call = subprocess.getstatusoutput('mokutil --sb-state | grep -i "SecureBoot disabled"')
+
+        if not call[0] == 0:
+            print('mokutil --sb-state : shows SecureBoot State')
+            self.dialog(_("Secureboot Warning"),
+                        _("This computer has Secureboot enabled, which does not allow kernel to manage CPU parameters."))
+            sys.exit(1)
 
         if self.modo_actual == "low":
             mode = 0
@@ -518,6 +525,29 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         # CERRAMOS PROGRAMA
         Gtk.main_quit()
+
+    def dialog(self, title, message, link=None):
+        dialog = Gtk.MessageDialog(
+            transient_for=self,
+            flags=0,
+            message_type=Gtk.MessageType.WARNING,
+            buttons=Gtk.ButtonsType.CLOSE,
+            text=title,
+        )
+
+        dialog.format_secondary_text(
+            message
+        )
+
+        dialog.set_position(Gtk.WindowPosition.CENTER)
+
+        response = dialog.run()
+
+        if response == Gtk.ResponseType.CLOSE:
+
+            print("WARN dialog closed")
+
+        dialog.destroy()
 
     def inicio(self):
         print('Loading data from .conf:\n')

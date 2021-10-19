@@ -1,5 +1,6 @@
 slimbookamdcontroller (0.3.4beta) focal; urgency=low
-  * Fixes debian install
+  * Fixes false secureboot warn
+  * Code improved
  -- slimbook <dev@slimbook.es>  Fri, 17 Sep 2021 16:12:59 +0200
 
 slimbookamdcontroller (0.3.3beta) focal; urgency=low

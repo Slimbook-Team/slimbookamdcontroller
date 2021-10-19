@@ -1,6 +1,5 @@
 src /usr/share/slimbookamdcontroller
 post-suspension/* /usr/lib/systemd/system-sleep/
-slimbookamdcontroller /usr/share/slimbookamdcontroller
 slimbookamdcontroller.desktop /usr/share/slimbookamdcontroller
 slimbookamdcontroller.desktop /usr/share/applications
 src/images/icons/* /usr/share/icons/hicolor
