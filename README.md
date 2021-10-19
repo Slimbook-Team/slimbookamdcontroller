@@ -14,6 +14,8 @@ Slimbook AMD Controller is designed with mobile AMD Ryzen processors in mind.
    sudo apt install slimbookamdcontroller
 ```
 
+![Testing version (Fixing Debian Issue)](https://github.com/slimbook/slimbookamdcontroller/releases/tag/Test)
+
 ![amdcontroller_0 3 2beta](https://user-images.githubusercontent.com/18195266/131973024-1cb2477a-82a2-4b6b-9910-90cbbd75baa7.png)
 ![amdcontrollergraph_0 3 2beta](https://user-images.githubusercontent.com/18195266/131973015-64ebd286-0ab7-4a7b-8bfa-e1239a847d18.png)
 
