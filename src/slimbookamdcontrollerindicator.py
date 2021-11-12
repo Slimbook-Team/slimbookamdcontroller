@@ -103,7 +103,7 @@ class Indicator():
 		Gtk.main_quit()
 
 	def openWindow(self, source):
-		os.system("slimbookamdcontroller")
+		subprocess.Popen('slimbookamdcontroller', shell = True)
 
 	def inicio(self):
 		config = ConfigParser()
@@ -182,6 +182,12 @@ class Indicator():
 
 		self.update_config_file("mode", self.modo_actual)
 		subprocess.Popen('python3 {}/applyconfig.py'.format(CURRENT_PATH), shell = True)
+
+call = subprocess.getstatusoutput('mokutil --sb-state | grep -i "SecureBoot disabled"')
+
+if not call[0] == 0:
+	print('Disable Secureboot, please.')
+	sys.exit(1)
 
 Indicator()
 

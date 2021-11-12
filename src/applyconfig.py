@@ -14,10 +14,7 @@ gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 
 USERNAME = subprocess.getstatusoutput("logname")
-
-# 1. Try getting logged username  2. This user is not root  3. Check user exists (no 'reboot' user exists) 
 USER_NAME = utils.get_user()
-
 HOMEDIR = subprocess.getoutput("echo ~"+USER_NAME)
 
 config_file = HOMEDIR+'/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
