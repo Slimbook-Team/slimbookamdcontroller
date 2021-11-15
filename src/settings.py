@@ -30,7 +30,7 @@ version = patron.search(CPU).group(2)
 number = patron.search(CPU).group(3)
 line_suffix = patron.search(CPU).group(4)
 
-MODEL_CPU = version+'-'+number+line_suffix
+MODEL_CPU = type+'-'+version+'-'+number+line_suffix
 
 class WarnDialog(Gtk.Dialog):
     def __init__(self, parent, label):
@@ -48,15 +48,13 @@ class WarnDialog(Gtk.Dialog):
         box.add(label)
         self.show_all()
 
-
 class Settings_dialog(Gtk.Dialog):
     FIELDS = {
-                'U':'8000-8000-8000/11000-11000-15000/25000-30000-35000/8/15/35/',
-                'HS':'10000-10000-10000/15000-15000-25000/60000-65000-70000/10/35/70/',
-                'HX':'10000-10000-10000/15000-15000-25000/70000-80000-100000/10/35/100/',
-                'H':'10000-10000-10000/15000-15000-25000/70000-80000-100000/10/35/100/'
+                'U':'8000-8000-8000/11000-11000-15000/25000-30000-35000/ 8/35 w',
+                'HS':'10000-10000-10000/15000-15000-25000/60000-65000-70000/ 10/70 w',
+                'HX':'10000-10000-10000/15000-15000-25000/70000-80000-100000/ 10/100 w',
+                'H':'10000-10000-10000/15000-15000-25000/70000-80000-100000/ 10/100 w'
             }
-
 
     def __init__(self, parent):
         
@@ -67,9 +65,9 @@ class Settings_dialog(Gtk.Dialog):
             try:
                 values = self.FIELDS.get(line_suffix).split('/')
             except:
-                values = ['0-0-0', '0-0-0', '0-0-0', '0', '0', '0']
+                values = ['0-0-0', '0-0-0', '0-0-0', '0', '0']
             
-        self.val = '{}/{}/{}/{}/{}/{}/?'.format(values[0],values[1],values[2],values[3],values[4],values[5])
+        self.val = '{}/{}/{}/{}/{}/{}/?'.format(values[0],values[1],values[2],values[3],values[4],values[5][:values[5].find('w')])
         print('Creates loads:  '+self.val+'.')
 
         self.lowmode = (values[0].split('-'))
@@ -78,8 +76,7 @@ class Settings_dialog(Gtk.Dialog):
         print(self.lowmode, self.midmode, self.highmode)
 
         self.low_default = float(values[3])
-        self.mid_default = float(values[4])
-        self.high_default = float(values[5])
+        self.high_default = float(values[4])
 
         super().__init__(title="Settings", transient_for=parent)
         self.set_name('dialog')
@@ -126,7 +123,7 @@ class Settings_dialog(Gtk.Dialog):
 
         # Mantained TDP Column
 
-        label1 = Gtk.Label(label=_('Mantained TDP'))
+        label1 = Gtk.Label(label=_('Medium TDP'))
         print(self.lowmode[1], self.midmode[1], self.highmode[1])
         self.entry1 = _create_gui_element(
             float(self.lowmode[1])/1000, self.low_default - self.low_default/2, self.high_default + 10)
@@ -186,15 +183,15 @@ class Settings_dialog(Gtk.Dialog):
         low_lbl = Gtk.Label(
             label=_('Low: {} watts'.format(self.low_default)), halign=left)
 
-        mid_lbl = Gtk.Label(
-            label=_('Medium: {} watts'.format(self.mid_default)), halign=left)
+        # mid_lbl = Gtk.Label(
+        #     label=_('Medium: {} watts'.format(self.mid_default)), halign=left)
 
         high_lbl = Gtk.Label(
             label=_('High: {} watts.'.format(self.high_default)), halign=left)
 
         values_box = Gtk.VBox()
         values_box.add(low_lbl)
-        values_box.add(mid_lbl)
+        # values_box.add(mid_lbl)
         values_box.add(high_lbl)
 
         win_grid.attach(values_box, 0, 6, 2, 2)
@@ -202,7 +199,6 @@ class Settings_dialog(Gtk.Dialog):
         win_grid.attach(grid, 0, 0, 5, 4)
 
         self.show_all()
-
 
 class Dialog(Gtk.Window):
     
