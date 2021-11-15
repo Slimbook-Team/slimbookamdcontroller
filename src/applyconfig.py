@@ -13,7 +13,6 @@ from time import sleep
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 
-USERNAME = subprocess.getstatusoutput("logname")
 USER_NAME = utils.get_user()
 HOMEDIR = subprocess.getoutput("echo ~"+USER_NAME)
 

@@ -7,6 +7,10 @@ notebook, notebook header, stack, list{
     background-color: transparent;
 }
 
+#label, dialog label, label:visited, link, #version {
+    color: rgb(255, 255, 255);   
+}
+
 stack label, tab label{
     color:white;
 }
@@ -15,6 +19,23 @@ window grid grid {
     padding-top: 15px;
     padding-left: 40px;
     padding-right: 40px;
+}
+
+#settings>box>grid, #dialog>box{
+    /* border: 1px red solid; */
+    padding:20px;
+}
+
+#settings separator {
+    color: white;
+    background-color: white;
+}
+#settings button label, #warn button label{
+    color: black;
+}
+
+#warn>box{
+    padding:10px;
 }
 
 /* TABS COLOR */
@@ -59,10 +80,6 @@ radiobutton:checked, radiobutton:active{
     opacity: 0;
 }
 
-#label, dialog label, label:visited, link, #version {
-    color: rgb(255, 255, 255);   
-}
-
 /* CLASSES */
 
 .help, .close, #version {
@@ -76,7 +93,6 @@ radiobutton:checked, radiobutton:active{
 
 }
 
-
 .cambModos {
  
     margin: 20px 0;
@@ -89,7 +105,7 @@ radiobutton:checked, radiobutton:active{
     margin: 20px 0;
 }
 
-.bg-color {
+.bg-color, dialog {
     background-repeat: no-repeat;
     background-color: #111111;
 }

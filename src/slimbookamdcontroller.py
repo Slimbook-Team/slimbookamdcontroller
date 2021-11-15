@@ -10,35 +10,29 @@ import slimbookamdcontrollerinfo as info
 try:
     from services.gpu_service import GpuService
 except:
-    print()
+    pass
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 gi.require_version('AppIndicator3', '0.1')
 from gi.repository import Gdk, Gtk, GLib, GdkPixbuf
 
-
-srcpath = '/usr/share/slimbookamdcontroller/src'
-sys.path.insert(1, srcpath)
-
+APPNAME = 'slimbookamdcontroller'
 USER_NAME = utils.get_user()
-HOMEDIR = subprocess.getoutput("echo ~"+USER_NAME)
+HOMEDIR = os.path.expanduser('~'+USER_NAME)
 
-CERRENT_PATH = os.path.dirname(os.path.realpath(__file__))
-config_object = ConfigParser()
+CURRENT_PATH = os.path.dirname(os.path.realpath(__file__))
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-CONFIG_FILE = HOMEDIR+'/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
-
+CONFIG_FILE = '{}/.config/{}/{}.conf'.format(HOMEDIR, APPNAME, APPNAME)
 LAUNCHER_DESKTOP = os.path.join(
-    BASE_DIR, "slimbookamdcontroller-autostart.desktop")
-
+    BASE_DIR, "{}-autostart.desktop".format(APPNAME))
 AUTOSTART_DESKTOP = os.path.expanduser(
-    "~/.config/autostart/slimbookamdcontroller-autostart.desktop")
+    "{}/.config/autostart/{}-autostart.desktop".format(HOMEDIR, APPNAME))
 
-_ = utils.load_translation('slimbookamdcontroller')
+_ = utils.load_translation(APPNAME)
 
-iconpath = CERRENT_PATH+'/amd.png'
+iconpath = CURRENT_PATH+'/amd.png'
 
 cpu = utils.get_cpu_info('name')
 patron = re.compile('[ ](.*)[ ]*([0-9]).*([0-9]{4,})(\w*)')
@@ -112,15 +106,15 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         button2.set_halign(Gtk.Align.START)
         button2.get_style_context().add_class("button-none")
 
-        separador = Gtk.Image.new_from_file(CERRENT_PATH+'/images/separador.png')
+        separador = Gtk.Image.new_from_file(CURRENT_PATH+'/images/separador.png')
         separador.set_halign(Gtk.Align.CENTER)
-        separador2 = Gtk.Image.new_from_file(CERRENT_PATH+'/images/separador.png')
+        separador2 = Gtk.Image.new_from_file(CURRENT_PATH+'/images/separador.png')
         separador2.set_halign(Gtk.Align.CENTER)
-        separador3 = Gtk.Image.new_from_file(CERRENT_PATH+'/images/separador.png')
+        separador3 = Gtk.Image.new_from_file(CURRENT_PATH+'/images/separador.png')
         separador3.set_halign(Gtk.Align.CENTER)
 
         pixbuf1 = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-            filename=CERRENT_PATH+'/images/cross.png',
+            filename=CURRENT_PATH+'/images/cross.png',
             width=20,
             height=20,
             preserve_aspect_ratio=True)
@@ -193,7 +187,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         else:
             img = 'modos_en.png'  # Inglés
 
-        modos = Gtk.Image.new_from_file(CERRENT_PATH+'/images/'+img)
+        modos = Gtk.Image.new_from_file(CURRENT_PATH+'/images/'+img)
         modos.get_style_context().add_class("cambModos")
         modos.set_halign(Gtk.Align.CENTER)
 
@@ -203,7 +197,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         self.rbutton1.set_name('radiobutton')
         self.rbutton1.set_halign(Gtk.Align.CENTER)
 
-        rbutton1_img = Gtk.Image.new_from_file(CERRENT_PATH+'/images/modo1.png')
+        rbutton1_img = Gtk.Image.new_from_file(CURRENT_PATH+'/images/modo1.png')
         rbutton1_img.set_halign(Gtk.Align.CENTER)
 
         vbox1.pack_start(rbutton1_img, False, False, 0)
@@ -215,7 +209,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         self.rbutton2.set_name('radiobutton')
         self.rbutton2.set_halign(Gtk.Align.CENTER)
 
-        rbutton2_img = Gtk.Image.new_from_file(CERRENT_PATH+'/images/modo2.png')
+        rbutton2_img = Gtk.Image.new_from_file(CURRENT_PATH+'/images/modo2.png')
         rbutton2_img.set_halign(Gtk.Align.CENTER)
 
         vbox2.pack_start(rbutton2_img, False, False, 0)
@@ -227,7 +221,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         self.rbutton3.set_name('radiobutton')
         self.rbutton3.set_halign(Gtk.Align.CENTER)
 
-        rbutton3_img = Gtk.Image.new_from_file(CERRENT_PATH+'/images/modo3.png')
+        rbutton3_img = Gtk.Image.new_from_file(CURRENT_PATH+'/images/modo3.png')
         rbutton3_img.set_halign(Gtk.Align.CENTER)
 
         vbox3.pack_start(rbutton3_img, False, False, 0)
@@ -261,7 +255,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         btnCancelar.connect("toggled", self.on_btnCerrar_clicked, 'x')
         botonesBox.pack_start(btnCancelar, True, True, 0)
 
-    # GPU --------------------------------------------------------------------------------
+    # GPU ------------------------------------------------------------------------------------
         def add_gpus_pages(notebook: Gtk.Notebook):
             number_of_gpus = GpuService.get_number_of_gpus()
             for gpu_index in range(number_of_gpus):
@@ -323,7 +317,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
             return box_outer
 
-    # NOTEBOOK ----------------------------------------------------------------------------------
+    # NOTEBOOK -------------------------------------------------------------------------------
         notebook = Gtk.Notebook()
 
         page1 = Gtk.Box()
@@ -341,7 +335,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
     # BTNABOUT_US ----------------------------------------------------------------------------
 
         pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
-            filename=CERRENT_PATH+'/images/question.png',
+            filename=CURRENT_PATH+'/images/question.png',
             width=23,
             height=23,
             preserve_aspect_ratio=True)
@@ -355,12 +349,32 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         evnt_box.connect("button_press_event", self.about_us)
 
+        pixbuf1 = GdkPixbuf.Pixbuf.new_from_file_at_scale(
+            filename = CURRENT_PATH+'/images/settings.png',
+			width = 20,
+			height = 20,
+			preserve_aspect_ratio=True)
+
+
+        settings = Gtk.Image.new_from_pixbuf(pixbuf1)
+        evnt_settings = Gtk.EventBox()
+        evnt_settings.set_valign(Gtk.Align.CENTER)
+        evnt_settings.set_halign(Gtk.Align.END)
+        evnt_settings.add(settings)
+        evnt_settings.connect("button_press_event", self.settings)
+               
+        hbox_close = Gtk.HBox()
+        hbox_close.set_valign(Gtk.Align.START)
+        hbox_close.set_halign(Gtk.Align.END)
+        hbox_close.add(evnt_settings)
+        hbox_close.add(evnt_close)
+
         version_tag = Gtk.Label(label='')
         version_tag.set_halign(Gtk.Align.START)
         version_tag.set_valign(Gtk.Align.END)
         version_tag.set_name('version')
         version_line = subprocess.getstatusoutput(
-            "cat "+CERRENT_PATH+"/changelog |head -n1| egrep -o '\(.*\)'")
+            "cat "+CURRENT_PATH+"/changelog |head -n1| egrep -o '\(.*\)'")
         if version_line[0] == 0:
             version = version_line[1]
             version_tag.set_markup(
@@ -394,7 +408,12 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         self.win_grid.attach(botonesBox, 1, 7, 5, 1)
         self.win_grid.attach(version_tag, 1, 7, 5, 1)
         self.win_grid.attach(evnt_box, 5, 7, 1, 1)
-        self.win_grid.attach(evnt_close, 5, 0, 1, 1)
+        self.win_grid.attach(hbox_close, 5, 0, 1, 1)
+
+    def settings(self, widget, x):
+        import settings
+        self.active = False
+        dialog = settings.Dialog()
 
     def set_icon(self):
         if str(Path(__file__).parent.absolute()).startswith('/usr'):
@@ -481,12 +500,11 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             print('Updating '+self.modo_actual+' to : ' +
                   set_parameters[0]+' '+set_parameters[1]+' '+set_parameters[2]+'.\n')
 
-            call = subprocess.getstatusoutput(
-                'python3 '+CERRENT_PATH+'/applyconfig.py')[0]
+            returncode = subprocess.call('pkexec slimbookamdcontroller-pkexec', shell=True, stdout=subprocess.PIPE)
 
-            if (call == 0):
+            if (returncode == 0):
                 os.system("notify-send 'Slimbook AMD Controller' '" + _("Changes have been executed correctly.") +
-                          "' -i '" + CERRENT_PATH+'/images/slimbookamdcontroller.svg' + "'")
+                          "' -i '" + CURRENT_PATH+'/images/slimbookamdcontroller.svg' + "'")
                 # Comprobamos los switch
                 self._inicio_automatico(self.switch1, self.switch1.get_state())
 
@@ -501,10 +519,11 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
             else:
                 os.system("notify-send 'Slimbook AMD Controller' '" + _("Your CPU is not avalible, this software might not work.") +
-                          "' -i '" + CERRENT_PATH+'/images/slimbookamdcontroller.png' + "'")
-        except Exception:
+                          "' -i '" + CURRENT_PATH+'/images/slimbookamdcontroller.png' + "'")
+        except Exception as e:
+            print(e)
             os.system("notify-send 'Slimbook AMD Controller' '" + _("Your CPU is not avalible, this software might not work.") +
-                      "' -i '" + CERRENT_PATH+'/images/slimbookamdcontroller.png' + "'")
+                      "' -i '" + CURRENT_PATH+'/images/slimbookamdcontroller.png' + "'")
 
         print(HOMEDIR + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf')
 
@@ -631,8 +650,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         os.system('kill -9 '+indicator)
         print('Starting indicator...')
-        subprocess.Popen('python3 '+CERRENT_PATH+'/slimbookamdcontrollerindicator.py  &')
-        print()
+        subprocess.call('python3 {}/slimbookamdcontrollerindicator.py  &'.format(CURRENT_PATH), shell = True)
 
     # Copies autostart file in directory
     def _inicio_automatico(self, switch, state):
@@ -737,7 +755,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 win = SlimbookAMD()
 
 style_provider = Gtk.CssProvider()
-style_provider.load_from_path(CERRENT_PATH+'/css/style.css')
+style_provider.load_from_path(CURRENT_PATH+'/css/style.css')
 
 Gtk.StyleContext.add_provider_for_screen(
     Gdk.Screen.get_default(), style_provider,
