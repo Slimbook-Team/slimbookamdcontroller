@@ -159,7 +159,7 @@ class Indicator():
 		self.testindicator.set_icon(CURRENT_PATH+'/images/amd-1.png')
             
 		self.update_config_file("mode", self.modo_actual)
-		returncode = subprocess.call('pkexec slimbookamdcontroller-pkexec', shell=True, stdout=subprocess.PIPE)
+		subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
 
 	#Funcion para configuracion de medio rendimiento
 	def mediorendimiento(self, widget):
@@ -168,7 +168,7 @@ class Indicator():
 		self.testindicator.set_icon(CURRENT_PATH+'/images/amd-2.png')
 		
 		self.update_config_file("mode", self.modo_actual)
-		returncode = subprocess.call('pkexec slimbookamdcontroller-pkexec', shell=True, stdout=subprocess.PIPE)
+		subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
 
 	#Funcion para configuracion de alto rendimiento
 	def altorendimiento(self, widget):
@@ -177,8 +177,8 @@ class Indicator():
 		self.testindicator.set_icon(CURRENT_PATH+'/images/amd-3.png')
 
 		self.update_config_file("mode", self.modo_actual)
-		returncode = subprocess.call('pkexec slimbookamdcontroller-pkexec', shell=True, stdout=subprocess.PIPE)
-		print(returncode)
+		subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
+
 
 call = subprocess.getstatusoutput('mokutil --sb-state | grep -i "SecureBoot disabled"')
 
