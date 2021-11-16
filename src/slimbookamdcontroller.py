@@ -14,7 +14,6 @@ except:
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
-gi.require_version('AppIndicator3', '0.1')
 from gi.repository import Gdk, Gtk, GLib, GdkPixbuf
 
 APPNAME = 'slimbookamdcontroller'
@@ -42,6 +41,7 @@ number = patron.search(cpu).group(3)
 line_suffix = patron.search(cpu).group(4)
 
 config = ConfigParser()
+config.read(CONFIG_FILE)
 
 class SlimbookAMD(Gtk.ApplicationWindow):
 
@@ -67,6 +67,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         Gtk.Window.__init__(self, title="Slimbook AMD Controller")
 
         self.set_icon()
+        self.inicio()
 
         self.set_decorated(False)
 
@@ -81,8 +82,6 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         self.connect('button-press-event', self.on_mouse_button_pressed)
         self.connect('button-release-event', self.on_mouse_button_released)
         self.connect('motion-notify-event', self.on_mouse_moved)
-
-        self.inicio()
 
         self.win_grid = Gtk.Grid(column_homogeneous=True,
                                  column_spacing=0,
@@ -144,7 +143,6 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         # CPU Temp
         thermal_zones = subprocess.getstatusoutput(
             'ls /sys/class/thermal/ | grep thermal_zone')[1].split('\n')
-        # print(str(thermal_zones))
 
         cpu_thermal_zone = None
         for thermal_zone in thermal_zones:
@@ -409,8 +407,18 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         self.win_grid.attach(version_tag, 1, 7, 5, 1)
         self.win_grid.attach(evnt_box, 5, 7, 1, 1)
         self.win_grid.attach(hbox_close, 5, 0, 1, 1)
+        self.show_all()
+        
+        self.set_cpu()
+    
+        try:
+            params = config.get('USER-CPU', 'cpu-parameters').split('/')
+            self.parameters = params
+        except:
+            print('CPU not added')
 
-    def settings(self, widget, x):
+
+    def settings(self, widget=None, x=None):
         import settings
         self.active = False
         dialog = settings.Dialog()
@@ -525,8 +533,6 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             os.system("notify-send 'Slimbook AMD Controller' '" + _("Your CPU is not avalible, this software might not work.") +
                       "' -i '" + CURRENT_PATH+'/images/slimbookamdcontroller.png' + "'")
 
-        print(HOMEDIR + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf')
-
         # CERRAMOS PROGRAMA
         Gtk.main_quit()
 
@@ -554,17 +560,31 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         dialog.destroy()
 
     def inicio(self):
-        print('Loading data from .conf:\n')
+        print('Loading configuration:\n')
+        
+        ################ UPDATE APROXIMATION
+        # FIELDS = [
+        # {
+        #     'autostart': config.get('CONFIGURATION', 'autostart'),
+        #     'show-icon': config.get('CONFIGURATION', 'show-icon'),
+        #     'mode': config.get('CONFIGURATION', 'mode'),
+        #     'cpu-parameters': config.get('USER-CPU', 'cpu-parameters'),
 
-        # Inicio automatico :):
-        try:
-            config['CONFIGURATION']['autostart']  # Testing conf
-        except:
-            print('Importando check_config')
+        # }]
+        # try:
+        #     for row, data in enumerate(FIELDS):
+        #         print('Data:'+  str(data))
+        #         self.loaded_data = data
+        # except:
+        #     from configuration import check_config
+
+        # print(self.loaded_data.get('autostart'))
+        ######################
+
+        if not config.has_option('CONFIGURATION','autostart') == True:  # Testing conf
             from configuration import check_config
-            config.read(CONFIG_FILE)
-
-        if config.get('CONFIGURATION', 'autostart') == 'on':
+            
+        elif config.get('CONFIGURATION', 'autostart') == 'on':
             self.autostart_actual = 'on'
             self.switch1.set_active(True)
             print('- Autostart enabled')
@@ -574,8 +594,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             self.switch1.set_active(False)
             print('- Autostart disabled')
 
-        # Mostramos indicador, o no :):
-        if config.get('CONFIGURATION', 'show-icon') == 'on':
+        if config.has_option('CONFIGURATION', 'show-icon') and config.get('CONFIGURATION', 'show-icon') == 'on':
             self.indicador_actual = 'on'
             self.switch2.set_active(True)
             print('- Indicator enabled')
@@ -584,46 +603,26 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             self.switch2.set_active(False)
             print('- Indicator disabled')
 
-        # RadiobuttonSelection
         if config.get('CONFIGURATION', 'mode') == "low":
             print('- Low')
             self.modo_actual = 'low'
             self.rbutton1.set_active(True)
-        else:
-            if config.get('CONFIGURATION', 'mode') == "medium":
+
+        elif config.get('CONFIGURATION', 'mode') == "medium":
                 print('- Medium')
                 self.modo_actual = 'medium'
                 self.rbutton2.set_active(True)
 
-            else:
-                print('- High')
-                self.modo_actual = 'high'
-                self.rbutton3.set_active(True)
+        else:
+            print('- High')
+            self.modo_actual = 'high'
+            self.rbutton3.set_active(True)
 
-        # CPU Parameters
-
-        params = config.get('USER-CPU', 'cpu-parameters').split('/')
-
-        if len(params) <= 1:
-            print()
-            print('Setting cpu TDP values')
-            self.set_cpu()
-            print()
-            params = config.get('USER-CPU', 'cpu-parameters').split('/')
-            # print(str(params))
-
-        config.read(CONFIG_FILE)
-        self.parameters = params
-        print('- CPU Parameters: ' + str(self.parameters))
-
-        print("\n.conf data loaded succesfully!\n")
-
-        print('\nINFO:')
-        os.system('sudo /usr/share/slimbookamdcontroller/ryzenadj --info')
-        print('\n')
-    
+   
     # RECOGEMOS PARAMETROS DEL RYZEN ADJ
     def cpu_value(self, parameter):
+        
+
         call = subprocess.getoutput(
             '/usr/share/slimbookamdcontroller/ryzenadj --info')
         salida = str(call)
@@ -675,31 +674,18 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         print('Autostart now: ' + self.autostart_actual+'')
 
     def set_cpu(self):
-
-        print(type, gen, number, line_suffix)
-        if type.find('Ryzen') != -1:
-
-            cpu_parse = type+'-'+gen+'-'+number+line_suffix
-            print('Searching '+cpu_parse+'...')
-            try:
-                params = config['PROCESSORS'][cpu_parse]
+        if not config.has_option('USER-CPU', 'cpu-parameters') or len(config.get('USER-CPU', 'cpu-parameters')) <= 1:
+            print('Setting cpu TDP values')
+            cpu_codename = type+'-'+gen+'-'+number+line_suffix
+                    
+            if config.has_option('PROCESSORS',cpu_codename):
+                print('Found processor in list')
+                params = config['PROCESSORS'][cpu_codename].split('/')
                 self.update_config_file('cpu-parameters', params, 'USER-CPU')
-                self.cpu_ok = True
-            except Exception as e:
-                print(str(e))
+            else: 
                 print('Could not find your proc in .conf')
-                print('Trying to set default TDP values')
-                try:
-                    params = config['PROCESSORS'][line_suffix]
-                    self.update_config_file(
-                        'cpu-parameters', params, 'USER-CPU')
-                    self.cpu_ok = True
-                    print('TDP default values applied!')
-                except Exception:
-                    self.cpu_ok = False
-                    print('Failed setting TDP default values!')
-        else:
-            print('Not an AMD Ryzen')
+                self.settings()       
+        
 
     def _show_indicator(self, switch, state):
 
@@ -723,7 +709,6 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         dialog = info.PreferencesDialog()
         dialog.connect("destroy", self.close_dialog)
-
         dialog.show_all()
 
         #os.system('python3 '+currpath+'/slimbookamdcontrollerinfo.py')
@@ -763,5 +748,5 @@ Gtk.StyleContext.add_provider_for_screen(
 )
 
 win.connect("destroy", Gtk.main_quit)
-win.show_all()
+
 Gtk.main()
