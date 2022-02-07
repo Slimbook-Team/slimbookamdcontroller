@@ -21,8 +21,18 @@ Slimbook AMD Controller is designed with mobile AMD Ryzen processors in mind.
 
 <br>
 
+## Custom TDP setting:
+
+This window allows you to set different TDP values for every mode. Default values are based in processor's line suffix and some motherboard TDP settings, to set this values by yourself, look up information about your processor's TDP, or take your motherboard TDP settings for your processor (plugged and unplugged), as a reference.
+
+To check this out use:   
+      
+      sudo /usr/share/slimbookamdcontroller/ryzenadj --info
+
+![Captura de pantalla de 2021-11-16 15-24-22](https://user-images.githubusercontent.com/18195266/142014508-0921d507-8fcb-4d3e-a438-df87daa7c854.png)
+
 # Collaborate
-[**See 'To do' list**](https://github.com/slimbook/slimbookamdcontroller/projects/1)
+   [**See 'To do' list**](https://github.com/slimbook/slimbookamdcontroller/projects/1)
 
 <br>
 

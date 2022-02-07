@@ -5,8 +5,8 @@
 # in order to keep old custom values.
 # It also gives permisions to config directory
 
-import os
-import sys
+import os, pwd
+import sys, logging
 import subprocess
 import configparser
 
@@ -28,11 +28,14 @@ HOMEDIR = subprocess.getoutput("echo ~"+USER_NAME)
 
 CURRPATH = os.path.dirname(os.path.realpath(__file__))
 
+uid, gid = pwd.getpwnam(USER_NAME).pw_uid, pwd.getpwnam(USER_NAME).pw_gid
+
 # There will always be a folder in src called configuration, where default configuration is stored.
 # There will also be a route in
-default = CURRPATH+'/'+APPNAME+'.conf'
-config_file = HOMEDIR+'/.config/'+APPNAME+'/'+APPNAME+'.conf'
-
+DEFAULT_CONF = CURRPATH+'/'+APPNAME+'.conf'
+CONFIG_FILE = HOMEDIR+'/.config/'+APPNAME+'/'+APPNAME+'.conf'
+CONFIG_FOLDER = HOMEDIR+'/.config/'+APPNAME
+logger = logging.getLogger()
 
 def main(args):
 
@@ -41,16 +44,32 @@ def main(args):
     if subprocess.getoutput('whoami') == 'root':
         print('Giving permisions to config directory...')
         os.system('sudo chmod 777 -R '+HOMEDIR+'/.config/'+APPNAME)
+        
+    set_ownership(CONFIG_FOLDER)
 
-    print('Done')
+def set_ownership(folder):
+    folder_stat = os.stat(folder)
+    f_uid = folder_stat.st_uid
+    f_gid = folder_stat.st_gid
+    logger.debug("Folder {}\nUser uid={}\nFolder uid={}".format(folder, uid, f_gid))
 
+    if not uid == f_uid or not gid == f_gid:
+        #logger.info('Setting {} ownership').format(folder)
+
+        for dir_path, dir_name, filenames in os.walk(folder):
+            logger.debug(dir_path)
+            os.chown(dir_path, uid, gid)
+            for filename in filenames:
+                file_path = os.path.join(dir_path, filename)
+                logger.debug(file_path)
+                os.chown(file_path, uid, gid)
 
 def check1():
-    if os.path.isfile(config_file):
+    if os.path.isfile(CONFIG_FILE):
         config = configparser.ConfigParser()
-        config.read(config_file)
+        config.read(CONFIG_FILE)
 
-        vars = subprocess.getoutput('cat '+default).split('\n')
+        vars = subprocess.getoutput('cat '+DEFAULT_CONF).split('\n')
         # print(str(vars))
         incidences = False
 
@@ -80,7 +99,7 @@ def check1():
 
         if incidences:
             try:
-                configfile = open(config_file, 'w')
+                configfile = open(CONFIG_FILE, 'w')
                 config.write(configfile)
                 configfile.close()
                 print('Incidences corrected.')
@@ -91,7 +110,15 @@ def check1():
     else:
         print('Creating config file ...')
         os.system('mkdir -p '+HOMEDIR+'/.config/'+APPNAME +
-                  '/ && cp '+default+' '+config_file)
+                  '/ && cp '+DEFAULT_CONF+' '+CONFIG_FILE)
 
+if __name__ == "__main__":
+    logger.setLevel(logging.DEBUG)
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setLevel(logging.DEBUG)
+    #formatter = logging.Formatter('%(asctime)s - %(funcName)s:%(lineno)d - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(asctime)s - %(lineno)d - %(levelname)s - %(message)s')
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
 
 main(sys.argv)

@@ -8,8 +8,8 @@ import os
 import gi
 import sys
 
-gi.require_version('AppIndicator3', '0.1')
-from gi.repository import AppIndicator3
+gi.require_version('AyatanaAppIndicator3', '0.1')
+from gi.repository import AyatanaAppIndicator3 as AppIndicator3
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from configparser import ConfigParser
@@ -33,15 +33,15 @@ HOMEDIR = subprocess.getoutput("echo ~"+USER_NAME)
 
 _ = utils.load_translation('slimbookamdcontrollerindicator')
 
-directorio = '~/.config/slimbookamdcontroller'
-fichero = HOMEDIR + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
-iconapp = CURRENT_PATH+'/amd.png'
+CONFIG_FILE = HOMEDIR + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
+ICON_FILE = CURRENT_PATH+'/amd.png'
+config = ConfigParser()
 
 #Menu
 class Indicator():
 	modo_actual="none"
 	parameters=('','','')
-	icono_actual = iconapp
+	icono_actual = ICON_FILE
 
 	def __init__(self):
 		self.app = 'show_proc'
@@ -107,7 +107,7 @@ class Indicator():
 
 	def inicio(self):
 		config = ConfigParser()
-		config.read(fichero)
+		config.read(CONFIG_FILE)
 
 		print('Loading data from .conf:\n')
 
@@ -142,19 +142,15 @@ class Indicator():
 
 	def update_config_file(self, variable, value):
 		
-		fichero = HOMEDIR + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
-
-		config = ConfigParser()
-		config.read(fichero)
+		config.read(CONFIG_FILE)
 
         # We change our variable: config.set(section, variable, value)
 		config.set('CONFIGURATION', str(variable), str(value))
 
-        # Writing our configuration file 
-		with open(fichero, 'w') as configfile:
+		with open(CONFIG_FILE, 'w') as configfile:
 				config.write(configfile)
 
-		print("Variable |"+variable+"| updated, actual value: "+value+"\n")
+		print("Updated "+variable+" --> "+value+"\n")
 
 	#Funcion para configuracion de bajo rendimiento
 	def bajorendimiento(self, widgets):
@@ -163,7 +159,7 @@ class Indicator():
 		self.testindicator.set_icon(CURRENT_PATH+'/images/amd-1.png')
             
 		self.update_config_file("mode", self.modo_actual)
-		subprocess.Popen('python3 {}/applyconfig.py'.format(CURRENT_PATH), shell = True)
+		subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
 
 	#Funcion para configuracion de medio rendimiento
 	def mediorendimiento(self, widget):
@@ -172,7 +168,7 @@ class Indicator():
 		self.testindicator.set_icon(CURRENT_PATH+'/images/amd-2.png')
 		
 		self.update_config_file("mode", self.modo_actual)
-		subprocess.Popen('python3 {}/applyconfig.py'.format(CURRENT_PATH), shell = True)
+		subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
 
 	#Funcion para configuracion de alto rendimiento
 	def altorendimiento(self, widget):
@@ -181,13 +177,14 @@ class Indicator():
 		self.testindicator.set_icon(CURRENT_PATH+'/images/amd-3.png')
 
 		self.update_config_file("mode", self.modo_actual)
-		subprocess.Popen('python3 {}/applyconfig.py'.format(CURRENT_PATH), shell = True)
+		subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
+
 
 call = subprocess.getstatusoutput('mokutil --sb-state | grep -i "SecureBoot disabled"')
 
 if not call[0] == 0:
 	print('Disable Secureboot, please.')
-	sys.exit(1)
+
 
 Indicator()
 
