@@ -75,13 +75,23 @@ def check1():
 
         section = ''
         for var in vars:
-
+            PROCS = {'U','H','HS','HX','G'}
             if var.find('=') != -1:
                 # We get the line, then the variable name, then we remove spaces at the start or the end
                 value = var.split('=')[1].strip()
                 var = var.split('=')[0].strip()
                 try:
                     config[section][var]
+                    if var in PROCS :
+                        # if new value different setting defaults 
+
+                        oldvalue = config.get(section, var)
+                        if oldvalue != value:
+                            incidences = True
+                            print('Updating default values and '+var)
+                            config.set('USER-CPU', 'cpu-parameters', '')
+                            config.set('PROCESSORS', var, value)
+
                 except:
                     incidences = True
                     print('Not found: '+var)

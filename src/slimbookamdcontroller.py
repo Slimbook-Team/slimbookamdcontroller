@@ -680,11 +680,12 @@ class SlimbookAMD(Gtk.ApplicationWindow):
                     
             if config.has_option('PROCESSORS',cpu_codename):
                 print('Found processor in list')
-                params = config['PROCESSORS'][cpu_codename].split('/')
+                params = config['PROCESSORS'][cpu_codename]
                 self.update_config_file('cpu-parameters', params, 'USER-CPU')
             else: 
                 print('Could not find your proc in .conf')
-                self.settings()       
+                self.settings()
+                config.read(CONFIG_FILE)       
         
 
     def _show_indicator(self, switch, state):
