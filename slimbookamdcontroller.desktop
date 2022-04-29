@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Slimbook AMD Controller
-Version=0.3beta
+Version=0.3.8beta
 Exec=slimbookamdcontroller
 Comment=Modify your CPU power!
 Icon=slimbookamdcontroller
