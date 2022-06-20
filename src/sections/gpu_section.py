@@ -6,6 +6,10 @@ import utils
 APPNAME = 'slimbookamdcontroller'
 _ = utils.load_translation(APPNAME)
 
+from matplotlib.backends.backend_gtk3agg import (
+    FigureCanvasGTK3Agg as FigureCanvas)
+from matplotlib.figure import Figure
+
 try:
     from services.gpu_service import GpuService
 except:
@@ -17,7 +21,7 @@ class GpuSection():
     def __init__(self, notebook):
         self.notebook = notebook
 
-    def add(self): 
+    def add(self):
         try:
             if GpuService.exists_amd_gpus():
                 self.notebook = self.__add_gpus_pages()
@@ -57,7 +61,7 @@ class GpuSection():
         }
 
         box_outer = Gtk.Box(
-            orientation=Gtk.Orientation.VERTICAL, spacing=6)
+            orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
 
         listbox = Gtk.ListBox()
         listbox.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -92,4 +96,47 @@ class GpuSection():
             hbox.pack_start(label, True, True, 0)
             listbox.add(row)
 
+        canvas = self.__renderChart(gpu)
+        box_outer.add(canvas)
+
         return box_outer
+
+    def __renderChart(self, gpu: GpuService) -> FigureCanvas:
+        fig = Figure(figsize=(5, 4), dpi=100, )
+        fig.patch.set_alpha(0.0)
+
+        ax = fig.add_subplot()
+        self.__setAxStyle(ax)
+
+        x_array = [0]
+        y_array = [0]
+        GLib.timeout_add_seconds(2, self.__update_plot, gpu, ax, x_array, y_array)
+        ax.plot(x_array, y_array, '#641515')
+
+        canvas = FigureCanvas(fig)  # a Gtk.DrawingArea
+        canvas.set_size_request(400, 200)
+        # canvas.draw()
+        GLib.timeout_add_seconds(2, self.__drawCanvas, canvas )
+        return canvas
+
+    def __setAxStyle(self, ax):
+        ax.set_facecolor('blue')
+        ax.patch.set_alpha(0.1)
+        ax.tick_params(axis='x', colors='white')
+        ax.tick_params(axis='y', colors='white')
+        ax.set_xticklabels([])
+        ax.set_xticks([])
+        return True
+
+    def  __update_plot(self, gpu: GpuService, ax, x_array, y_array):
+        x_array.append( x_array[len(x_array)-1]+1 )
+
+        y_array.append( float(gpu.get_temp().split(' ºC')[0]) )
+        ax.cla()
+        self.__setAxStyle(ax)
+        ax.plot(x_array, y_array, '#641515')
+        return True
+
+    def __drawCanvas(self, canvas):
+        canvas.draw()
+        return True
