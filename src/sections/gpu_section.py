@@ -120,8 +120,7 @@ class GpuSection():
         button1.connect("toggled", self.on_button_toggled, "temp")
         radio_buttons_box.pack_start(button1, False, False, 0)
 
-        button2 = Gtk.RadioButton.new_from_widget(button1)
-        button2.set_label("GPU")
+        button2 = Gtk.RadioButton.new_with_mnemonic_from_widget(button1, "GPU")
         button2.connect("toggled", self.on_button_toggled, "gpuclk")
         radio_buttons_box.pack_start(button2, False, False, 0)
 
