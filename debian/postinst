@@ -14,12 +14,23 @@ make
 cp ryzenadj ../../
 chmod +x /usr/share/slimbookamdcontroller/ryzenadj
 
-# Amdgpuinfo
+# Python dependencies
 which pip
 if [ $? -eq 0 ]; then
+    # Amdgpuinfo
     pip install pyamdgpuinfo
     if [ $? -eq 0 ]; then
         echo 'GPU info installed!'
+    fi
+    # Matplotlib
+    pip install matplotlib
+    if [ $? -eq 0 ]; then
+        echo 'Matplotlib installed!'
+    fi
+    # Numpy
+    pip install numpy
+    if [ $? -eq 0 ]; then
+        echo 'Numpy installed!'
     fi
 fi
 
