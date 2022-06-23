@@ -6,13 +6,7 @@ import shutil, math, re
 from sections.gpu_section import GpuSection
 import utils
 from pathlib import Path
-from constants.gpu_constants import DYNAMIC_GPU_PROPERTIES, GPU_FREQ, MEM_FREQ, MODEL, PCI_SLOT, TEMP, VRAM, VRAM_USAGE
 import slimbookamdcontrollerinfo as info
-
-try:
-    from services.gpu_service import GpuService
-except:
-    pass
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
@@ -265,7 +259,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         page1.add(cpuGrid)
         notebook.append_page(page1, Gtk.Label(label="CPU"))
 
-    # GPU -------------------------------------------------------------------------------        
+    # GPU -------------------------------------------------------------------------------
         notebook = GpuSection(notebook).add()
 
     # BTNABOUT_US ----------------------------------------------------------------------------
@@ -298,7 +292,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         evnt_settings.set_halign(Gtk.Align.END)
         evnt_settings.add(settings)
         evnt_settings.connect("button_press_event", self.settings)
-               
+
         hbox_close = Gtk.HBox()
         hbox_close.set_valign(Gtk.Align.START)
         hbox_close.set_halign(Gtk.Align.END)
@@ -346,9 +340,9 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         self.win_grid.attach(evnt_box, 5, 7, 1, 1)
         self.win_grid.attach(hbox_close, 5, 0, 1, 1)
         self.show_all()
-        
+
         self.set_cpu()
-    
+
         try:
             params = config.get('USER-CPU', 'cpu-parameters').split('/')
             self.parameters = params
@@ -420,7 +414,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
     def on_btnAceptar_clicked(self, widget):
 
-        # Check secureboot        
+        # Check secureboot
         call = subprocess.getstatusoutput('mokutil --sb-state | grep -i "SecureBoot disabled"')
 
         if not call[0] == 0:
@@ -499,7 +493,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
     def inicio(self):
         print('Loading configuration:\n')
-        
+
         ################ UPDATE APROXIMATION
         # FIELDS = [
         # {
@@ -521,7 +515,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         if not config.has_option('CONFIGURATION','autostart') == True:  # Testing conf
             from configuration import check_config
-            
+
         elif config.get('CONFIGURATION', 'autostart') == 'on':
             self.autostart_actual = 'on'
             self.switch1.set_active(True)
@@ -556,10 +550,10 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             self.modo_actual = 'high'
             self.rbutton3.set_active(True)
 
-   
+
     # RECOGEMOS PARAMETROS DEL RYZEN ADJ
     def cpu_value(self, parameter):
-        
+
 
         call = subprocess.getoutput(
             '/usr/share/slimbookamdcontroller/ryzenadj --info')
@@ -615,15 +609,15 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         if not config.has_option('USER-CPU', 'cpu-parameters') or len(config.get('USER-CPU', 'cpu-parameters')) <= 1:
             print('Setting cpu TDP values')
             cpu_codename = type+'-'+gen+'-'+number+line_suffix
-                    
+
             if config.has_option('PROCESSORS',cpu_codename):
                 print('Found processor in list')
                 params = config['PROCESSORS'][cpu_codename].split('/')
                 self.update_config_file('cpu-parameters', params, 'USER-CPU')
-            else: 
+            else:
                 print('Could not find your proc in .conf')
-                self.settings()       
-        
+                self.settings()
+
 
     def _show_indicator(self, switch, state):
 
