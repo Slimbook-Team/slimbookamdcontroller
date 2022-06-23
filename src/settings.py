@@ -53,46 +53,43 @@ class Settings_dialog(Gtk.Dialog):
                 'U':'8000-8000-8000/11000-11000-15000/25000-30000-35000/ 10/25 w',
                 'HS':'10000-10000-10000/15000-15000-25000/60000-65000-70000/ 35/35 w',
                 'HX':'10000-10000-10000/15000-15000-25000/70000-80000-100000/ 35/45 w',
-                'H':'10000-10000-10000/15000-15000-25000/70000-80000-100000/ 35/45 w'
+                'H':'10000-10000-10000/15000-15000-25000/70000-80000-100000/ 35/45 w',
+                'G':'20000-20000-20000/25000-25000-35000/70000-75000-80000/ 45/65 w'
             }
 
     def __init__(self, parent):
-        
+        unknown_proc=False
+        try:
+            default_values = self.FIELDS.get(line_suffix).split('/')
+            length = len(default_values)-1
+            default_values[length] = default_values[length][:default_values[length].find('w')] 
+        except:
+            default_values = ['0-0-0', '0-0-0', '0-0-0', '0', '0']
+            unknown_proc=True
+            print('Creates values.')
+
         if config.has_option('USER-CPU', 'cpu-parameters') and config['USER-CPU']['cpu-parameters']!= '':
             values = config['USER-CPU']['cpu-parameters'].split('/')
             print('Loads from file.')
-        else:
-            try:
-                values = self.FIELDS.get(line_suffix).split('/')
-            except:
-                values = ['0-0-0', '0-0-0', '0-0-0', '0', '0']
-                
-            print('Creates values.')
-
-        length = len(values)-1
-        values[length] = values[length][:values[length].find('w')]
-        
-
-        self.val = '{}/{}/{}/'.format(values[0],values[1],values[2])
-
-        try:
-            self.val = self.val+ '{}/{} w'.format(values[3], values[4][:values[4].find('w')])
-
-        except:
-            self.val = self.val+ '{} w'.format(values[3][:values[3].find('w')])
-        
-        print('CPU-Parameters: '+self.val)
 
         self.lowmode = (values[0].split('-'))
         self.midmode = (values[1].split('-'))
         self.highmode = (values[2].split('-'))
 
-        self.low_default = float(values[3])
+        self.low_default = float(default_values[3])
+
+        self.val = '{}/{}/{}/'.format(values[0],values[1],values[2])
+
         try:
-            self.high_default = float(values[4])
+            self.val = self.val+ '{}/{} w'.format(default_values[3], default_values[4])
+            self.high_default = float(default_values[4])
+
         except:
-            self.high_default = float(values[3])
+            self.val = self.val+ '{} w'.format(default_values[3])
+            self.high_default = float(default_values[3])
             print('Not found 4th value')
+        
+        print('CPU-Parameters: '+self.val)
 
         super().__init__(title="Settings", transient_for=parent)
         self.set_name('dialog')
@@ -158,7 +155,7 @@ class Settings_dialog(Gtk.Dialog):
 
         # High Power TDP Column
 
-        label2 = Gtk.Label(_('High Power TDP'))
+        label2 = Gtk.Label(label=_('High Power TDP'))
 
         self.entry4 = _create_gui_element(
             float(self.lowmode[2])/1000, min, max)
@@ -189,11 +186,18 @@ class Settings_dialog(Gtk.Dialog):
         recommended_lbl = Gtk.Label(
             label=_('Recommended values:'), halign=left)
         recommended_lbl.set_tooltip_text(_('This values are based on your CPU line suffix'))
-        low_lbl = Gtk.Label(
+        if not unknown_proc:
+            low_lbl = Gtk.Label(
             label=_('Low: {} watts'.format(self.low_default)), halign=left)
 
-        high_lbl = Gtk.Label(
+            high_lbl = Gtk.Label(
             label=_('High: {} watts.'.format(self.high_default)), halign=left)
+        else:
+            low_lbl = Gtk.Label(
+            label=_('Low: {} watts'.format('?')), halign=left)
+
+            high_lbl = Gtk.Label(
+            label=_('High: {} watts.'.format('?')), halign=left)
 
         values_box = Gtk.VBox()
         values_box.add(low_lbl)
@@ -212,7 +216,7 @@ class Dialog(Gtk.Window):
         Gtk.Window.__init__(self, title="Settings")
         
         self.set_icon_from_file(CURRENT_PATH+'/images/slimbookamdcontroller.svg')
-        if type.find('Ryzen') == -1:
+        if type.find('Ryzen') != -1:
             if not config.has_option('PROCESSORS',MODEL_CPU):
                 label = Gtk.Label(label=_(
                 "Your processor is not supported yet. Do you want to add '{}' to the list?\n"+
@@ -248,7 +252,7 @@ class Dialog(Gtk.Window):
         dialog.destroy()
 
     def accept(self, dialog):
-        new_values = '{}-{}-{}/{}-{}-{}/{}-{}-{}/  {}/{}/'.format(
+        new_values = '{}-{}-{}/{}-{}-{}/{}-{}-{}/  {}/{}'.format(
                                            int(dialog.entry01.get_text())*1000,
                                            int(dialog.entry1.get_text())*1000,
                                            int(dialog.entry4.get_text())*1000,
@@ -276,13 +280,23 @@ class Dialog(Gtk.Window):
 def _create_gui_element(value, low, max):
 
     spin_button = Gtk.SpinButton()
-    spin_button.set_adjustment(Gtk.Adjustment(
-        value=value,
-        lower=low,
-        upper=max,
-        step_incr=1,
-        page_incr=10,
-    ))
+
+    if max != 0:
+        spin_button.set_adjustment(Gtk.Adjustment(
+            value=value,
+            lower=low,
+            upper=max,
+            step_increment=1,
+            page_increment=10,
+        ))
+    else:
+        spin_button.set_adjustment(Gtk.Adjustment(
+            value=value,
+            lower=low,
+            upper=float(100),
+            step_increment=1,
+            page_increment=10,
+        ))
 
     spin_button.set_numeric(True)
 

@@ -207,7 +207,7 @@ class PreferencesDialog(Gtk.Dialog):
         label77.set_halign(Gtk.Align.CENTER)
         link_box2.add(label77)
 
-        label77 = Gtk.LinkButton(uri="https://github.com/slimbook/slimbookamdcontroller/tree/main/src/locale", label = (_('Help us with translations!')))
+        label77 = Gtk.LinkButton(uri="https://github.com/slimbook/slimbookamdcontroller/tree/main/src/translations", label = (_('Help us with translations!')))
         label77.set_name('link')
         label77.set_halign(Gtk.Align.CENTER)
         link_box2.add(label77)
