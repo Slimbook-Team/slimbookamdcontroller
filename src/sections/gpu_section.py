@@ -25,6 +25,7 @@ class GpuSection():
         self._isOptionChanged = False
         self._x_array = []
         self._y_array = []
+        self._max_values_by_gpu = {}
 
     def get_x_array(self):
         return self._x_array
@@ -77,7 +78,16 @@ class GpuSection():
             GPU_VOLT: gpu.get_gpu_voltage()
         }
 
-        grid = Gtk.Grid(column_homogeneous=True, column_spacing=6, row_spacing=6)
+        # Initialize the GPU max values
+        self._max_values_by_gpu[gpu_index] = {
+                'temp': 0,
+                'gpuclk': 0,
+                'memclk': 0,
+                'gpuvolt': 0,
+                'vramusage': 0
+            }
+
+        grid = Gtk.Grid(column_homogeneous=True, column_spacing=6, row_spacing=12)
 
         for index, key in enumerate(GPU_INFO):
             hbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=1)
@@ -156,7 +166,7 @@ class GpuSection():
         fig.set_tight_layout({"pad": .0})
 
         ax = fig.add_subplot()
-        self.__setAxStyle(ax)
+        self.__setAxStyle(ax, gpu.index)
 
         GLib.timeout_add_seconds(1, self.__update_plot, gpu, ax)
 
@@ -165,7 +175,7 @@ class GpuSection():
         GLib.timeout_add_seconds(1, self.__drawCanvas, canvas )
         return canvas
 
-    def __setAxStyle(self, ax):
+    def __setAxStyle(self, ax, gpu_index):
         ax.set_facecolor('blue')
         ax.patch.set_alpha(0.1)
         ax.tick_params(axis='x', colors='white')
@@ -173,7 +183,7 @@ class GpuSection():
         ax.set_xticklabels([])
         ax.set_xticks([])
         ax.set_ylim(bottom=0)
-        ax.set_ylim(top=self.__get_max_value())
+        ax.set_ylim(top=self.__get_max_value(gpu_index))
         return True
 
     def  __update_plot(self, gpu: GpuService, ax):
@@ -200,7 +210,7 @@ class GpuSection():
 
         self.__clean_old_array_values()
         ax.cla()
-        self.__setAxStyle(ax)
+        self.__setAxStyle(ax, gpu.index)
         ax.plot(self._x_array, self._y_array, '#641515')
         return True
 
@@ -210,13 +220,24 @@ class GpuSection():
             self._y_array = self._y_array[1:]
         return
 
-    def __get_max_value(self):
-        max_value = 0
+    def __get_max_value(self, gpu_index):
+        value = 0
         if len(self._y_array) > 0:
-            max_value = np.max(self._y_array)
-        if self._optionSelected == "temp":
-            return max_value + 10
-        return max_value + 200
+            value = np.max(self._y_array)
+            if self._optionSelected == "temp":
+                value += 10
+            elif self._optionSelected == "gpuvolt":
+                value += 0.1
+            else:
+                value += 200
+
+        max_values = self._max_values_by_gpu[gpu_index]
+        if max_values[self._optionSelected] < value:
+            max_values[self._optionSelected] = value
+        else:
+            value = max_values[self._optionSelected]
+        return np.ceil(value)
+
 
     def __drawCanvas(self, canvas):
         canvas.draw()
