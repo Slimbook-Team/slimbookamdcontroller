@@ -27,18 +27,6 @@ class GpuSection():
         self._y_array = []
         self._max_values_by_gpu = {}
 
-    def get_x_array(self):
-        return self._x_array
-
-    def get_y_array(self):
-        return self._y_array
-
-    def set_x_array(self, x_array):
-        self._x_array = x_array
-
-    def set_y_array(self, y_array):
-        self._y_array = y_array
-
     def add(self):
         try:
             if GpuService.exists_amd_gpus():
