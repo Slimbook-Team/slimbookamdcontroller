@@ -105,7 +105,7 @@ class GpuSection():
 
         grid.attach(self.__radio_buttons(), 1, 0, 1, 1)
 
-        canvas = self.__renderChart(gpu)
+        canvas = self.__render_chart(gpu)
         box_canvas = Gtk.Box()
         box_canvas.add(canvas)
         grid.attach(box_canvas, 1, 1, 1, 6)
@@ -147,13 +147,13 @@ class GpuSection():
         self._optionSelected = name
         self._isOptionChanged = True
 
-    def __renderChart(self, gpu: GpuService) -> FigureCanvas:
+    def __render_chart(self, gpu: GpuService) -> FigureCanvas:
         fig = Figure(figsize=(5, 4), dpi=100, )
         fig.patch.set_alpha(0.0)
         fig.set_tight_layout({"pad": .0})
 
         ax = fig.add_subplot()
-        self.__setAxStyle(ax, gpu.index)
+        self.__set_ax_style(ax, gpu.index)
 
         GLib.timeout_add_seconds(1, self.__update_plot, gpu, ax)
 
@@ -162,7 +162,7 @@ class GpuSection():
         GLib.timeout_add_seconds(1, self.__drawCanvas, canvas )
         return canvas
 
-    def __setAxStyle(self, ax, gpu_index):
+    def __set_ax_style(self, ax, gpu_index):
         ax.set_facecolor('blue')
         ax.patch.set_alpha(0.1)
         ax.tick_params(axis='x', colors='white')
@@ -197,7 +197,7 @@ class GpuSection():
 
         self.__clean_old_array_values()
         ax.cla()
-        self.__setAxStyle(ax, gpu.index)
+        self.__set_ax_style(ax, gpu.index)
         ax.plot(self._x_array, self._y_array, '#641515')
         return True
 
