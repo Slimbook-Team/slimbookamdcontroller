@@ -120,3 +120,8 @@ radiobutton:checked, radiobutton:active{
 .button-none{
     opacity: 0;
 }
+
+/* GPU */
+.box-gpu-property {
+    box-shadow: -0.4em 0 0.4em rgb(100, 21, 21);
+}

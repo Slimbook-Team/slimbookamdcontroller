@@ -43,32 +43,36 @@ msgstr ""
 msgid "CANCEL"
 msgstr ""
 
-#: slimbookamdcontroller.py:345
+#: gpu_section.py:75
 msgid "Model"
 msgstr ""
 
-#: slimbookamdcontroller.py:345
+#: gpu_section.py:75
 msgid "VRAM"
 msgstr ""
 
-#: slimbookamdcontroller.py:345
+#: gpu_section.py:75
 msgid "VRAM Usage"
 msgstr ""
 
-#: slimbookamdcontroller.py:345
+#: gpu_section.py:75
 msgid "Temp"
 msgstr ""
 
-#: slimbookamdcontroller.py:345
+#: gpu_section.py:75
 msgid "GPU Freq"
 msgstr ""
 
-#: slimbookamdcontroller.py:345
+#: gpu_section.py:75
 msgid "Mem Freq"
 msgstr ""
 
-#: slimbookamdcontroller.py:345
+#: gpu_section.py:75
 msgid "PCI Slot"
+msgstr ""
+
+#: gpu_section.py:75
+msgid "GPU Voltage"
 msgstr ""
 
 #: slimbookamdcontroller.py:514
