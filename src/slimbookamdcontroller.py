@@ -3,14 +3,10 @@
 from configparser import ConfigParser
 import gi, os, subprocess, logging, sys
 import shutil, math, re
+from sections.gpu_section import GpuSection
 import utils
 from pathlib import Path
-from constants.gpu_constants import DYNAMIC_GPU_PROPERTIES, GPU_FREQ, MEM_FREQ, MODEL, PCI_SLOT, TEMP, VRAM, VRAM_USAGE
 import slimbookamdcontrollerinfo as info
-try:
-    from services.gpu_service import GpuService
-except:
-    pass
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
@@ -253,68 +249,6 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         btnCancelar.connect("toggled", self.on_btnCerrar_clicked, 'x')
         botonesBox.pack_start(btnCancelar, True, True, 0)
 
-    # GPU ------------------------------------------------------------------------------------
-        def add_gpus_pages(notebook: Gtk.Notebook):
-            number_of_gpus = GpuService.get_number_of_gpus()
-            for gpu_index in range(number_of_gpus):
-                page = Gtk.Box()
-                page.set_border_width(10)
-                page.set_halign(Gtk.Align.START)
-                page.add(build_gpu_listbox(gpu_index))
-                notebook.append_page(page, Gtk.Label(
-                    label="GPU {}".format(gpu_index)))
-            return
-
-        def _update_label(label: Gtk.Label, serviceFunction, gpu_index: int):
-            label.set_label(serviceFunction(gpu_index))
-            return True
-
-        def build_gpu_listbox(gpu_index: int) -> Gtk.Box:
-            GPU_INFO = {
-                MODEL: GpuService.get_model(gpu_index),
-                VRAM: GpuService.get_vram(gpu_index),
-                VRAM_USAGE: GpuService.get_vram_usage(gpu_index),
-                TEMP: GpuService.get_temp(gpu_index),
-                GPU_FREQ: GpuService.get_slck(gpu_index),
-                MEM_FREQ: GpuService.get_mlck(gpu_index),
-                PCI_SLOT: GpuService.get_slot(gpu_index)
-            }
-
-            box_outer = Gtk.Box(
-                orientation=Gtk.Orientation.VERTICAL, spacing=6)
-
-            listbox = Gtk.ListBox()
-            listbox.set_selection_mode(Gtk.SelectionMode.NONE)
-            box_outer.pack_start(listbox, True, True, 0)
-
-            for key in GPU_INFO:
-                row = Gtk.ListBoxRow()
-                hbox = Gtk.Box(
-                    orientation=Gtk.Orientation.HORIZONTAL, spacing=100)
-                row.add(hbox)
-
-                hbox.pack_start(Gtk.Label(label=_(key), xalign=0), True, True, 0)
-
-                label = Gtk.Label(label=GPU_INFO[key], xalign=1)
-
-                if key in DYNAMIC_GPU_PROPERTIES:
-                    serviceFunction = None
-                    if key == TEMP:
-                        serviceFunction = GpuService.get_temp
-                    elif key == GPU_FREQ:
-                        serviceFunction = GpuService.get_slck
-                    elif key == MEM_FREQ:
-                        serviceFunction = GpuService.get_mlck
-                    else:
-                        serviceFunction = GpuService.get_vram_usage
-                    GLib.timeout_add_seconds(
-                        2, _update_label, label, serviceFunction, gpu_index)
-
-                hbox.pack_start(label, True, True, 0)
-                listbox.add(row)
-
-            return box_outer
-
     # NOTEBOOK -------------------------------------------------------------------------------
         notebook = Gtk.Notebook()
 
@@ -324,11 +258,9 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         page1.set_halign(Gtk.Align.CENTER)
         page1.add(cpuGrid)
         notebook.append_page(page1, Gtk.Label(label="CPU"))
-        try:
-            if GpuService.exists_amd_gpus():
-                add_gpus_pages(notebook)
-        except:
-            print()
+
+    # GPU -------------------------------------------------------------------------------
+        notebook = GpuSection(notebook).add()
 
     # BTNABOUT_US ----------------------------------------------------------------------------
 
@@ -360,7 +292,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         evnt_settings.set_halign(Gtk.Align.END)
         evnt_settings.add(settings)
         evnt_settings.connect("button_press_event", self.settings)
-               
+
         hbox_close = Gtk.HBox()
         hbox_close.set_valign(Gtk.Align.START)
         hbox_close.set_halign(Gtk.Align.END)
@@ -408,9 +340,9 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         self.win_grid.attach(evnt_box, 5, 7, 1, 1)
         self.win_grid.attach(hbox_close, 5, 0, 1, 1)
         self.show_all()
-        
+
         self.set_cpu()
-    
+
         try:
             params = config.get('USER-CPU', 'cpu-parameters').split('/')
             self.parameters = params
@@ -482,7 +414,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
     def on_btnAceptar_clicked(self, widget):
 
-        # Check secureboot        
+        # Check secureboot
         call = subprocess.getstatusoutput('mokutil --sb-state | grep -i "SecureBoot disabled"')
 
         if not call[0] == 0:
@@ -561,7 +493,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
     def inicio(self):
         print('Loading configuration:\n')
-        
+
         ################ UPDATE APROXIMATION
         # FIELDS = [
         # {
@@ -583,7 +515,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         if not config.has_option('CONFIGURATION','autostart') == True:  # Testing conf
             from configuration import check_config
-            
+
         elif config.get('CONFIGURATION', 'autostart') == 'on':
             self.autostart_actual = 'on'
             self.switch1.set_active(True)
@@ -618,10 +550,10 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             self.modo_actual = 'high'
             self.rbutton3.set_active(True)
 
-   
+
     # RECOGEMOS PARAMETROS DEL RYZEN ADJ
     def cpu_value(self, parameter):
-        
+
 
         call = subprocess.getoutput(
             '/usr/share/slimbookamdcontroller/ryzenadj --info')
@@ -677,16 +609,16 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         if not config.has_option('USER-CPU', 'cpu-parameters') or len(config.get('USER-CPU', 'cpu-parameters')) <= 1:
             print('Setting cpu TDP values')
             cpu_codename = type+'-'+gen+'-'+number+line_suffix
-                    
+
             if config.has_option('PROCESSORS',cpu_codename):
                 print('Found processor in list')
                 params = config['PROCESSORS'][cpu_codename]
                 self.update_config_file('cpu-parameters', params, 'USER-CPU')
-            else: 
+            else:
                 print('Could not find your proc in .conf')
                 self.settings()
-                config.read(CONFIG_FILE)       
-        
+                config.read(CONFIG_FILE)
+
 
     def _show_indicator(self, switch, state):
 

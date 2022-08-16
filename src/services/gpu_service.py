@@ -2,6 +2,10 @@ import pyamdgpuinfo
 import subprocess
 
 class GpuService:
+    index: int
+
+    def __init__(self, index: int):
+        self.index = index
 
     @staticmethod
     def exists_amd_gpus() -> bool:
@@ -11,66 +15,60 @@ class GpuService:
     def get_number_of_gpus() -> int:
         return pyamdgpuinfo.detect_gpus()
 
-    @staticmethod
-    def get_model(gpu_index: int) -> str:
-        model=pyamdgpuinfo.get_gpu(gpu_index).name
+    def get_model(self) -> str:
+        model=pyamdgpuinfo.get_gpu(self.index).name
         if model is not None:
             return model
         else:
-            slot = pyamdgpuinfo.get_gpu(gpu_index).pci_slot[5:]
+            slot = pyamdgpuinfo.get_gpu(self.index).pci_slot[5:]
             model= subprocess.getstatusoutput("lspci | grep -i "+slot+" | cut -d ':' -f3")[1]
             return model
 
-    @staticmethod
-    def get_vram(gpu_index: int) -> str:
-        vram_size = GpuService._get_vram_size(gpu_index)
-        return '{} {}'.format(GpuService._convert_bytes_to_mbytes(vram_size), 'MB')
+    def get_vram(self) -> str:
+        vram_size = GpuService._get_vram_size(self)
+        return '{} {}'.format(GpuService._convert_bytes_to_mbytes(self, vram_size), 'MB')
 
-    @staticmethod
-    def get_vram_usage(gpu_index: int) -> str:
-        vram_usage = pyamdgpuinfo.get_gpu(gpu_index).query_vram_usage()
-        return '{} {}'.format(GpuService._convert_bytes_to_mbytes(vram_usage), 'MB')
+    def get_vram_usage(self) -> str:
+        vram_usage = pyamdgpuinfo.get_gpu(self.index).query_vram_usage()
+        return '{} {}'.format(GpuService._convert_bytes_to_mbytes(self, vram_usage), 'MB')
 
-    @staticmethod
-    def get_temp(gpu_index: int) -> str:
-        return '{} ºC'.format(pyamdgpuinfo.get_gpu(gpu_index).query_temperature())
+    def get_temp(self) -> str:
+        return '{} ºC'.format(pyamdgpuinfo.get_gpu(self.index).query_temperature())
 
-    @staticmethod
-    def get_slot(gpu_index: int) -> str:
-        return pyamdgpuinfo.get_gpu(gpu_index).pci_slot
+    def get_slot(self) -> str:
+        return pyamdgpuinfo.get_gpu(self.index).pci_slot
 
-    @staticmethod
-    def get_slck(gpu_index: int) -> str:
-        sclk = GpuService._get_freq(gpu_index, 'S')
+    def get_slck(self) -> str:
+        sclk = GpuService._get_freq(self, 'S')
         return '{} MHz'.format(sclk)
 
-    @staticmethod
-    def get_mlck(gpu_index: int) -> str:
-        mclk = GpuService._get_freq(gpu_index, 'M')
+    def get_mlck(self) -> str:
+        mclk = GpuService._get_freq(self, 'M')
         return '{} MHz'.format(mclk)
+
+    def get_gpu_voltage(self) -> str:
+        try:
+            return '{} V'.format(pyamdgpuinfo.get_gpu(self.index).query_graphics_voltage())
+        except:
+            return '0 V'
     
-    @staticmethod
-    def _get_vram_size(gpu_index: int) -> str:
-        return pyamdgpuinfo.get_gpu(gpu_index).memory_info['vram_size']
+    def _get_vram_size(self) -> str:
+        return pyamdgpuinfo.get_gpu(self.index).memory_info['vram_size']
 
-    @staticmethod
-    def _get_mem_usage_size(gpu_index: int) -> str:
-        return pyamdgpuinfo.get_gpu(gpu_index).query_vram_usage()
+    def _get_mem_usage_size(self) -> str:
+        return pyamdgpuinfo.get_gpu(self.index).query_vram_usage()
 
-    @staticmethod
-    def _get_freq(gpu_index: int, freq_type: str):
+    def _get_freq(self, freq_type: str):
         freq = 0;
         if freq_type == 'S':
-            freq = pyamdgpuinfo.get_gpu(gpu_index).query_sclk()
+            freq = pyamdgpuinfo.get_gpu(self.index).query_sclk()
         elif freq_type == 'M':
-            freq = pyamdgpuinfo.get_gpu(gpu_index).query_mclk()
+            freq = pyamdgpuinfo.get_gpu(self.index).query_mclk()
 
         return round(float(freq)/1000.0**2)
 
-    @staticmethod
-    def _convert_bytes_to_gbytes(vram_size):
+    def _convert_bytes_to_gbytes(self, vram_size):
         return round(float(vram_size)/1024.0**3)
     
-    @staticmethod
-    def _convert_bytes_to_mbytes(vram_size):
+    def _convert_bytes_to_mbytes(self, vram_size):
         return round(float(vram_size)/1024.0**2)
