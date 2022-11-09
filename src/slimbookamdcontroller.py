@@ -576,13 +576,16 @@ class SlimbookAMD(Gtk.ApplicationWindow):
     def reboot_indicator(self):
 
         print('\nProcess PID')
-        indicator = subprocess.getoutput(
-            'pgrep -f slimbookamdcontrollerindicator')
-        indicator.split("\n")
+        indicator = subprocess.Popen(
+            'pgrep -f slimbookamdcontrollerindicator'.split(), 
+            stdout=subprocess.PIPE)
+        indicator.wait()
 
-        for process in indicator:
+        indicatorpids = indicator.communicate()[0].decode('utf-8').split("\n")
+        print(indicatorpids)
+        for process in indicatorpids:
             try:
-                os.kill(int(process), signal.SIGKILL)
+                os.kill(int(process), signal.SIGKILL) if process else print()
             except Exception as e:
                 print(e)
         print('Starting indicator...')

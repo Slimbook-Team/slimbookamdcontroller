@@ -129,14 +129,14 @@ class Indicator():
 
 		if config.get('CONFIGURATION', 'mode') == "low":
 			print('- Low\n')
-			self.bajorendimiento('x')
+			self.bajorendimiento()
 		else:
 			if config.get('CONFIGURATION', 'mode') == "medium":
 				print('- Medium\n')
-				self.mediorendimiento('x')
+				self.mediorendimiento()
 			else:
 				print('- High\n')
-				self.altorendimiento('x')
+				self.altorendimiento()
 		
 		print("\nData loaded from .conf\n")
 
@@ -153,32 +153,33 @@ class Indicator():
 		print("Updated "+variable+" --> "+value+"\n")
 
 	#Funcion para configuracion de bajo rendimiento
-	def bajorendimiento(self, widgets):
+	def bajorendimiento(self, widgets=False):
 		self.modo_actual="low"
 		self.icono_actual=CURRENT_PATH+'/images/amd-1.png'
 		self.testindicator.set_icon_full(CURRENT_PATH+'/images/amd-1.png', "Slimbook AMD")
             
 		self.update_config_file("mode", self.modo_actual)
-		subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
-
+		proc = subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
+		proc.wait()
 	#Funcion para configuracion de medio rendimiento
-	def mediorendimiento(self, widget):
+	def mediorendimiento(self, widgets=False):
 		self.modo_actual="medium"
 		self.icono_actual=CURRENT_PATH+'/images/amd-2.png'
 		self.testindicator.set_icon_full(CURRENT_PATH+'/images/amd-2.png', "Slimbook AMD")
 		
 		self.update_config_file("mode", self.modo_actual)
-		subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
+		proc = subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
+		proc.wait()
 
 	#Funcion para configuracion de alto rendimiento
-	def altorendimiento(self, widget):
+	def altorendimiento(self, widgets=False):
 		self.modo_actual="high"
 		self.icono_actual=CURRENT_PATH+'/images/amd-3.png'
 		self.testindicator.set_icon_full(CURRENT_PATH+'/images/amd-3.png', "Slimbook AMD")
 
 		self.update_config_file("mode", self.modo_actual)
-		subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
-
+		proc = subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
+		proc.wait()
 
 call = subprocess.getstatusoutput('mokutil --sb-state | grep -i "SecureBoot disabled"')
 
