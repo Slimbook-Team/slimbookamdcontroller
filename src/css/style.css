@@ -30,7 +30,10 @@ window grid grid {
     color: white;
     background-color: white;
 }
-#settings button label, #warn button label{
+#settings button, #warn button label, #settings spinbutton{
+    background-color: white;
+}
+#warn button label, #settings button label {
     color: black;
 }
 
@@ -124,4 +127,5 @@ radiobutton:checked, radiobutton:active{
 /* GPU */
 .box-gpu-property {
     box-shadow: -0.4em 0 0.4em rgb(100, 21, 21);
+    padding-left: 5px;
 }

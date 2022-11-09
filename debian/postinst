@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -x
+# set -x
 
 # Cloning ryzenadj
 cd /usr/share/slimbookamdcontroller/
@@ -21,16 +21,6 @@ if [ $? -eq 0 ]; then
     pip install pyamdgpuinfo
     if [ $? -eq 0 ]; then
         echo 'GPU info installed!'
-    fi
-    # Matplotlib
-    pip install matplotlib
-    if [ $? -eq 0 ]; then
-        echo 'Matplotlib installed!'
-    fi
-    # Numpy
-    pip install numpy
-    if [ $? -eq 0 ]; then
-        echo 'Numpy installed!'
     fi
 fi
 

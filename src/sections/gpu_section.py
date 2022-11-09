@@ -170,7 +170,9 @@ class GpuSection():
         ax.set_xticklabels([])
         ax.set_xticks([])
         ax.set_ylim(bottom=0)
-        ax.set_ylim(top=self.__get_max_value(gpu_index))
+        top=self.__get_max_value(gpu_index)
+        if top > 0:
+            ax.set_ylim(top=top)
         return True
 
     def  __update_plot(self, gpu: GpuService, ax):

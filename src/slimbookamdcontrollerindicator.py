@@ -156,7 +156,7 @@ class Indicator():
 	def bajorendimiento(self, widgets):
 		self.modo_actual="low"
 		self.icono_actual=CURRENT_PATH+'/images/amd-1.png'
-		self.testindicator.set_icon(CURRENT_PATH+'/images/amd-1.png')
+		self.testindicator.set_icon_full(CURRENT_PATH+'/images/amd-1.png', "Slimbook AMD")
             
 		self.update_config_file("mode", self.modo_actual)
 		subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
@@ -165,7 +165,7 @@ class Indicator():
 	def mediorendimiento(self, widget):
 		self.modo_actual="medium"
 		self.icono_actual=CURRENT_PATH+'/images/amd-2.png'
-		self.testindicator.set_icon(CURRENT_PATH+'/images/amd-2.png')
+		self.testindicator.set_icon_full(CURRENT_PATH+'/images/amd-2.png', "Slimbook AMD")
 		
 		self.update_config_file("mode", self.modo_actual)
 		subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
@@ -174,7 +174,7 @@ class Indicator():
 	def altorendimiento(self, widget):
 		self.modo_actual="high"
 		self.icono_actual=CURRENT_PATH+'/images/amd-3.png'
-		self.testindicator.set_icon(CURRENT_PATH+'/images/amd-3.png')
+		self.testindicator.set_icon_full(CURRENT_PATH+'/images/amd-3.png', "Slimbook AMD")
 
 		self.update_config_file("mode", self.modo_actual)
 		subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)

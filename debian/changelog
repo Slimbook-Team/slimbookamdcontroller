@@ -1,3 +1,11 @@
+slimbookamdcontroller (0.3.9beta) focal; urgency=low
+
+  * Added mokutil as a dependency
+  * Improved graphics tab
+  * Updated twitter profile
+
+ -- slimbook <dev@slimbook.es>  Tue, 16 Aug 2022 13:54:33 +0200
+
 slimbookamdcontroller (0.3.8beta) focal; urgency=low
 
   * Added 'G' line suffix to processors list 

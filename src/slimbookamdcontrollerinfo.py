@@ -144,7 +144,7 @@ class PreferencesDialog(Gtk.Dialog):
         enlaces_box.pack_start(itwitter, False, False, 0)
 
         twitter = Gtk.Label()
-        twitter.set_markup("<span><b><a href='https://twitter.com/SlimbookEs'>@SlimbookEs</a></b>    </span>")
+        twitter.set_markup("<span><b><a href='https://twitter.com/Slimbook'>@Slimbook</a></b>    </span>")
         twitter.set_justify(Gtk.Justification.CENTER)
         
         enlaces_box.pack_start(twitter, False, False, 0)
