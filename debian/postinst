@@ -22,16 +22,6 @@ if [ $? -eq 0 ]; then
     if [ $? -eq 0 ]; then
         echo 'GPU info installed!'
     fi
-    # Matplotlib
-    pip install matplotlib
-    if [ $? -eq 0 ]; then
-        echo 'Matplotlib installed!'
-    fi
-    # Numpy
-    pip install numpy
-    if [ $? -eq 0 ]; then
-        echo 'Numpy installed!'
-    fi
 fi
 
 
