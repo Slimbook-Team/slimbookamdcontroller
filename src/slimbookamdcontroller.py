@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 from configparser import ConfigParser
-import gi, os, subprocess, logging, sys
+import gi, os, subprocess, logging, sys, signal
 import shutil, math, re
 from sections.gpu_section import GpuSection
 import utils
@@ -128,7 +128,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
                            column_spacing=0,
                            row_spacing=12)
         cpuGrid.set_name('cpuGrid')
-
+        cpuGrid.set_valign(Gtk.Align.CENTER)
         # CPU Name
         hbox_consumo = Gtk.HBox(spacing=15)
 
@@ -222,13 +222,14 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         vbox3.pack_start(self.rbutton3, False, False, 0)
 
         hbox_radios = Gtk.HBox(spacing=70)
+        hbox_radios.set_valign(Gtk.Align.CENTER)
         hbox_radios.add(vbox1)
         hbox_radios.add(vbox2)
         hbox_radios.add(vbox3)
 
         cpuGrid.attach(hbox_consumo, 4, 8, 5, 1)
         cpuGrid.attach(modos, 5, 10, 3, 1)
-        cpuGrid.attach(hbox_radios, 4, 11, 5, 2)
+        cpuGrid.attach(hbox_radios, 4, 11, 5, 3)
 
     # BUTTONS --------------------------------------------------------------------------------
 
@@ -254,7 +255,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         page1 = Gtk.Box()
         page1.set_orientation(Gtk.Orientation.HORIZONTAL)
-        page1.set_border_width(10)
+        page1.set_border_width(0)
         page1.set_halign(Gtk.Align.CENTER)
         page1.add(cpuGrid)
         notebook.append_page(page1, Gtk.Label(label="CPU"))
@@ -321,18 +322,18 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         grid.attach(button1, 1, 1, 2, 1)
         grid.attach(button2, 9, 1, 2, 1)
 
-        grid.attach(label1, 3, 4, 3, 1)
-        grid.attach(self.switch1, 7, 4, 2, 1)
+        grid.attach(label1, 4, 4, 3, 1)
+        grid.attach(self.switch1, 6, 4, 2, 1)
         grid.attach(separador, 2, 5, 8, 1)
-        grid.attach(label2, 3, 6, 3, 1)
-        grid.attach(self.switch2, 7, 6, 2, 1)
+        grid.attach(label2, 4, 6, 3, 1)
+        grid.attach(self.switch2, 6, 6, 2, 1)
         grid.attach(separador2, 2, 7, 8, 1)
 
         """ grid.attach(hbox_consumo, 2, 8, 8, 1)
         grid.attach(modos, 2, 10, 8, 1)
         grid.attach(hbox_radios, 3, 11, 6, 2) """
 
-        grid.attach(notebook, 3, 8, 6, 1)
+        grid.attach(notebook, 2, 8, 8, 1)
 
         self.win_grid.attach(grid, 1, 1, 5, 5)
         self.win_grid.attach(botonesBox, 1, 7, 5, 1)
@@ -575,11 +576,18 @@ class SlimbookAMD(Gtk.ApplicationWindow):
     def reboot_indicator(self):
 
         print('\nProcess PID')
-        indicator = subprocess.getoutput(
-            'pgrep -f slimbookamdcontrollerindicator')
-        print(indicator)
+        indicator = subprocess.Popen(
+            'pgrep -f slimbookamdcontrollerindicator'.split(), 
+            stdout=subprocess.PIPE)
+        indicator.wait()
 
-        os.system('kill -9 '+indicator)
+        indicatorpids = indicator.communicate()[0].decode('utf-8').split("\n")
+        print(indicatorpids)
+        for process in indicatorpids:
+            try:
+                os.kill(int(process), signal.SIGKILL) if process else print()
+            except Exception as e:
+                print(e)
         print('Starting indicator...')
         subprocess.call('python3 {}/slimbookamdcontrollerindicator.py  &'.format(CURRENT_PATH), shell = True)
 
@@ -671,14 +679,6 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
 
 win = SlimbookAMD()
-
-style_provider = Gtk.CssProvider()
-style_provider.load_from_path(CURRENT_PATH+'/css/style.css')
-
-Gtk.StyleContext.add_provider_for_screen(
-    Gdk.Screen.get_default(), style_provider,
-    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-)
 
 win.connect("destroy", Gtk.main_quit)
 

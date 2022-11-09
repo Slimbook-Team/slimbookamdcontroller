@@ -71,6 +71,8 @@ class Settings_dialog(Gtk.Dialog):
         if config.has_option('USER-CPU', 'cpu-parameters') and config['USER-CPU']['cpu-parameters']!= '':
             values = config['USER-CPU']['cpu-parameters'].split('/')
             print('Loads from file.')
+        else:
+            values = default_values
 
         self.lowmode = (values[0].split('-'))
         self.midmode = (values[1].split('-'))
@@ -270,7 +272,11 @@ class Dialog(Gtk.Window):
 
         else: 
             print('Processor added')
+            if not config.has_section('PROCESSORS'):
+                config.add_section('PROCESSORS')
             config.set('PROCESSORS', MODEL_CPU, dialog.val)
+            if not config.has_section('USER-CPU'):
+                config.add_section('USER-CPU')
             config.set('USER-CPU','cpu-parameters', new_values)
             print(config['PROCESSORS'][MODEL_CPU])
 
