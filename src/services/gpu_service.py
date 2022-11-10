@@ -1,6 +1,10 @@
 import pyamdgpuinfo
 import subprocess
 
+import numpy as np
+
+from constants.gpu_constants import UNSUPPORTED_GPU_MODELS
+
 class GpuService:
     index: int
 
@@ -16,12 +20,18 @@ class GpuService:
         return pyamdgpuinfo.detect_gpus()
 
     def get_model(self) -> str:
-        model=pyamdgpuinfo.get_gpu(self.index).name
+        model= pyamdgpuinfo.get_gpu(self.index).name
         if model is not None:
             return model
         else:
             slot = pyamdgpuinfo.get_gpu(self.index).pci_slot[5:]
             model= subprocess.getstatusoutput("lspci | grep -i "+slot+" | cut -d ':' -f3")[1]
+
+            for unsupported_model in UNSUPPORTED_GPU_MODELS:
+                if unsupported_model in model:
+                    model = unsupported_model
+                    break
+
             return model
 
     def get_vram(self) -> str:
@@ -51,7 +61,7 @@ class GpuService:
             return '{} V'.format(pyamdgpuinfo.get_gpu(self.index).query_graphics_voltage())
         except:
             return '0 V'
-    
+
     def _get_vram_size(self) -> str:
         return pyamdgpuinfo.get_gpu(self.index).memory_info['vram_size']
 
@@ -69,6 +79,6 @@ class GpuService:
 
     def _convert_bytes_to_gbytes(self, vram_size):
         return round(float(vram_size)/1024.0**3)
-    
+
     def _convert_bytes_to_mbytes(self, vram_size):
         return round(float(vram_size)/1024.0**2)
