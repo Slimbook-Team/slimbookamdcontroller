@@ -58,7 +58,8 @@ class GpuService:
 
     def get_gpu_voltage(self) -> str:
         try:
-            return '{} V'.format(pyamdgpuinfo.get_gpu(self.index).query_graphics_voltage())
+            voltage = pyamdgpuinfo.get_gpu(self.index).query_graphics_voltage()
+            return '{} V'.format(round(voltage, 3))
         except:
             return '0 V'
 
