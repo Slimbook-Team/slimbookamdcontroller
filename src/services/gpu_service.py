@@ -1,6 +1,8 @@
 import pyamdgpuinfo
 import subprocess
 
+import numpy as np
+
 from constants.gpu_constants import UNSUPPORTED_GPU_MODELS
 
 class GpuService:
