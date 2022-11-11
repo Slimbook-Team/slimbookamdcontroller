@@ -27,10 +27,10 @@ class GpuService:
             slot = pyamdgpuinfo.get_gpu(self.index).pci_slot[5:]
             model= subprocess.getstatusoutput("lspci | grep -i "+slot+" | cut -d ':' -f3")[1]
 
-            for unsupported_model in UNSUPPORTED_GPU_MODELS:
-                if unsupported_model in model:
-                    model = unsupported_model
-                    break
+            try:
+                model = next(x for x in UNSUPPORTED_GPU_MODELS if x in model)
+            except Exception as e:
+                print(e)
 
             return model
 
