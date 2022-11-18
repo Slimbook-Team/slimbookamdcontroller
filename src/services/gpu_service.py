@@ -1,9 +1,14 @@
 import pyamdgpuinfo
 import subprocess
+import re
 
-import numpy as np
-
-from constants.gpu_constants import UNSUPPORTED_GPU_MODELS
+from constants.gpu_constants import (
+    REGEX_MODEL_WITH_MODEL_IN_BRACKETS_MATCH,
+    REGEX_MODEL_WITH_MODEL_IN_BRACKETS_FINDALL,
+    REGEX_MODEL_ONLY_SERIES_NAME_MATCH,
+    REGEX_MODEL_ONLY_SERIES_NAME_FINDALL,
+    UNKNOWN_MODEL,
+)
 
 class GpuService:
     index: int
@@ -25,14 +30,21 @@ class GpuService:
             return model
         else:
             slot = pyamdgpuinfo.get_gpu(self.index).pci_slot[5:]
-            model= subprocess.getstatusoutput("lspci | grep -i "+slot+" | cut -d ':' -f3")[1]
+            lspci_output = subprocess.getstatusoutput("lspci | grep -i "+slot+" | cut -d ':' -f3")[1].strip()
 
             try:
-                model = next(x for x in UNSUPPORTED_GPU_MODELS if x in model)
+                if re.match(REGEX_MODEL_WITH_MODEL_IN_BRACKETS_MATCH, lspci_output, re.MULTILINE) is not None:
+                    matches = re.findall(REGEX_MODEL_WITH_MODEL_IN_BRACKETS_FINDALL, lspci_output, re.MULTILINE)
+                    model = matches[1].replace('[', '').replace(']', '')
+                elif re.match(REGEX_MODEL_ONLY_SERIES_NAME_MATCH, lspci_output, re.MULTILINE) is not None:
+                    model = re.findall(REGEX_MODEL_ONLY_SERIES_NAME_FINDALL, lspci_output)[1]
             except Exception as e:
                 print(e)
 
-            return model
+            if model is None:
+                model = UNKNOWN_MODEL
+
+            return model.strip()
 
     def get_vram(self) -> str:
         vram_size = GpuService._get_vram_size(self)
