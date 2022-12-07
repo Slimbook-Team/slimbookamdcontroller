@@ -24,5 +24,6 @@ Depends: ${misc:Depends}, ${python:Depends},
      gir1.2-ayatanaappindicator3-0.1,
      libcurl4,
      mokutil
-Description: Aplicacion para la gestion de rendimiento de procesadores amd
- Aplicacion para la gestion de rendimiento de procesadores amd
+Description: Application for managing the performance of amd processors
+ Application for managing the performance of amd processors
+
