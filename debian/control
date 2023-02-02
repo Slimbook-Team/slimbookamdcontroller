@@ -23,6 +23,7 @@ Depends: ${misc:Depends}, ${python:Depends},
      cmake-data,
      gir1.2-ayatanaappindicator3-0.1,
      libcurl4,
+     libpci-dev,
      mokutil
 Description: Application for managing the performance of amd processors
  Application for managing the performance of amd processors
