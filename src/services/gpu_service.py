@@ -1,5 +1,14 @@
 import pyamdgpuinfo
 import subprocess
+import re
+
+from constants.gpu_constants import (
+    REGEX_MODEL_WITH_MODEL_IN_BRACKETS_MATCH,
+    REGEX_MODEL_WITH_MODEL_IN_BRACKETS_FINDALL,
+    REGEX_MODEL_ONLY_SERIES_NAME_MATCH,
+    REGEX_MODEL_ONLY_SERIES_NAME_FINDALL,
+    UNKNOWN_MODEL,
+)
 
 class GpuService:
     index: int
@@ -16,13 +25,26 @@ class GpuService:
         return pyamdgpuinfo.detect_gpus()
 
     def get_model(self) -> str:
-        model=pyamdgpuinfo.get_gpu(self.index).name
+        model= pyamdgpuinfo.get_gpu(self.index).name
         if model is not None:
             return model
         else:
             slot = pyamdgpuinfo.get_gpu(self.index).pci_slot[5:]
-            model= subprocess.getstatusoutput("lspci | grep -i "+slot+" | cut -d ':' -f3")[1]
-            return model
+            lspci_output = subprocess.getstatusoutput("lspci | grep -i "+slot+" | cut -d ':' -f3")[1].strip()
+
+            try:
+                if re.match(REGEX_MODEL_WITH_MODEL_IN_BRACKETS_MATCH, lspci_output, re.MULTILINE) is not None:
+                    matches = re.findall(REGEX_MODEL_WITH_MODEL_IN_BRACKETS_FINDALL, lspci_output, re.MULTILINE)
+                    model = matches[1].replace('[', '').replace(']', '')
+                elif re.match(REGEX_MODEL_ONLY_SERIES_NAME_MATCH, lspci_output, re.MULTILINE) is not None:
+                    model = re.findall(REGEX_MODEL_ONLY_SERIES_NAME_FINDALL, lspci_output)[1]
+            except Exception as e:
+                print(e)
+
+            if model is None:
+                model = UNKNOWN_MODEL
+
+            return model.strip()
 
     def get_vram(self) -> str:
         vram_size = GpuService._get_vram_size(self)
@@ -48,10 +70,11 @@ class GpuService:
 
     def get_gpu_voltage(self) -> str:
         try:
-            return '{} V'.format(pyamdgpuinfo.get_gpu(self.index).query_graphics_voltage())
+            voltage = pyamdgpuinfo.get_gpu(self.index).query_graphics_voltage()
+            return '{} V'.format(round(voltage, 3))
         except:
             return '0 V'
-    
+
     def _get_vram_size(self) -> str:
         return pyamdgpuinfo.get_gpu(self.index).memory_info['vram_size']
 
@@ -69,6 +92,6 @@ class GpuService:
 
     def _convert_bytes_to_gbytes(self, vram_size):
         return round(float(vram_size)/1024.0**3)
-    
+
     def _convert_bytes_to_mbytes(self, vram_size):
         return round(float(vram_size)/1024.0**2)
