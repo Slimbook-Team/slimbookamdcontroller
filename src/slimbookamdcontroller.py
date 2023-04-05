@@ -101,12 +101,8 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         button2.set_halign(Gtk.Align.START)
         button2.get_style_context().add_class("button-none")
 
-        separador = Gtk.Image.new_from_file(CURRENT_PATH+'/images/separador.png')
-        separador.set_halign(Gtk.Align.CENTER)
-        separador2 = Gtk.Image.new_from_file(CURRENT_PATH+'/images/separador.png')
-        separador2.set_halign(Gtk.Align.CENTER)
-        separador3 = Gtk.Image.new_from_file(CURRENT_PATH+'/images/separador.png')
-        separador3.set_halign(Gtk.Align.CENTER)
+        separador = Gtk.Separator()
+        separador2 = Gtk.Separator()
 
         pixbuf1 = GdkPixbuf.Pixbuf.new_from_file_at_scale(
             filename=CURRENT_PATH+'/images/cross.png',
@@ -322,18 +318,18 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         grid.attach(button1, 1, 1, 2, 1)
         grid.attach(button2, 9, 1, 2, 1)
 
-        grid.attach(label1, 4, 4, 3, 1)
-        grid.attach(self.switch1, 6, 4, 2, 1)
-        grid.attach(separador, 2, 5, 8, 1)
-        grid.attach(label2, 4, 6, 3, 1)
-        grid.attach(self.switch2, 6, 6, 2, 1)
-        grid.attach(separador2, 2, 7, 8, 1)
+        grid.attach(label1, 3, 4, 3, 1)
+        grid.attach(self.switch1, 7, 4, 2, 1)
+        grid.attach(separador, 3, 5, 6, 1)
+        grid.attach(label2, 3, 6, 3, 1)
+        grid.attach(self.switch2, 7, 6, 2, 1)
+        grid.attach(separador2, 3, 7, 6, 1)
 
         """ grid.attach(hbox_consumo, 2, 8, 8, 1)
         grid.attach(modos, 2, 10, 8, 1)
         grid.attach(hbox_radios, 3, 11, 6, 2) """
 
-        grid.attach(notebook, 2, 8, 8, 1)
+        grid.attach(notebook, 3, 8, 6, 1)
 
         self.win_grid.attach(grid, 1, 1, 5, 5)
         self.win_grid.attach(botonesBox, 1, 7, 5, 1)

@@ -40,10 +40,10 @@ class GpuSection():
         number_of_gpus = GpuService.get_number_of_gpus()
         for gpu_index in range(number_of_gpus):
             page = Gtk.Box()
-            page.set_border_width(10)
+            page.set_border_width(0)
             page.set_halign(Gtk.Align.CENTER)
             box = self.__build_gpu_listbox(gpu_index)
-            page.add(box)
+            page.add(self.__build_gpu_listbox(gpu_index))
             self.notebook.append_page(page, Gtk.Label(
                 label="GPU {}".format(gpu_index)))
         return self.notebook
@@ -101,14 +101,14 @@ class GpuSection():
                 GLib.timeout_add_seconds(2, self.__update_label, label, serviceFunction)
 
             hbox.pack_start(label, expand = True, fill = True, padding = 1)
-            grid.attach(hbox, 0, index, 1, 1)
+            grid.attach(hbox, 0, index, 2, 1)
 
-        grid.attach(self.__radio_buttons(), 1, 0, 1, 1)
+        grid.attach(self.__radio_buttons(), 2, 0, 3, 1)
 
         canvas = self.__render_chart(gpu)
         box_canvas = Gtk.Box()
         box_canvas.add(canvas)
-        grid.attach(box_canvas, 1, 1, 1, 6)
+        grid.attach(box_canvas, 2, 1, 3, 6)
 
         return grid
 
@@ -175,7 +175,7 @@ class GpuSection():
             ax.set_ylim(top=top)
         return True
 
-    def  __update_plot(self, gpu: GpuService, ax):
+    def __update_plot(self, gpu: GpuService, ax):
         if self._isOptionChanged:
             self._isOptionChanged = False
             self._x_array = []

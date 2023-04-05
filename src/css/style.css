@@ -7,6 +7,11 @@ notebook, notebook header, stack, list{
     background-color: transparent;
 }
 
+separator {
+    box-shadow: 0px 2px 2px 1px rgb(148, 24, 24);
+    background-color: rgb(148, 24, 24);
+}
+
 #label, dialog label, label:visited, link, #version {
     color: rgb(255, 255, 255);   
 }
@@ -16,14 +21,15 @@ stack label, tab label{
 }
 
 window grid grid {
-    padding-top: 15px;
-    padding-left: 40px;
-    padding-right: 40px;
+    /* border: 1px red solid; */
+    padding-top: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 #settings>box>grid, #dialog>box{
     /* border: 1px red solid; */
-    padding:20px;
+    padding:10px;
 }
 
 #settings separator {
