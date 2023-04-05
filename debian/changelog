@@ -1,3 +1,10 @@
+slimbookamdcontroller (0.4beta) focal; urgency=low
+
+  * Added libpci-dev as a dependency
+  * Improved graphics info
+
+ -- slimbook <dev@slimbook.es>  Wed, 5 Apr 2023 13:54:33 +0200
+
 slimbookamdcontroller (0.3.9beta) focal; urgency=low
 
   * Added mokutil as a dependency
