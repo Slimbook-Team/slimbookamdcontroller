@@ -44,5 +44,5 @@ msgstr "Su CPU ha cambiado a  "
 
 #: slimbookamdcontrollerindicator.py:188 slimbookamdcontrollerindicator.py:204
 #: slimbookamdcontrollerindicator.py:220
-msgid "Your CPU is not avalible, this software might not work."
+msgid "Your CPU is not available, this software might not work."
 msgstr "Su CPU no es válida, es posible que este software no funcione."

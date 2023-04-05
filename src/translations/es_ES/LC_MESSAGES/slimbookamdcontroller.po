@@ -87,9 +87,9 @@ msgid "Changes have been executed correctly."
 msgstr "Los cambios se han ejecutado correctamente."
 
 #: slimbookamdcontroller.py:319
-msgid "Your CPU is not avalible, this software might not work."
+msgid "Your CPU is not available, this software might not work."
 msgstr "Su CPU no es válida, es posible que este software no funcione."
 
 #: slimbookamdcontroller.py:517
-msgid "Your CPU isn't avalible"
+msgid "Your CPU isn't available"
 msgstr "Su CPU no es válida."

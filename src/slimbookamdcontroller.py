@@ -459,11 +459,11 @@ class SlimbookAMD(Gtk.ApplicationWindow):
                 self.reboot_indicator()
 
             else:
-                os.system("notify-send 'Slimbook AMD Controller' '" + _("Your CPU is not avalible, this software might not work.") +
+                os.system("notify-send 'Slimbook AMD Controller' '" + _("Your CPU is not available, this software might not work.") +
                           "' -i '" + CURRENT_PATH+'/images/slimbookamdcontroller.png' + "'")
         except Exception as e:
             print(e)
-            os.system("notify-send 'Slimbook AMD Controller' '" + _("Your CPU is not avalible, this software might not work.") +
+            os.system("notify-send 'Slimbook AMD Controller' '" + _("Your CPU is not available, this software might not work.") +
                       "' -i '" + CURRENT_PATH+'/images/slimbookamdcontroller.png' + "'")
 
         # CERRAMOS PROGRAMA

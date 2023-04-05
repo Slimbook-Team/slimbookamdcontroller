@@ -80,6 +80,6 @@ msgid "Changes have been executed correctly."
 msgstr ""
 
 #: slimbookamdcontroller.py:529 slimbookamdcontroller.py:532
-msgid "Your CPU is not avalible, this software might not work."
+msgid "Your CPU is not available, this software might not work."
 msgstr ""
 

@@ -44,5 +44,5 @@ msgstr "Votre CPU a été réglé sur"
 
 #: slimbookamdcontrollerindicator.py:188 slimbookamdcontrollerindicator.py:204
 #: slimbookamdcontrollerindicator.py:220
-msgid "Your CPU is not avalible, this software might not work."
+msgid "Your CPU is not available, this software might not work."
 msgstr "Votre CPU n'est pas disponible, ce logiciel peut ne pas fonctionner."

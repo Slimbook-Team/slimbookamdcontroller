@@ -55,9 +55,9 @@ msgid "Changes have been executed correctly."
 msgstr "Les modifications ont été exécutées correctement."
 
 #: slimbookamdcontroller.py:319
-msgid "Your CPU is not avalible, this software might not work."
+msgid "Your CPU is not available, this software might not work."
 msgstr "Votre CPU n'est pas disponible, ce logiciel peut ne pas fonctionner."
 
 #: slimbookamdcontroller.py:517
-msgid "Your CPU isn't avalible"
-msgstr "Votre Processeur n’est pas avalible"
+msgid "Your CPU isn't available"
+msgstr "Votre Processeur n’est pas available"
