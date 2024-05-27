@@ -181,11 +181,9 @@ class Indicator():
 		proc = subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
 		# proc.wait()
 
-call = subprocess.getstatusoutput('mokutil --sb-state | grep -i "SecureBoot disabled"')
 
-if not call[0] == 0:
-	print('Disable Secureboot, please.')
-
+if utils.get_secureboot_status():
+    print('Disable Secureboot, please',file=sys.stderr)
 
 Indicator()
 

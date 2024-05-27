@@ -4,6 +4,10 @@ import os
 import subprocess
 import locale
 
+from pathlib import Path
+
+CONFIG_FILE = Path.home() + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
+
 
 def get_user(from_file=None):
     try:
@@ -59,3 +63,22 @@ def get_cpu_info(var='info'):
         return cores
     if var == 'info':
         print('Information get_cpu_info().\nOptions: \n\tname\n\tcores\n\tthreadspercore')
+
+def get_secureboot_status():
+
+    if (not Path.exists("/sys/firmware/efi")):
+        return False
+        
+    SB_VAR = "/sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c"
+    
+    if (not Path.exists(SB_VAR)):
+        return False
+    
+    sb = False
+    f = open(SB_VAR,"rb")
+    var = list(f.read())
+    if (var[4] == 1):
+        sb = True
+    f.close()
+    
+    return sb

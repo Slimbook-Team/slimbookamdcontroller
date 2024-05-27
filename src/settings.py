@@ -12,14 +12,8 @@ from gi.repository import Gtk, Gdk
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__))
 APP_NAME= 'slimbookamdcontroller'
 
-USER_NAME = utils.get_user()
-HOMEDIR = os.path.expanduser('~')
-
-CONFIG_FILE = '{}/.config/{}/{}.conf'.format(HOMEDIR, APP_NAME, APP_NAME)
-print(CONFIG_FILE)
-
 config = ConfigParser()
-config.read(CONFIG_FILE)
+config.read(utils.CONFIG_FILE)
 
 _ = utils.load_translation(APP_NAME)
 

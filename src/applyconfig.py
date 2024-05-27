@@ -4,62 +4,36 @@
 #This file just reads and applies ryzen configuaration info from .config
 import os
 import sys
-import gi
 import subprocess
 import configparser
 import utils
+from pathlib import Path
 from time import sleep
 
-gi.require_version('Gtk', '3.0')
-gi.require_version('Gdk', '3.0')
+if (not Path.exists(utils.CONFIG_FILE)):
+    print("Config file does not exists",file=sys.stderr)
+    sys.exit(0)
 
-USER_NAME = utils.get_user()
-HOMEDIR = subprocess.getoutput("echo ~"+USER_NAME)
-
-config_file = HOMEDIR+'/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
-print("Reading "+config_file)
+print("Reading " + utils.CONFIG_FILE, file=sys.stderr)
 config = configparser.ConfigParser()
+config.read(utils.CONFIG_FILE)
 
+modes = {"low":0, "medium":1, "high":2}
 
-if config.read(config_file):
-    print("File detected!\n")
-else:
-    print("File not detected!\n")
-
-call=''      
-
-#READING VARIABLES
-modo_actual = config.get('CONFIGURATION', 'mode')
-print("Current mode: "+modo_actual)
+mode = config.get('CONFIGURATION', 'mode')
 parameters = config.get('USER-CPU', 'cpu-parameters').split('/')
-print("Parameters: "+str(parameters))
 
-mode = -1
+mode = modes[mode]
 
-if modo_actual == "low":
-    mode = 0    
-    
-if modo_actual == "medium":
-    mode = 1
+set_parameters = parameters[mode].split('-')
+child = subprocess.Popen([
+    "/usr/bin/ryzenadj",
+    "--tctl-temp=95",
+    "--slow-limit=" + set_parameters[0],
+    "--stapm-limit=" + set_parameters[1],
+    "--fast-limit=" + set_parameters[2]
+    ])
 
-if modo_actual == "high":
-    mode = 2
+child.wait()
 
-try:
-    set_parameters = parameters[mode].split('-')
-    sleep(3)
-    print('Setting '+modo_actual+' to : '+set_parameters[0]+' '+set_parameters[1]+' '+set_parameters[2]+'.\n')
-    call = os.system('sudo /usr/share/slimbookamdcontroller/ryzenadj --tctl-temp=95'+' --slow-limit='+set_parameters[0]+' --stapm-limit='+set_parameters[1]+' --fast-limit='+set_parameters[2]+'')
 
-    print('--------------------------------------------')
-    print('Exit: '+str(call))
-    print('--------------------------------------------')
-
-    #print(str('sys.exit('+str(call)+')'))
-    if call != 0:
-        (sys.exit(1))
-
-except Exception as e:
-    print('ERROR: {}'.format(e))
-
-       

@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+
 from configparser import ConfigParser
 import gi, os, subprocess, logging, sys, signal
 import shutil, math, re
@@ -13,17 +14,14 @@ gi.require_version('Gdk', '3.0')
 from gi.repository import Gdk, Gtk, GLib, GdkPixbuf
 
 APPNAME = 'slimbookamdcontroller'
-USER_NAME = utils.get_user()
-HOMEDIR = os.path.expanduser('~'+USER_NAME)
+HOMEDIR = Path.home()
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__))
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-CONFIG_FILE = '{}/.config/{}/{}.conf'.format(HOMEDIR, APPNAME, APPNAME)
 LAUNCHER_DESKTOP = os.path.join(
     BASE_DIR, "{}-autostart.desktop".format(APPNAME))
-AUTOSTART_DESKTOP = os.path.expanduser(
-    "{}/.config/autostart/{}-autostart.desktop".format(HOMEDIR, APPNAME))
+AUTOSTART_DESKTOP = "{}/.config/autostart/{}-autostart.desktop".format(HOMEDIR, APPNAME)
 
 _ = utils.load_translation(APPNAME)
 
@@ -37,11 +35,11 @@ number = patron.search(cpu).group(3)
 line_suffix = patron.search(cpu).group(4)
 
 config = ConfigParser()
-config.read(CONFIG_FILE)
+config.read(utils.CONFIG_FILE)
 
 class SlimbookAMD(Gtk.ApplicationWindow):
 
-    modo_actual = ""
+    mode = ""
     indicador_actual = ""
     autostart_actual = ""
     parameters = ''
@@ -58,8 +56,6 @@ class SlimbookAMD(Gtk.ApplicationWindow):
     rbutton3 = Gtk.RadioButton.new_with_mnemonic_from_widget(rbutton1, (_("High")))
 
     def __init__(self):
-
-        # VENTANA
         Gtk.Window.__init__(self, title="Slimbook AMD Controller")
 
         self.set_icon()
@@ -85,8 +81,8 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         self.add(self.win_grid)
 
-    # CONTENT --------------------------------------------------------------------------------
-
+        #Content
+        
         label1 = Gtk.Label(label=_("Enable app at startup"))
         label1.set_halign(Gtk.Align.START)
 
@@ -122,13 +118,13 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         evnt_close.set_halign(Gtk.Align.END)
         evnt_close.connect("button_press_event", self.on_btnCerrar_clicked)
 
-    # CPU ------------------------------------------------------------------------------------
-
+        # CPU
         cpuGrid = Gtk.Grid(column_homogeneous=True,
                            column_spacing=0,
                            row_spacing=12)
         cpuGrid.set_name('cpuGrid')
         cpuGrid.set_valign(Gtk.Align.CENTER)
+        
         # CPU Name
         hbox_consumo = Gtk.HBox(spacing=15)
 
@@ -169,8 +165,6 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         # consumo.set_halign(Gtk.Align.END)
         # hbox_consumo.pack_start(consumo, True, True, 0)
 
-    # RADIOS ---------------------------------------------------------------------------------
-
         img = ''
 
         idiomas = utils.get_languages()[0]
@@ -185,7 +179,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         modos.get_style_context().add_class("cambModos")
         modos.set_halign(Gtk.Align.CENTER)
 
-        # CAJA 1
+        # Box 1
         vbox1 = Gtk.VBox()
         self.rbutton1.connect("toggled", self.on_button_toggled, "low")
         self.rbutton1.set_name('radiobutton')
@@ -197,7 +191,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         vbox1.pack_start(rbutton1_img, False, False, 0)
         vbox1.pack_start(self.rbutton1, False, False, 0)
 
-        # CAJA 2
+        # Box 2
         vbox2 = Gtk.VBox()
         self.rbutton2.connect("toggled", self.on_button_toggled, "medium")
         self.rbutton2.set_name('radiobutton')
@@ -209,7 +203,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         vbox2.pack_start(rbutton2_img, False, False, 0)
         vbox2.pack_start(self.rbutton2, False, False, 0)
 
-        # CAJA 3
+        # Box 3
         vbox3 = Gtk.VBox()
         self.rbutton3.connect("toggled", self.on_button_toggled, "high")
         self.rbutton3.set_name('radiobutton')
@@ -231,26 +225,25 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         cpuGrid.attach(modos, 5, 10, 3, 1)
         cpuGrid.attach(hbox_radios, 4, 11, 5, 3)
 
-    # BUTTONS --------------------------------------------------------------------------------
-
+        # Buttons
         botonesBox = Gtk.Box(spacing=10)
         botonesBox.set_name('botonesBox')
         botonesBox.set_halign(Gtk.Align.CENTER)
         botonesBox.set_name('buttons')
 
-        # ACEPTAR
+        # Accept
         btnAceptar = Gtk.ToggleButton(label=_("ACCEPT"))
         btnAceptar.set_size_request(125, 30)
         btnAceptar.connect("toggled", self.on_btnAceptar_clicked)
         botonesBox.pack_start(btnAceptar, True, True, 0)
 
-        # CERRAR
+        # Close
         btnCancelar = Gtk.ToggleButton(label=_("CANCEL"))
         btnCancelar.set_size_request(125, 30)
         btnCancelar.connect("toggled", self.on_btnCerrar_clicked, 'x')
         botonesBox.pack_start(btnCancelar, True, True, 0)
 
-    # NOTEBOOK -------------------------------------------------------------------------------
+        # Notebook
         notebook = Gtk.Notebook()
 
         page1 = Gtk.Box()
@@ -260,11 +253,10 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         page1.add(cpuGrid)
         notebook.append_page(page1, Gtk.Label(label="CPU"))
 
-    # GPU -------------------------------------------------------------------------------
+        # GPU
         notebook = GpuSection(notebook).add()
 
-    # BTNABOUT_US ----------------------------------------------------------------------------
-
+        # About us 
         pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_scale(
             filename=CURRENT_PATH+'/images/question.png',
             width=23,
@@ -282,10 +274,9 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         pixbuf1 = GdkPixbuf.Pixbuf.new_from_file_at_scale(
             filename = CURRENT_PATH+'/images/settings.png',
-			width = 20,
-			height = 20,
-			preserve_aspect_ratio=True)
-
+            width = 20,
+            height = 20,
+            preserve_aspect_ratio=True)
 
         settings = Gtk.Image.new_from_pixbuf(pixbuf1)
         evnt_settings = Gtk.EventBox()
@@ -312,7 +303,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
                 '<span font="10">Version '+version[1:len(version)-1]+'</span>')
         version_tag.set_justify(Gtk.Justification.CENTER)
 
-    # GRID ATTACH ----------------------------------------------------------------------------
+        # Grid 
         grid = Gtk.Grid(column_homogeneous=False,
                         column_spacing=0,
                         row_spacing=10)
@@ -400,7 +391,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
     def on_mouse_button_pressed(self, widget, event):
 
-        # print(str(self.active))
+        print(str(self.active))
 
         if event.button == 1 and self.active == True:
             self.is_in_drag = True
@@ -411,34 +402,26 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         return False
 
     def on_button_toggled(self, button, name):
-        self.modo_actual = name
+        self.mode = name
 
     def on_btnAceptar_clicked(self, widget):
 
         # Check secureboot
-        call = subprocess.getstatusoutput('mokutil --sb-state | grep -i "SecureBoot disabled"')
 
-        if not call[0] == 0:
-            print('mokutil --sb-state : shows SecureBoot State')
+        if utils.get_secureboot_status():
             self.dialog(_("Secureboot Warning"),
                         _("This computer has Secureboot enabled, which does not allow kernel to manage CPU parameters."))
             sys.exit(1)
 
-        if self.modo_actual == "low":
-            mode = 0
-
-        if self.modo_actual == "medium":
-            mode = 1
-
-        if self.modo_actual == "high":
-            mode = 2
+        modes = {"low":0, "medium":1, "high":2}
+        nmode = modes[self.mode]
 
         try:
             # This throws an exception if cpu is not found
-            set_parameters = self.parameters[mode].split('-')
+            set_parameters = self.parameters[nmode].split('-')
             print(set_parameters)
 
-            print('Updating '+self.modo_actual+' to : ' +
+            print('Updating '+self.mode+' to : ' +
                   set_parameters[0]+' '+set_parameters[1]+' '+set_parameters[2]+'.\n')
 
             returncode = subprocess.call('pkexec slimbookamdcontroller-pkexec', shell=True, stdout=subprocess.PIPE)
@@ -452,7 +435,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
                 self._show_indicator(self.switch2, self.switch2.get_state())
 
                 # ACTUALIZAMOS VARIABLES
-                self.update_config_file("mode", self.modo_actual)
+                self.update_config_file("mode", self.mode)
                 self.update_config_file("autostart", self.autostart_actual)
                 self.update_config_file("show-icon", self.indicador_actual)
 
@@ -536,28 +519,17 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             self.switch2.set_active(False)
             print('- Indicator disabled')
 
-        if config.get('CONFIGURATION', 'mode') == "low":
-            print('- Low')
-            self.modo_actual = 'low'
-            self.rbutton1.set_active(True)
+        self.mode = config.get('CONFIGURATION', 'mode')
+        self.rbutton1.set_active(self.mode == "low")
+        self.rbutton2.set_active(self.mode == "medium")
+        self.rbutton3.set_active(self.mode == "high")
+        
 
-        elif config.get('CONFIGURATION', 'mode') == "medium":
-                print('- Medium')
-                self.modo_actual = 'medium'
-                self.rbutton2.set_active(True)
-
-        else:
-            print('- High')
-            self.modo_actual = 'high'
-            self.rbutton3.set_active(True)
-
-
-    # RECOGEMOS PARAMETROS DEL RYZEN ADJ
+    # Read RyzenAdj output
     def cpu_value(self, parameter):
 
-
         call = subprocess.getoutput(
-            '/usr/share/slimbookamdcontroller/ryzenadj --info')
+            '/usr/bin/ryzenadj --info')
         salida = str(call)
 
         index = str(salida.find(parameter))
@@ -664,8 +636,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
     def update_config_file(self, variable, value, section='CONFIGURATION'):
 
-        fichero = HOMEDIR + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
-        config.read(fichero)
+        config.read(utils.CONFIG_FILE)
 
         # We change our variable: config.set(section, variable, value)
         config.set(section, str(variable), str(value))
@@ -679,7 +650,5 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
 
 win = SlimbookAMD()
-
 win.connect("destroy", Gtk.main_quit)
-
 Gtk.main()
