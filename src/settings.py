@@ -19,7 +19,7 @@ _ = utils.load_translation(APP_NAME)
 
 CPU = utils.get_cpu_info('name')
 
-patron = re.compile('[ ](.*)[ ]*([0-9]).*([0-9]{4,})(\w*)')
+patron = re.compile(r'[ ](.*)[ ]*([0-9]).*([0-9]{4,})(\w*)')
 type = patron.search(CPU).group(1).strip()
 version = patron.search(CPU).group(2)
 number = patron.search(CPU).group(3)

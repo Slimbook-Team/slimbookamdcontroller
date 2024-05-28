@@ -14,7 +14,7 @@ gi.require_version('Gdk', '3.0')
 from gi.repository import Gdk, Gtk, GLib, GdkPixbuf
 
 APPNAME = 'slimbookamdcontroller'
-HOMEDIR = Path.home()
+HOMEDIR = str(Path.home())
 
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__))
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -424,7 +424,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             print('Updating '+self.mode+' to : ' +
                   set_parameters[0]+' '+set_parameters[1]+' '+set_parameters[2]+'.\n')
 
-            returncode = subprocess.call('pkexec slimbookamdcontroller-pkexec apply-config', shell=True, stdout=subprocess.PIPE)
+            returncode = subprocess.call('pkexec slimbookamdcontroller-pkexec', shell=True, stdout=subprocess.PIPE)
 
             if (returncode == 0):
                 os.system("notify-send 'Slimbook AMD Controller' '" + _("Changes have been executed correctly.") +

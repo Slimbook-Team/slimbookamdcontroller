@@ -10,13 +10,17 @@ import utils
 from pathlib import Path
 from time import sleep
 
-if (not Path.exists(utils.CONFIG_FILE)):
+if (len(sys.argv)<2):
+    sys.exit(127)
+    
+CONFIG_FILE = sys.argv[1]
+if (not Path(CONFIG_FILE).exists()):
     print("Config file does not exists",file=sys.stderr)
     sys.exit(0)
 
-print("Reading " + utils.CONFIG_FILE, file=sys.stderr)
+print("Reading " + CONFIG_FILE, file=sys.stderr)
 config = configparser.ConfigParser()
-config.read(utils.CONFIG_FILE)
+config.read(CONFIG_FILE)
 
 modes = {"low":0, "medium":1, "high":2}
 

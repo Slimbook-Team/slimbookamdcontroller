@@ -1,3 +1,4 @@
+import math
 import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
@@ -24,14 +25,11 @@ class GpuSection():
         self._max_values_by_gpu = {}
 
     def add(self):
-        try:
-            if GpuService.exists_amd_gpus():
-                self.notebook = self.__add_gpus_pages()
-        except NameError:
-            print(NameError)
-        finally:
-            return self.notebook
-
+        if GpuService.exists_amd_gpus():
+            self.notebook = self.__add_gpus_pages()
+            
+        return self.notebook
+        
     def __add_gpus_pages(self):
         number_of_gpus = GpuService.get_number_of_gpus()
         for gpu_index in range(number_of_gpus):
@@ -40,6 +38,7 @@ class GpuSection():
             page.set_halign(Gtk.Align.CENTER)
             box = self.__build_gpu_listbox(gpu_index)
             page.add(box)
+            
             self.notebook.append_page(page, Gtk.Label(
                 label="GPU {}".format(gpu_index)))
         return self.notebook
@@ -210,7 +209,7 @@ class GpuSection():
         if len(self._y_array) > 0:
             #value = np.max(self._y_array)
             value = self._y_array[0]
-            for y in self._y_array[0]:
+            for y in self._y_array:
                 if y > value:
                     value = y
             
@@ -227,11 +226,7 @@ class GpuSection():
         else:
             value = max_values[self._optionSelected]
         
-        ceiled = []
-        for v in value:
-            ceiled.append(math.ceil(v))
-            
-        return ceiled
+        return math.ceil(value)
 
     def __drawCanvas(self, canvas):
         canvas.draw()

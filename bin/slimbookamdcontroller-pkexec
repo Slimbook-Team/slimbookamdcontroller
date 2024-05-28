@@ -2,5 +2,5 @@
 
 set -x
 
-python3 /usr/share/slimbookamdcontroller/src/applyconfig.py
+python3 /usr/share/slimbookamdcontroller/src/applyconfig.py "$@"
 
