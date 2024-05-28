@@ -1,9 +1,8 @@
-src /usr/share/slimbookamdcontroller
+src /usr/share/slimbookamdcontroller/
 post-suspension/* /usr/lib/systemd/system-sleep/
-slimbookamdcontroller.desktop /usr/share/slimbookamdcontroller
-slimbookamdcontroller.desktop /usr/share/applications
-src/images/icons/* /usr/share/icons/hicolor
-debian/changelog /usr/share/slimbookamdcontroller/src
-udev-rules/* /etc/udev/rules.d
+slimbookamdcontroller.desktop /usr/share/slimbookamdcontroller/
+slimbookamdcontroller.desktop /usr/share/applications/
+src/images/icons/* /usr/share/icons/hicolor/
+udev-rules/* /etc/udev/rules.d/
 bin/* /usr/bin/
 policykit/* /usr/share/polkit-1/actions/

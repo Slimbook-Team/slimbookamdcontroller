@@ -1,34 +1,5 @@
 #!/bin/sh
 
-# set -x
-
-# Cloning ryzenadj
-cd /usr/share/slimbookamdcontroller/
-git clone https://github.com/FlyGoat/RyzenAdj.git
-cd RyzenAdj/
-# Compilation
-mkdir build
-cd build
-cmake ..
-make
-cp ryzenadj ../../
-chmod +x /usr/share/slimbookamdcontroller/ryzenadj
-
-# Python dependencies
-which pip
-if [ $? -eq 0 ]; then
-    # Amdgpuinfo
-    pip install pyamdgpuinfo
-    if [ $? -eq 0 ]; then
-        echo 'GPU info installed!'
-    fi
-fi
-
-
-# App Permisions
-chmod +x /usr/lib/systemd/system-sleep/slimbookamdcontroller
-chmod -R 755 /usr/share/slimbookamdcontroller/src
-
-/usr/share/slimbookamdcontroller/src/configuration/check_config.py
+#DEBHELPER#
 
 exit 0
