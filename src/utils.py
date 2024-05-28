@@ -6,7 +6,7 @@ import locale
 
 from pathlib import Path
 
-CONFIG_FILE = Path.home() + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
+CONFIG_FILE = str(Path.home()) + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
 
 
 def get_user(from_file=None):
@@ -66,12 +66,12 @@ def get_cpu_info(var='info'):
 
 def get_secureboot_status():
 
-    if (not Path.exists("/sys/firmware/efi")):
+    if (not Path("/sys/firmware/efi").exists()):
         return False
         
     SB_VAR = "/sys/firmware/efi/efivars/SecureBoot-8be4df61-93ca-11d2-aa0d-00e098032b8c"
     
-    if (not Path.exists(SB_VAR)):
+    if (not Path(SB_VAR).exists()):
         return False
     
     sb = False

@@ -4,12 +4,12 @@
  "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
 <policyconfig>
 
-  <action id="com.ubuntu.pkexec.slimbookamdcontroller">
-    <message gettext-domain="slimbookamdcontroller">Authentication is required to install packages and add PPA repositories</message>
+  <action id="com.slimbook.amdcontroller.pkexec.run">
+    <message gettext-domain="slimbookamdcontroller">Authentication is required to manage CPU settings</message>
     <icon_name>configurator</icon_name>
     <defaults>
-      <allow_any>auth_admin</allow_any>
-      <allow_inactive>auth_admin</allow_inactive>
+      <allow_any>yes</allow_any>
+      <allow_inactive>yes</allow_inactive>
       <allow_active>yes</allow_active>
     </defaults>
     <annotate key="org.freedesktop.policykit.exec.path">/usr/bin/slimbookamdcontroller-pkexec</annotate>

@@ -9,14 +9,10 @@ _ = utils.load_translation(APPNAME)
 from matplotlib.backends.backend_gtk3agg import (
     FigureCanvasGTK3Agg as FigureCanvas)
 from matplotlib.figure import Figure
-import numpy as np
 
-try:
-    from services.gpu_service import GpuService
-except:
-    pass
+from services.gpu_service import GpuService
+
 from constants.gpu_constants import DYNAMIC_GPU_PROPERTIES, GPU_FREQ, GPU_VOLT, MEM_FREQ, MODEL, TEMP, VRAM, VRAM_USAGE
-
 
 class GpuSection():
     def __init__(self, notebook):
@@ -212,7 +208,12 @@ class GpuSection():
     def __get_max_value(self, gpu_index):
         value = 0
         if len(self._y_array) > 0:
-            value = np.max(self._y_array)
+            #value = np.max(self._y_array)
+            value = self._y_array[0]
+            for y in self._y_array[0]:
+                if y > value:
+                    value = y
+            
             if self._optionSelected == "temp":
                 value += 10
             elif self._optionSelected == "gpuvolt":
@@ -225,8 +226,12 @@ class GpuSection():
             max_values[self._optionSelected] = value
         else:
             value = max_values[self._optionSelected]
-        return np.ceil(value)
-
+        
+        ceiled = []
+        for v in value:
+            ceiled.append(math.ceil(v))
+            
+        return ceiled
 
     def __drawCanvas(self, canvas):
         canvas.draw()

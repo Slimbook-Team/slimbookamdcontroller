@@ -28,7 +28,7 @@ _ = utils.load_translation(APPNAME)
 iconpath = CURRENT_PATH+'/amd.png'
 
 cpu = utils.get_cpu_info('name')
-patron = re.compile('[ ](.*)[ ]*([0-9]).*([0-9]{4,})(\w*)')
+patron = re.compile(r'[ ](.*)[ ]*([0-9]).*([0-9]{4,})(\w*)')
 type = patron.search(cpu).group(1).strip()
 gen = patron.search(cpu).group(2)
 number = patron.search(cpu).group(3)
@@ -61,7 +61,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         self.set_icon()
         self.inicio()
 
-        self.set_decorated(False)
+        #self.set_decorated(False)
 
         self.set_position(Gtk.WindowPosition.CENTER)
         self.get_style_context().add_class("bg-image")
@@ -145,13 +145,13 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         if cpu_thermal_zone != None:
             cpu_temp = subprocess.getstatusoutput(
-                "cat /sys/class/thermal/"+cpu_thermal_zone+"/temp | sed 's/\(.\)..$/ °C/'")
+                "cat /sys/class/thermal/"+cpu_thermal_zone+r"/temp | sed 's/\(.\)..$/ °C/'")
             if cpu_temp[0] == 0:
                 label = Gtk.Label(label=cpu_temp[1])
 
                 def _update_label(label: Gtk.Label):
                     label.set_label(subprocess.getoutput(
-                        "cat /sys/class/thermal/"+cpu_thermal_zone+"/temp | sed 's/\(.\)..$/ °C/'"))
+                        "cat /sys/class/thermal/"+cpu_thermal_zone+r"/temp | sed 's/\(.\)..$/ °C/'"))
                     return True
 
                 GLib.timeout_add_seconds(2, _update_label, label)
@@ -296,7 +296,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         version_tag.set_valign(Gtk.Align.END)
         version_tag.set_name('version')
         version_line = subprocess.getstatusoutput(
-            "cat "+CURRENT_PATH+"/changelog |head -n1| egrep -o '\(.*\)'")
+            "cat "+CURRENT_PATH+r"/changelog |head -n1| egrep -o '\(.*\)'")
         if version_line[0] == 0:
             version = version_line[1]
             version_tag.set_markup(
@@ -382,23 +382,23 @@ class SlimbookAMD(Gtk.ApplicationWindow):
                 self.x_in_drag = event.x_root
                 self.y_in_drag = event.y_root
                 self.move(xf, yf)
-
+        return False
+        
     def on_mouse_button_released(self, widget, event):
         if event.button == 1:
             self.is_in_drag = False
             self.x_in_drag = event.x_root
             self.y_in_drag = event.y_root
-
+        return False
+        
     def on_mouse_button_pressed(self, widget, event):
-
-        print(str(self.active))
 
         if event.button == 1 and self.active == True:
             self.is_in_drag = True
             self.x_in_drag, self.y_in_drag = self.get_position()
             self.x_in_drag = event.x_root
             self.y_in_drag = event.y_root
-            return True
+            #return True
         return False
 
     def on_button_toggled(self, button, name):
@@ -424,7 +424,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             print('Updating '+self.mode+' to : ' +
                   set_parameters[0]+' '+set_parameters[1]+' '+set_parameters[2]+'.\n')
 
-            returncode = subprocess.call('pkexec slimbookamdcontroller-pkexec', shell=True, stdout=subprocess.PIPE)
+            returncode = subprocess.call('pkexec slimbookamdcontroller-pkexec apply-config', shell=True, stdout=subprocess.PIPE)
 
             if (returncode == 0):
                 os.system("notify-send 'Slimbook AMD Controller' '" + _("Changes have been executed correctly.") +
@@ -496,7 +496,11 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
         # print(self.loaded_data.get('autostart'))
         ######################
-
+        
+        if not config.has_section("CONFIGURATION"):
+            os.makedirs(os.path.expanduser("~/.config/slimbookamdcontroller"))
+            return
+            
         if not config.has_option('CONFIGURATION','autostart') == True:  # Testing conf
             from configuration import check_config
 
@@ -536,7 +540,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         #print('Indice: '+index)
 
         # Que encuentre cuatro digitos juntos seguidos de 1 o 2 letras mayusculas
-        patron = re.compile("([0-9]{1,2}\.[0-9]{3,})[ ]\|[ ]("+parameter+")")
+        patron = re.compile(r"([0-9]{1,2}\.[0-9]{3,})[ ]\|[ ]("+parameter+")")
         value = patron.search(call).group(1)
         param = patron.search(call).group(2)
 
@@ -597,7 +601,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             else:
                 print('Could not find your proc in .conf')
                 self.settings()
-                config.read(CONFIG_FILE)
+                config.read(utils.CONFIG_FILE)
 
 
     def _show_indicator(self, switch, state):
@@ -642,7 +646,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         config.set(section, str(variable), str(value))
 
         # Writing our configuration file
-        with open(fichero, 'w') as configfile:
+        with open(utils.CONFIG_FILE, 'w') as configfile:
             config.write(configfile)
 
         print("\n- Variable |"+variable +
