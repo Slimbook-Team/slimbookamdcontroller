@@ -1,6 +1,6 @@
-slimbookamdcontroller (0.4.2) noble; urgency=medium
+slimbookamdcontroller (0.4.3) noble; urgency=medium
 
-  * Big refactor (still in progress)
+  * Big refactor (expect some issues)
 
  -- Slimbook <dev@slimbook.es>  Tue, 28 May 2024 23:10:14 +0200
 

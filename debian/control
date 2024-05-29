@@ -2,7 +2,7 @@ Source: slimbookamdcontroller
 Section: utils
 Priority: extra
 Maintainer: slimbook <dev@slimbook.es>
-Build-Depends: debhelper-compat (= 13)
+Build-Depends: debhelper-compat (= 13), dh-python
 Standards-Version: 4.6.0
 Homepage: https://github.com/Slimbook-Team/slimbookamdcontroller
 Rules-Requires-Root: no
