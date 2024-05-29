@@ -11,6 +11,7 @@ import slimbookamdcontrollerinfo as info
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
+
 from gi.repository import Gdk, Gtk, GLib, GdkPixbuf
 
 APPNAME = 'slimbookamdcontroller'
@@ -430,14 +431,15 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             returncode = subprocess.call('pkexec slimbookamdcontroller-pkexec {}'.format(utils.CONFIG_FILE), shell=True, stdout=subprocess.PIPE)
             print("return code:",returncode)
             if (returncode == 0):
-                os.system("notify-send 'Slimbook AMD Controller' '" + _("Changes have been executed correctly.") +
-                          "' -i '" + CURRENT_PATH+'/images/slimbookamdcontroller.svg' + "'")
-                # Comprobamos los switch
+                os.system("notify-send 'Slimbook AMD Controller' '" + _("Changes have been executed correctly.") +                          "' -i '" + CURRENT_PATH+'/images/slimbookamdcontroller.svg' + "'")
+                
+
+                # Check switches
                 self._inicio_automatico(self.switch1, self.switch1.get_state())
 
                 self._show_indicator(self.switch2, self.switch2.get_state())
 
-                # ACTUALIZAMOS VARIABLES
+                # Update vars
                 self.update_config_file("mode", self.mode)
                 self.update_config_file("autostart", self.autostart_actual)
                 self.update_config_file("show-icon", self.indicador_actual)
@@ -480,44 +482,25 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
     def inicio(self):
         print('Loading configuration:\n')
-
-        ################ UPDATE APROXIMATION
-        # FIELDS = [
-        # {
-        #     'autostart': config.get('CONFIGURATION', 'autostart'),
-        #     'show-icon': config.get('CONFIGURATION', 'show-icon'),
-        #     'mode': config.get('CONFIGURATION', 'mode'),
-        #     'cpu-parameters': config.get('USER-CPU', 'cpu-parameters'),
-
-        # }]
-        # try:
-        #     for row, data in enumerate(FIELDS):
-        #         print('Data:'+  str(data))
-        #         self.loaded_data = data
-        # except:
-        #     from configuration import check_config
-
-        # print(self.loaded_data.get('autostart'))
-        ######################
         
-        if not config.has_section("CONFIGURATION"):
-            os.makedirs(os.path.expanduser("~/.config/slimbookamdcontroller"))
-            return
-            
-        if not config.has_option('CONFIGURATION','autostart') == True:  # Testing conf
-            from configuration import check_config
-
-        elif config.get('CONFIGURATION', 'autostart') == 'on':
+        if not Path(utils.CONFIG_FILE).exists():
+            os.makedirs(os.path.expanduser("~/.config/slimbookamdcontroller"),exist_ok = True)
+            self.update_config_file("autostart","off","CONFIGURATION")
+            self.update_config_file("show-icon","off","CONFIGURATION")
+            self.update_config_file("mode","medium","CONFIGURATION")
+        
+        config.read(utils.CONFIG_FILE)
+        
+        if config.get('CONFIGURATION', 'autostart') == 'on':
             self.autostart_actual = 'on'
             self.switch1.set_active(True)
             print('- Autostart enabled')
-
         else:
             self.autostart_actual = 'off'
             self.switch1.set_active(False)
             print('- Autostart disabled')
 
-        if config.has_option('CONFIGURATION', 'show-icon') and config.get('CONFIGURATION', 'show-icon') == 'on':
+        if config.get('CONFIGURATION', 'show-icon') == 'on':
             self.indicador_actual = 'on'
             self.switch2.set_active(True)
             print('- Indicator enabled')
@@ -527,6 +510,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             print('- Indicator disabled')
 
         self.mode = config.get('CONFIGURATION', 'mode')
+        
         self.rbutton1.set_active(self.mode == "low")
         self.rbutton2.set_active(self.mode == "medium")
         self.rbutton3.set_active(self.mode == "high")
@@ -650,6 +634,9 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         config.read(utils.CONFIG_FILE)
 
         # We change our variable: config.set(section, variable, value)
+        if not config.has_section(section):
+            config.add_section(section)
+        
         config.set(section, str(variable), str(value))
 
         # Writing our configuration file

@@ -15,6 +15,9 @@ APP_NAME= 'slimbookamdcontroller'
 config = ConfigParser()
 config.read(utils.CONFIG_FILE)
 
+db_cpu = ConfigParser()
+db_cpu.read(CURRENT_PATH + '/' + utils.DB_FILE)
+
 _ = utils.load_translation(APP_NAME)
 
 CPU = utils.get_cpu_info('name')
@@ -213,7 +216,7 @@ class Dialog(Gtk.Window):
         
         self.set_icon_from_file(CURRENT_PATH+'/images/slimbookamdcontroller.svg')
         if type.find('Ryzen') != -1:
-            if not config.has_option('PROCESSORS',MODEL_CPU):
+            if not db_cpu.has_option('PROCESSORS',MODEL_CPU):
                 label = Gtk.Label(label=_(
                 "Your processor is not supported yet. Do you want to add '{}' to the list?\n"+
                 "If this is the case, you should go to the processor's vendor page and get information about your TDP values.").format(CPU))
@@ -260,6 +263,8 @@ class Dialog(Gtk.Window):
                                            int(dialog.entry6.get_text())*1000,
                                            dialog.low_default, dialog.high_default)
 
+        config.set('USER-CPU','cpu-parameters', new_values)
+        """
         if config.has_option('PROCESSORS',MODEL_CPU):
             print('Processor values modified.')
             config.set('USER-CPU','cpu-parameters', new_values)
@@ -273,8 +278,8 @@ class Dialog(Gtk.Window):
                 config.add_section('USER-CPU')
             config.set('USER-CPU','cpu-parameters', new_values)
             print(config['PROCESSORS'][MODEL_CPU])
-
-        with open(CONFIG_FILE, 'w') as configfile:
+        """
+        with open(utils.CONFIG_FILE, 'w') as configfile:
                 config.write(configfile)
 
 def _create_gui_element(value, low, max):
