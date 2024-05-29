@@ -8,6 +8,7 @@ from pathlib import Path
 
 CONFIG_FILE = str(Path.home()) + '/.config/slimbookamdcontroller/slimbookamdcontroller.conf'
 
+DB_FILE = 'processors.db'
 
 def get_user(from_file=None):
     try:

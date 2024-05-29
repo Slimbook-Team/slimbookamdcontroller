@@ -37,6 +37,9 @@ line_suffix = patron.search(cpu).group(4)
 config = ConfigParser()
 config.read(utils.CONFIG_FILE)
 
+db_cpu = ConfigParser()
+db_cpu.read(CURRENT_PATH + '/' + utils.DB_FILE)
+
 class SlimbookAMD(Gtk.ApplicationWindow):
 
     mode = ""
@@ -424,8 +427,8 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             print('Updating '+self.mode+' to : ' +
                   set_parameters[0]+' '+set_parameters[1]+' '+set_parameters[2]+'.\n')
 
-            returncode = subprocess.call('pkexec slimbookamdcontroller-pkexec', shell=True, stdout=subprocess.PIPE)
-
+            returncode = subprocess.call('pkexec slimbookamdcontroller-pkexec {}'.format(utils.CONFIG_FILE), shell=True, stdout=subprocess.PIPE)
+            print("return code:",returncode)
             if (returncode == 0):
                 os.system("notify-send 'Slimbook AMD Controller' '" + _("Changes have been executed correctly.") +
                           "' -i '" + CURRENT_PATH+'/images/slimbookamdcontroller.svg' + "'")
@@ -439,7 +442,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
                 self.update_config_file("autostart", self.autostart_actual)
                 self.update_config_file("show-icon", self.indicador_actual)
 
-                self.reboot_indicator()
+                #self.reboot_indicator()
 
             else:
                 os.system("notify-send 'Slimbook AMD Controller' '" + _("Your CPU is not avalible, this software might not work.") +
@@ -594,6 +597,10 @@ class SlimbookAMD(Gtk.ApplicationWindow):
             print('Setting cpu TDP values')
             cpu_codename = type+'-'+gen+'-'+number+line_suffix
 
+            params = db_cpu['PROCESSORS'][cpu_codename]
+            self.update_config_file('cpu-parameters', params, 'USER-CPU')
+            
+            """
             if config.has_option('PROCESSORS',cpu_codename):
                 print('Found processor in list')
                 params = config['PROCESSORS'][cpu_codename]
@@ -602,7 +609,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
                 print('Could not find your proc in .conf')
                 self.settings()
                 config.read(utils.CONFIG_FILE)
-
+            """
 
     def _show_indicator(self, switch, state):
 
