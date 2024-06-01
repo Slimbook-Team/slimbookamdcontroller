@@ -1,3 +1,9 @@
+slimbookamdcontroller (0.4.4) noble; urgency=medium
+
+  * Using some code from intelcontroller (also being refactored)
+
+ -- Slimbook <dev@slimbook.es>  Sat, 01 Jun 2024 18:37:57 +0200
+
 slimbookamdcontroller (0.4.3) noble; urgency=medium
 
   * Big refactor (expect some issues)

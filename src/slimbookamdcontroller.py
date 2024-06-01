@@ -537,22 +537,16 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         return value
 
     def reboot_indicator(self):
+        pid = utils.get_pid_from_file("slimbook.amd.controller.indicator.pid")
 
-        print('\nProcess PID')
-        indicator = subprocess.Popen(
-            'pgrep -f slimbookamdcontrollerindicator'.split(), 
-            stdout=subprocess.PIPE)
-        indicator.wait()
+        if (pid>0):
+            if (utils.is_pid_alive(pid)):
+                print("Killing indicator process...")
+                os.kill(pid,9)
 
-        indicatorpids = indicator.communicate()[0].decode('utf-8').split("\n")
-        print(indicatorpids)
-        for process in indicatorpids:
-            try:
-                os.kill(int(process), signal.SIGKILL) if process else print()
-            except Exception as e:
-                print(e)
-        print('Starting indicator...')
-        subprocess.call('python3 {}/slimbookamdcontrollerindicator.py  &'.format(CURRENT_PATH), shell = True)
+        if self.indicador_actual:
+            print("Starting indicator...")
+            os.system("python3 " + CURRENT_PATH + "/slimbookamdcontrollerindicator.py")
 
     # Copies autostart file in directory
     def _inicio_automatico(self, switch, state):
@@ -646,7 +640,14 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         print("\n- Variable |"+variable +
               "| updated in .conf, actual value: "+value)
 
-
-win = SlimbookAMD()
-win.connect("destroy", Gtk.main_quit)
-Gtk.main()
+if __name__=="__main__":
+    pid_name = "slimbook.amd.controller.application.pid"
+    utils.application_lock(pid_name)
+    
+    win = SlimbookAMD()
+    win.connect("destroy", Gtk.main_quit)
+    Gtk.main()
+    
+    utils.application_release(pid_name)
+    
+    sys.exit(0)

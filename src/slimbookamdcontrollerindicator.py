@@ -175,10 +175,17 @@ class Indicator():
         # proc.wait()
 
 
-if utils.get_secureboot_status():
-    print('Disable Secureboot, please',file=sys.stderr)
+if __name__=="__main__":
+    pid_name = "slimbook.amd.controller.indicator.pid"
+    utils.application_lock(pid_name)
+    
+    if utils.get_secureboot_status():
+        print("Error: SecureBoot is enabled", file=sys.stderr)
+        sys.exit(1)
 
-app = Indicator()
+    app = Indicator()
 
-signal.signal(signal.SIGINT, signal.SIG_DFL)
-Gtk.main()
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+    Gtk.main()
+    
+    utils.application_release(pid_name)
