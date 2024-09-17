@@ -640,7 +640,7 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         print("\n- Variable |"+variable +
               "| updated in .conf, actual value: "+value)
 
-if __name__=="__main__":
+def main():
     pid_name = "slimbook.amd.controller.application.pid"
     utils.application_lock(pid_name)
     
@@ -651,3 +651,6 @@ if __name__=="__main__":
     utils.application_release(pid_name)
     
     sys.exit(0)
+
+if __name__=="__main__":
+    main()

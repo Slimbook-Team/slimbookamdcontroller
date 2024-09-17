@@ -17,9 +17,7 @@ sys.path.insert(1, srcpath)
 
 if __name__ == "__main__":
     
-    try:
-        from slimbookamdcontroller import SlimbookAMD
-    except KeyboardInterrupt as exception:
-        print(exception)
+    import slimbookamdcontroller
+    slimbookamdcontroller.main()
 
     exit(0)

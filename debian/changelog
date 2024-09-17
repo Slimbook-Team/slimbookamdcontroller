@@ -1,3 +1,9 @@
+slimbookamdcontroller (0.4.5) noble; urgency=medium
+
+  * Fixed application not starting
+
+ -- Slimbook <dev@slimbook.es>  Tue, 17 Sep 2024 18:59:20 +0200
+
 slimbookamdcontroller (0.4.4) noble; urgency=medium
 
   * Using some code from intelcontroller (also being refactored)
