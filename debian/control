@@ -10,7 +10,7 @@ Rules-Requires-Root: no
 Package: slimbookamdcontroller
 Architecture: any
 Depends: ${misc:Depends}, ${python:Depends}, python3, python3-gi, python3-matplotlib,
- libnotify-bin, gir1.2-ayatanaappindicator3-0.1, ryzenadj
+ libnotify-bin, gir1.2-ayatanaappindicator3-0.1, ryzenadj, python3-amdgpuinfo
 Description: Application for managing the performance of amd processors
  Application for managing the performance of amd processors
 

@@ -1,3 +1,9 @@
+slimbookamdcontroller (0.4.5.1) noble; urgency=medium
+
+  * Fixed missing amdgpu info dependency
+
+ -- Slimbook <dev@slimbook.es>  Tue, 01 Oct 2024 07:58:21 +0200
+
 slimbookamdcontroller (0.4.5) noble; urgency=medium
 
   * Fixed application not starting
