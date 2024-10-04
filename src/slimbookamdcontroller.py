@@ -406,7 +406,10 @@ class SlimbookAMD(Gtk.ApplicationWindow):
         return False
 
     def on_button_toggled(self, button, name):
-        self.mode = name
+        if button.get_active():
+            self.mode = name
+            self.update_config_file("mode",name,"CONFIGURATION")
+
 
     def on_btnAceptar_clicked(self, widget):
 
@@ -430,13 +433,12 @@ class SlimbookAMD(Gtk.ApplicationWindow):
 
             returncode = subprocess.call('pkexec slimbookamdcontroller-pkexec {}'.format(utils.CONFIG_FILE), shell=True, stdout=subprocess.PIPE)
             print("return code:",returncode)
+
             if (returncode == 0):
-                os.system("notify-send 'Slimbook AMD Controller' '" + _("Changes have been executed correctly.") +                          "' -i '" + CURRENT_PATH+'/images/slimbookamdcontroller.svg' + "'")
-                
+                os.system("notify-send 'Slimbook AMD Controller' '" + _("Changes have been executed correctly.") + "' -i '" + CURRENT_PATH+'/images/slimbookamdcontroller.svg' + "'")
 
                 # Check switches
                 self._inicio_automatico(self.switch1, self.switch1.get_state())
-
                 self._show_indicator(self.switch2, self.switch2.get_state())
 
                 # Update vars

@@ -17,6 +17,7 @@ from configparser import ConfigParser
 
 # We want load first current location
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__))
+
 if CURRENT_PATH not in sys.path:
     sys.path = [CURRENT_PATH] + sys.path
 import utils
@@ -152,8 +153,8 @@ class Indicator():
         self.testindicator.set_icon_full(CURRENT_PATH+'/images/amd-1.png', "Slimbook AMD")
             
         self.update_config_file("mode", self.modo_actual)
-        proc = subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
-        # proc.wait()
+        self.active_profile()
+
     #Funcion para configuracion de medio rendimiento
     def mediorendimiento(self, widgets=False):
         self.modo_actual="medium"
@@ -161,8 +162,7 @@ class Indicator():
         self.testindicator.set_icon_full(CURRENT_PATH+'/images/amd-2.png', "Slimbook AMD")
 
         self.update_config_file("mode", self.modo_actual)
-        proc = subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
-        # proc.wait()
+        self.active_profile()
 
     #Funcion para configuracion de alto rendimiento
     def altorendimiento(self, widgets=False):
@@ -171,7 +171,10 @@ class Indicator():
         self.testindicator.set_icon_full(CURRENT_PATH+'/images/amd-3.png', "Slimbook AMD")
 
         self.update_config_file("mode", self.modo_actual)
-        proc = subprocess.Popen('pkexec slimbookamdcontroller-pkexec', shell=True)
+        self.active_profile()
+    
+    def active_profile(self, widgets=False):
+        proc = subprocess.Popen('pkexec slimbookamdcontroller-pkexec {}'.format(utils.CONFIG_FILE), shell=True)
         # proc.wait()
 
 
