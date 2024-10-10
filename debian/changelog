@@ -1,3 +1,10 @@
+slimbookamdcontroller (0.4.6.0) noble; urgency=medium
+
+  * Added some new processors to database 
+  * PR from ajmasia: Fix CPU settings changes from preferences and app indicator
+
+ -- Slimbook <dev@slimbook.es>  Thu, 10 Oct 2024 11:03:52 +0200
+
 slimbookamdcontroller (0.4.5.1) noble; urgency=medium
 
   * Fixed missing amdgpu info dependency
