@@ -1,3 +1,9 @@
+slimbookamdcontroller (0.4.6.0~bpo22.04.0) jammy; urgency=medium
+
+  * Jammy backport
+
+ -- Slimbook <dev@slimbook.es>  Wed, 29 Jan 2025 12:54:55 +0100
+
 slimbookamdcontroller (0.4.6.0) noble; urgency=medium
 
   * Added some new processors to database 
