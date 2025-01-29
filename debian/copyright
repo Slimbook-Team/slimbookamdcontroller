@@ -1,7 +1,0 @@
-Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: slimbookamdcontroller
-Source: <dev@slimbook.es>
- 
-Files: *
-Copyright: 2021, Slimbook <dev@slimbook.es>
-License: GPL
