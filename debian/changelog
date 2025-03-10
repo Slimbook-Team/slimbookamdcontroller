@@ -1,3 +1,9 @@
+slimbookamdcontroller (0.4.7.0) noble; urgency=medium
+
+  * Fixed a bug in the udev trigger, the solution isn't far from perfect but this needs a different approach
+
+ -- Slimbook <dev@slimbook.es>  Mon, 10 Mar 2025 15:38:26 +0100
+
 slimbookamdcontroller (0.4.6.0) noble; urgency=medium
 
   * Added some new processors to database 
