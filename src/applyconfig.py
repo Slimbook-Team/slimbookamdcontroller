@@ -7,14 +7,29 @@ import sys
 import subprocess
 import configparser
 import utils
+import json
 from pathlib import Path
 from time import sleep
 
+CONFIG_FILE = None
+
 if (len(sys.argv)<2):
-    sys.exit(127)
+    status,value = subprocess.getstatusoutput("loginctl list-sessions -o json")
+    sessions = json.loads(value)
     
-CONFIG_FILE = sys.argv[1]
-if (not Path(CONFIG_FILE).exists()):
+    for session in sessions:
+        state = session["state"]
+        
+        if state == "active":
+            user = session["user"]
+            gstatus,gvalue = subprocess.getstatusoutput("getent passwd {0}".format(user))
+            tmp = gvalue.split(":")
+            CONFIG_FILE = tmp[5] + "/.config/slimbookamdcontroller/slimbookamdcontroller.conf"
+            break
+else:
+    CONFIG_FILE = sys.argv[1]
+
+if (not CONFIG_FILE or not Path(CONFIG_FILE).exists()):
     print("Config file does not exists",file=sys.stderr)
     sys.exit(0)
 
