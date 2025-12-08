@@ -1,3 +1,11 @@
+slimbookamdcontroller (0.4.8.0) noble; urgency=medium
+
+  * Added missing (in some rare circumstances) dependecies
+  * Open settings window if cpu is not found in database
+  * Fixed sleep script missing exec bit
+
+ -- Slimbook <dev@slimbook.es>  Mon, 08 Dec 2025 23:43:37 +0100
+
 slimbookamdcontroller (0.4.7.0) noble; urgency=medium
 
   * Fixed a bug in the udev trigger, the solution isn't far from perfect but this needs a different approach
